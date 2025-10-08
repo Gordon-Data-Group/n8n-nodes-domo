@@ -223,7 +223,7 @@ export const approvalFields: INodeProperties[] = [
 		default: '{}',
 		required: true,
 		description: 'GraphQL query object for searching',
-		placeholder: '{"query":"query { searchApprovals(filter: { status: \\"PENDING\\" }) { id name status } }"}',
+		placeholder: '{"query":"query { searchApprovals(filter: { status: \"PENDING\" }) { ID name status } }"}',
 	},
 	// Update template field
 	{
@@ -239,7 +239,7 @@ export const approvalFields: INodeProperties[] = [
 		default: '{}',
 		required: true,
 		description: 'GraphQL mutation object for updating template',
-		placeholder: '{"query":"mutation { updateTemplate(id: \\"123\\", input: { name: \\"New Name\\" }) { id name } }"}',
+		placeholder: '{"query":"mutation { updateTemplate(ID: "123", input: { name: "New Name" }) { ID name } }"}',
 	},
 ];
 

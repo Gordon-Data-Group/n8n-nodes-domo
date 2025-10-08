@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-domo",
   "version": "0.0.1",
-  "description": "",
+  "description": "Complete Domo integration for n8n with Product APIs (Token Auth) and Platform APIs (OAuth2)",
   "keywords": [
     "n8n-community-node-package"
   ],
@@ -33,10 +33,12 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/DomoTokenApi.credentials.js"
+      "dist/credentials/DomoTokenApi.credentials.js",
+      "dist/credentials/DomoOAuth2Api.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Domo/Domo.node.js"
+      "dist/nodes/Domo/Domo.node.js",
+      "dist/nodes/DomoOAuth2/DomoOAuth2.node.js"
     ]
   },
   "devDependencies": {

@@ -14,10 +14,27 @@ import { categoryFields, categoryOperations } from './categories';
 import { certificationFields, certificationOperations } from './certification';
 import { codeEngineFields, codeEngineOperations } from './codeEngine';
 import { creditFields, creditOperations } from './credits';
-import { userFields, userOperations } from './users';
-import { groupFields, groupOperations } from './groups';
-import { tokenFields, tokenOperations } from './tokens';
 import { datasetFields, datasetOperations } from './datasets';
+import { domoEverywhereFields, domoEverywhereOperations } from './domoEverywhere';
+import { elevationFields, elevationOperations } from './elevation';
+import { filesFields, filesOperations } from './files';
+import { filesetsFields, filesetsOperations } from './filesets';
+import { formsFields, formsOperations } from './forms';
+import { functionsFields, functionsOperations } from './functions';
+import { groupFields, groupOperations } from './groups';
+import { leftNavigationFields, leftNavigationOperations } from './leftNavigation';
+import { objectivesFields, objectivesOperations } from './objectives';
+import { pageFields, pageOperations } from './pages';
+import { projectsFields, projectsOperations } from './projects';
+import { reportsFields, reportsOperations } from './reports';
+import { rolesFields, rolesOperations } from './roles';
+import { sandboxFields, sandboxOperations } from './sandbox';
+import { scheduledReportsFields, scheduledReportsOperations } from './scheduledReports';
+import { taskCenterFields, taskCenterOperations } from './taskCenter';
+import { tokenFields, tokenOperations } from './tokens';
+import { toolkitFields, toolkitOperations } from './toolkit';
+import { userFields, userOperations } from './users';
+import { workflowsFields, workflowsOperations } from './workflows';
 
 // Combine all fields
 export const domoFields: INodeProperties[] = [
@@ -36,10 +53,27 @@ export const domoFields: INodeProperties[] = [
 	...certificationFields,
 	...codeEngineFields,
 	...creditFields,
-	...userFields,
-	...groupFields,
-	...tokenFields,
 	...datasetFields,
+	...domoEverywhereFields,
+	...elevationFields,
+	...filesFields,
+	...filesetsFields,
+	...formsFields,
+	...functionsFields,
+	...groupFields,
+	...leftNavigationFields,
+	...objectivesFields,
+	...pageFields,
+	...projectsFields,
+	...reportsFields,
+	...rolesFields,
+	...sandboxFields,
+	...scheduledReportsFields,
+	...taskCenterFields,
+	...tokenFields,
+	...toolkitFields,
+	...userFields,
+	...workflowsFields,
 ];
 
 export const domoOperations: INodeProperties[] = [
@@ -58,8 +92,25 @@ export const domoOperations: INodeProperties[] = [
 	...certificationOperations,
 	...codeEngineOperations,
 	...creditOperations,
-	...userOperations,
-	...groupOperations,
-	...tokenOperations,
 	...datasetOperations,
+	...domoEverywhereOperations,
+	...elevationOperations,
+	...filesOperations,
+	...filesetsOperations,
+	...formsOperations,
+	...functionsOperations,
+	...groupOperations,
+	...leftNavigationOperations,
+	...objectivesOperations,
+	...pageOperations,
+	...projectsOperations,
+	...reportsOperations,
+	...rolesOperations,
+	...sandboxOperations,
+	...scheduledReportsOperations,
+	...taskCenterOperations,
+	...tokenOperations,
+	...toolkitOperations,
+	...userOperations,
+	...workflowsOperations,
 ];

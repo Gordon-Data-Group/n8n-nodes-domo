@@ -510,7 +510,7 @@ export const appdbFields: INodeProperties[] = [
 		default: '{}',
 		required: true,
 		description: 'JSON object containing permissions configuration',
-		placeholder: '{"users":[{"id":123,"permissions":["READ","WRITE"]}],"groups":[{"id":456,"permissions":["READ"]}]}',
+		placeholder: '{"users":[{"ID":123,"permissions":["READ","WRITE"]}],"groups":[{"ID":456,"permissions":["READ"]}]}',
 	},
 ];
 

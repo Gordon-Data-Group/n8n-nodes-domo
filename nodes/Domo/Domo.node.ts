@@ -99,20 +99,92 @@ export class Domo implements INodeType {
 						value: 'credit',
 					},
 					{
+						name: 'DataFlow',
+						value: 'dataflow',
+					},
+					{
 						name: 'Dataset',
 						value: 'dataset',
+					},
+					{
+						name: 'Domo Everywhere',
+						value: 'domoEverywhere',
+					},
+					{
+						name: 'Elevation',
+						value: 'elevation',
+					},
+					{
+						name: 'File',
+						value: 'files',
+					},
+					{
+						name: 'FileSet',
+						value: 'filesets',
+					},
+					{
+						name: 'Form',
+						value: 'forms',
+					},
+					{
+						name: 'Function',
+						value: 'functions',
 					},
 					{
 						name: 'Group',
 						value: 'group',
 					},
 					{
+						name: 'Left Navigation',
+						value: 'leftNavigation',
+					},
+					{
+						name: 'Objective',
+						value: 'objectives',
+					},
+					{
+						name: 'Page',
+						value: 'page',
+					},
+					{
+						name: 'Project',
+						value: 'projects',
+					},
+					{
+						name: 'Report',
+						value: 'reports',
+					},
+					{
+						name: 'Role',
+						value: 'roles',
+					},
+					{
+						name: 'Sandbox',
+						value: 'sandbox',
+					},
+					{
+						name: 'Scheduled Report',
+						value: 'scheduledReports',
+					},
+					{
+						name: 'Task Center',
+						value: 'taskCenter',
+					},
+					{
 						name: 'Token',
 						value: 'token',
 					},
 					{
+						name: 'Toolkit',
+						value: 'toolkit',
+					},
+					{
 						name: 'User',
 						value: 'user',
+					},
+					{
+						name: 'Workflow',
+						value: 'workflows',
 					},
 				],
 				default: 'user',
