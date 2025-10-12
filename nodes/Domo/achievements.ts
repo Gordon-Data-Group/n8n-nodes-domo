@@ -13,6 +13,21 @@ export const achievementOperations: INodeProperties[] = [
 		},
 		options: [
 			{
+				name: 'Add Achievement Admin',
+				value: 'addAchievementAdmin',
+				description: 'Assign an achievement to a user',
+				action: 'Assign achievement to user',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId + "/admins" }}',
+						body: {
+							userId: '={{$parameter.userId}}'
+						},
+					},
+				},
+			},
+			{
 				name: 'Assign to User',
 				value: 'assignToUser',
 				description: 'Assign an achievement to a user',
@@ -20,9 +35,9 @@ export const achievementOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'POST',
-						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId + "/assign" }}',
+						url: '={{ "/api/content/v2/users/" + $parameter.userId + "/achievements" }}',
 						body: {
-							userId: '={{$parameter.userId}}',
+							achievementId: '={{$parameter.achievementId}}'
 						},
 					},
 				},
@@ -36,7 +51,11 @@ export const achievementOperations: INodeProperties[] = [
 					request: {
 						method: 'POST',
 						url: '/api/content/v1/achievements',
-						body: '={{JSON.parse($parameter.achievementData)}}',
+						body: {
+							name: '={{$parameter.name}}',
+							description: '={{$parameter.description}}',
+							image: '={{$parameter.image}}',
+						},
 					},
 				},
 			},
@@ -53,6 +72,18 @@ export const achievementOperations: INodeProperties[] = [
 				},
 			},
 			{
+				name: 'Delete Achievement Admin',
+				value: 'deleteAchievementAdmin',
+				description: 'Revoke an achievement from a user',
+				action: 'Revoke achievement from user',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{ "api/content/v1/achievements/" + $parameter.achievementId + "/admins/" + $parameter.adminId }}',
+					},
+				},
+			},
+			{
 				name: 'Get',
 				value: 'get',
 				description: 'Get a specific achievement by ID',
@@ -61,6 +92,19 @@ export const achievementOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId }}',
+					},
+				},
+			},
+
+			{
+				name: 'Get Achievement Admins',
+				value: 'getAchievementAdmins',
+				description: 'Get all admins for an achievement',
+				action: 'Get achievement admins',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId + "/admins" }}',
 					},
 				},
 			},
@@ -88,19 +132,11 @@ export const achievementOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/content/v1/users/" + $parameter.userId + "/achievements" }}',
-					},
-				},
-			},
-			{
-				name: 'Revoke From User',
-				value: 'revokeFromUser',
-				description: 'Revoke an achievement from a user',
-				action: 'Revoke achievement from user',
-				routing: {
-					request: {
-						method: 'DELETE',
-						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId + "/users/" + $parameter.userId }}',
+						url: '={{ "/api/content/v2/users/" + $parameter.userId + "/achievements" }}',
+						qs: {
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
+						}
 					},
 				},
 			},
@@ -113,7 +149,11 @@ export const achievementOperations: INodeProperties[] = [
 					request: {
 						method: 'PUT',
 						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId }}',
-						body: '={{JSON.parse($parameter.achievementData)}}',
+						body: {
+							name: '={{$parameter.name}}',
+							description: '={{$parameter.description}}',
+							image: '={{$parameter.image}}',
+						},
 					},
 				},
 			},
@@ -131,7 +171,7 @@ export const achievementFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['achievement'],
-				operation: ['get', 'update', 'delete', 'assignToUser', 'revokeFromUser'],
+				operation: ['get', 'update', 'delete', 'assignToUser', 'revokeFromUser', 'getAchievementAdmins', 'deleteAchievementAdmin', 'addAchievementAdmin'],
 			},
 		},
 		default: '',
@@ -146,13 +186,28 @@ export const achievementFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['achievement'],
-				operation: ['assignToUser', 'revokeFromUser', 'listUserAchievements'],
+				operation: ['assignToUser', 'revokeFromUser', 'listUserAchievements', 'addAchievementAdmin'],
 			},
 		},
 		default: '',
 		required: true,
 		description: 'The ID of the user',
 	},
+		// Admin ID field (for deleteAchievementAdmin)
+		{
+			displayName: 'Admin ID',
+			name: 'adminId',
+			type: 'number',
+			displayOptions: {
+				show: {
+					resource: ['achievement'],
+					operation: ['deleteAchievementAdmin'],
+				},
+			},
+			default: '',
+			required: true,
+			description: 'The ID of the admin (Not the user ID)',
+		},
 	// List operation fields
 	{
 		displayName: 'Limit',
@@ -164,7 +219,7 @@ export const achievementFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['achievement'],
-				operation: ['list'],
+				operation: ['list', 'listUserAchievements'],
 			},
 		},
 		default: 50,
@@ -180,7 +235,7 @@ export const achievementFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['achievement'],
-				operation: ['list'],
+				operation: ['list', 'listUserAchievements'],
 			},
 		},
 		default: 0,
@@ -188,19 +243,46 @@ export const achievementFields: INodeProperties[] = [
 	},
 	// Create and Update operation fields
 	{
-		displayName: 'Achievement Data',
-		name: 'achievementData',
-		type: 'json',
+		displayName: 'Name',
+		name: 'name',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['achievement'],
 				operation: ['create', 'update'],
 			},
 		},
-		default: '{}',
+		default: '',
 		required: true,
-		description: 'JSON object containing achievement data',
-		placeholder: '{"name":"Achievement Name","description":"Description","imageUrl":"https://...","badgeType":"custom"}',
+		description: 'The name of the achievement',
 	},
+	{
+		displayName: 'Description',
+		name: 'description',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['achievement'],
+				operation: ['create', 'update'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The description of the achievement',
+	},
+	{
+		displayName: 'Image',
+		name: 'image',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['achievement'],
+				operation: ['create', 'update'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'Base64 encoded image of the achievement',
+		placeholder: 'data:image/png;base64,iVBORw...',
+	}
 ];
-
