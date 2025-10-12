@@ -13,29 +13,26 @@ export const adminOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Audit Logs',
-				value: 'auditLogs',
+				name: 'Access Tokens',
+				value: 'accessTokens',
 			},
 			{
-				name: 'Feature Flags',
-				value: 'featureFlags',
+				name: 'Activity Log',
+				value: 'activityLog',
 			},
 			{
-				name: 'Instance',
-				value: 'instance',
+				name: 'Company',
+				value: 'company',
 			},
 			{
-				name: 'Security',
-				value: 'security',
-			},
-			{
-				name: 'Settings',
-				value: 'settings',
+				name: 'OAuth API Clients',
+				value: 'oauthApiClients',
 			},
 		],
-		default: 'settings',
+		default: 'company',
 		description: 'The admin sub-resource to interact with',
 	},
+	// Access Tokens Operations
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -44,97 +41,101 @@ export const adminOperations: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['auditLogs'],
+				subResource: ['accessTokens'],
 			},
 		},
 		options: [
 			{
-				name: 'Get Audit Logs',
-				value: 'getAuditLogs',
-				description: 'Retrieve audit logs',
-				action: 'Get audit logs',
+				name: 'List Access Tokens',
+				value: 'listAccessTokens',
+				description: 'List all access tokens',
+				action: 'List access tokens',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/admin/v1/audit/logs',
-						qs: {
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
-							startDate: '={{$parameter.startDate}}',
-							endDate: '={{$parameter.endDate}}',
-						},
+						url: '/api/data/v1/accesstokens',
 					},
 				},
 			},
 			{
-				name: 'Get Audit Log Details',
-				value: 'getAuditLogDetails',
-				description: 'Get details of a specific audit log entry',
-				action: 'Get audit log details',
+				name: 'Create Access Tokens',
+				value: 'createAccessToken',
+				description: 'List all access tokens',
+				action: 'List access tokens',
 				routing: {
 					request: {
-						method: 'GET',
-						url: '={{ "/api/admin/v1/audit/logs/" + $parameter.logId }}',
-					},
-				},
-			},
-		],
-		default: 'getAuditLogs',
-	},
-	{
-		displayName: 'Operation',
-		name: 'operation',
-		type: 'options',
-		noDataExpression: true,
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['featureFlags'],
-			},
-		},
-		options: [
-			{
-				name: 'Get Feature Flag',
-				value: 'getFeatureFlag',
-				description: 'Get a specific feature flag',
-				action: 'Get feature flag',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '={{ "/api/admin/v1/features/" + $parameter.featureName }}',
-					},
-				},
-			},
-			{
-				name: 'List Feature Flags',
-				value: 'listFeatureFlags',
-				description: 'List all feature flags',
-				action: 'List feature flags',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '/api/admin/v1/features',
-					},
-				},
-			},
-			{
-				name: 'Update Feature Flag',
-				value: 'updateFeatureFlag',
-				description: 'Update a feature flag',
-				action: 'Update feature flag',
-				routing: {
-					request: {
-						method: 'PUT',
-						url: '={{ "/api/admin/v1/features/" + $parameter.featureName }}',
+						method: 'POST',
+						url: '/api/data/v1/accesstokens',
 						body: {
-							enabled: '={{$parameter.enabled}}',
+							"name": "={{$parameter.name}}",
+							"ownerId": "={{$parameter.ownerId}}",
+							"expires": "={{$parameter.expires}}",
+					}
+					},
+				},
+			},
+			{
+				name: 'Delete/Revoke Access Token',
+				value: 'deleteAccessToken',
+				description: 'Delete/Revoke an access token',
+				action: 'Delete access token',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{ "/api/data/v1/accesstokens/" + $parameter.id }}',
+					},
+				},
+			},
+		],
+		default: 'listAccessTokens',
+	},
+	// Activity Log Operations
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['activityLog'],
+			},
+		},
+		options: [
+			{
+				name: 'List Object Types',
+				value: 'listObjectTypes',
+				action: 'List object types',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/audit/v1/user-audits/objectTypes',
+					},
+				},
+			},
+			{
+				name: 'Get Events',
+				value: 'getEvents',
+				description: 'Retrieves a list of user activity logs based on the provided query parameters',
+				action: 'Get events',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/audit/v1/user-audits',
+						qs: {
+							start: '={{$parameter.start}}',
+							end: '={{$parameter.end}}',
+							offset: '={{$parameter.offset || 0}}',
+							limit: '={{Math.min($parameter.limit || 50, 500)}}',
+							objectType: '={{$parameter.objectType}}',
 						},
 					},
 				},
 			},
 		],
-		default: 'listFeatureFlags',
+		default: 'getEvents',
 	},
+	// Company Operations
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -143,212 +144,251 @@ export const adminOperations: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['instance'],
+				subResource: ['company'],
 			},
 		},
 		options: [
 			{
-				name: 'Get Instance Info',
-				value: 'getInstanceInfo',
-				description: 'Get Domo instance information',
-				action: 'Get instance info',
+				name: 'Get Credits',
+				value: 'getCredits',
+				description: 'Get credits information',
+				action: 'Get credits',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/admin/v1/instance',
+						url: '/api/metrics/v1/usage/credits/contract/current/summary',
 					},
 				},
 			},
-		{
-			name: 'Get Instance Settings',
-			value: 'getInstanceSettings',
-			action: 'Get instance settings',
-			routing: {
-				request: {
-					method: 'GET',
-					url: '/api/admin/v1/instance/settings',
-				},
-			},
-		},
-		{
-			name: 'Update Instance Settings',
-			value: 'updateInstanceSettings',
-			action: 'Update instance settings',
-			routing: {
-				request: {
-					method: 'PUT',
-					url: '/api/admin/v1/instance/settings',
-					body: '={{JSON.parse($parameter.settingsData)}}',
-				},
-			},
-		},
-		],
-		default: 'getInstanceInfo',
-	},
-	{
-		displayName: 'Operation',
-		name: 'operation',
-		type: 'options',
-		noDataExpression: true,
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['security'],
-			},
-		},
-		options: [
 			{
-				name: 'Get Password Policy',
-				value: 'getPasswordPolicy',
-				description: 'Get password policy settings',
-				action: 'Get password policy',
+				name: 'Get Customer State',
+				value: 'getCustomerState',
+				action: 'Get customer state',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/admin/v1/security/password-policy',
+						url: '={{ "/api/content/v1/customer-states/" + $parameter.customerState }}',
+						qs: {
+							ignoreCache: '={{$parameter.ignoreCache}}',
+						},
 					},
 				},
 			},
-		{
-			name: 'Get Security Settings',
-			value: 'getSecuritySettings',
-			action: 'Get security settings',
-			routing: {
-				request: {
-					method: 'GET',
-					url: '/api/admin/v1/security/settings',
+			{
+				name: 'Get Customer States',
+				value: 'getCustomerStates',
+				action: 'Get customer states',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/content/v1/customer-states',
+						qs: {
+							ignoreCache: '={{$parameter.ignoreCache}}',
+							stateName: '={{$parameter.stateName}}',
+						},
+					},
 				},
 			},
-		},
-		{
-			name: 'Update Password Policy',
-			value: 'updatePasswordPolicy',
-			action: 'Update password policy',
-			routing: {
-				request: {
-					method: 'PUT',
-					url: '/api/admin/v1/security/password-policy',
-					body: '={{JSON.parse($parameter.policyData)}}',
+			{
+				name: 'Get Default Landing Page',
+				value: 'getDefaultLandingPage',
+				action: 'Get default landing page',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/content/v1/landings/customer',
+					},
 				},
 			},
-		},
-		{
-			name: 'Update Security Settings',
-			value: 'updateSecuritySettings',
-			action: 'Update security settings',
-			routing: {
-				request: {
-					method: 'PUT',
-					url: '/api/admin/v1/security/settings',
-					body: '={{JSON.parse($parameter.securityData)}}',
+			{
+				name: 'Get Jupyter Settings',
+				value: 'getJupyterSettings',
+				action: 'Get jupyter settings',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/datascience/v1/settings',
+					},
 				},
 			},
-		},
-		],
-		default: 'getSecuritySettings',
-	},
-	{
-		displayName: 'Operation',
-		name: 'operation',
-		type: 'options',
-		noDataExpression: true,
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['settings'],
+			{
+				name: 'Get Licenses',
+				value: 'getLicenses',
+				action: 'Get licenses',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/content/v1/licenses/total/current',
+					},
+				},
 			},
-		},
-		options: [
+			{
+				name: 'Get Locale',
+				value: 'getLocale',
+				action: 'Get locale',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/content/v1/customer-states/locale',
+						qs: {
+							ignoreCache: '={{$parameter.ignoreCache}}',
+						},
+					},
+				},
+			},
+			{
+				name: 'Get Property',
+				value: 'getProperty',
+				action: 'Get property',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/customer/v1/properties/" + $parameter.property }}',
+					},
+				},
+			},
 			{
 				name: 'Get Settings',
 				value: 'getSettings',
-				description: 'Get admin settings',
+				description: 'Get company settings',
 				action: 'Get settings',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/admin/v1/settings',
+						url: '/companysettings',
 					},
 				},
 			},
 			{
-				name: 'Get Setting by Key',
-				value: 'getSettingByKey',
-				description: 'Get a specific setting by key',
-				action: 'Get setting by key',
+				name: 'List Customer Stats',
+				value: 'listCustomerStats',
+				action: 'List customer stats',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/admin/v1/settings/" + $parameter.settingKey }}',
+						url: '/api/query/v1/datasources/customer-stats',
 					},
 				},
 			},
 			{
-				name: 'Update Setting',
-				value: 'updateSetting',
-				description: 'Update a setting',
-				action: 'Update setting',
+				name: 'List Time Zones',
+				value: 'listTimeZones',
+				action: 'List time zones',
 				routing: {
 					request: {
-						method: 'PUT',
-						url: '={{ "/api/admin/v1/settings/" + $parameter.settingKey }}',
-						body: {
-							value: '={{$parameter.settingValue}}',
-						},
+						method: 'GET',
+						url: '/api/dataprocessing/v1/dataflows/timezones',
 					},
 				},
 			},
 			{
-				name: 'Update Settings',
-				value: 'updateSettings',
-				description: 'Update multiple settings',
-				action: 'Update settings',
+				name: 'Update Customer State',
+				value: 'updateCustomerState',
+				action: 'Update customer state',
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '/api/admin/v1/settings',
-						body: '={{JSON.parse($parameter.settingsData)}}',
+						url: '={{ "/api/content/v1/customer-states/" + $parameter.customerState }}',
+						body: '={{JSON.parse($parameter.stateData)}}',
+					},
+				},
+			},
+			{
+				name: 'Update Property',
+				value: 'updateProperty',
+				action: 'Update property',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/customer/v1/properties/" + $parameter.property }}',
+						body: '={{JSON.parse($parameter.propertyData)}}',
 					},
 				},
 			},
 		],
 		default: 'getSettings',
 	},
-];
-
-export const adminFields: INodeProperties[] = [
-	// Audit Logs fields
+	// OAuth API Clients Operations
 	{
-		displayName: 'Log ID',
-		name: 'logId',
-		type: 'string',
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['auditLogs'],
-				operation: ['getAuditLogDetails'],
+				subResource: ['oauthApiClients'],
+			},
+		},
+		options: [
+			{
+				name: 'List OAuth API Clients',
+				value: 'listOAuthApiClients',
+				action: 'List oauth api clients',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/identity/v1/developer-tokens',
+					},
+				},
+			},
+		],
+		default: 'listOAuthApiClients',
+	},
+];
+
+export const adminFields: INodeProperties[] = [
+	// Access Tokens fields
+	{
+		displayName: 'Token ID',
+		name: 'id',
+		type: 'string',
+		typeOptions: {
+			password: false,
+		},
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['accessTokens'],
+				operation: ['deleteAccessToken'],
 			},
 		},
 		default: '',
 		required: true,
-		description: 'The ID of the audit log entry',
+		description: 'The ID of the access token',
 	},
+	// Activity Log fields
 	{
-		displayName: 'Limit',
-		name: 'limit',
+		displayName: 'Start Date',
+		name: 'start',
 		type: 'number',
-		typeOptions: {
-			minValue: 1,
-		},
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['auditLogs'],
-				operation: ['getAuditLogs'],
+				subResource: ['activityLog'],
+				operation: ['getEvents'],
 			},
 		},
-		default: 50,
-		description: 'Max number of results to return',
+		default: '',
+		description: 'Start date for events (Epoch milliseconds)',
+		placeholder: '1717862400000',
+		required: true,
+	},
+	{
+		displayName: 'End Date',
+		name: 'end',
+		type: 'number',
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['activityLog'],
+				operation: ['getEvents'],
+			},
+		},
+		default: '',
+		description: 'End date for events (Epoch milliseconds)',
+		placeholder: '1717862400000',
+		required: true,
 	},
 	{
 		displayName: 'Offset',
@@ -360,169 +400,180 @@ export const adminFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['auditLogs'],
-				operation: ['getAuditLogs'],
+				subResource: ['activityLog'],
+				operation: ['getEvents'],
 			},
 		},
 		default: 0,
-		description: 'Number of logs to skip',
+		description: 'Number of events to skip',
+		required: true,
 	},
 	{
-		displayName: 'Start Date',
-		name: 'startDate',
-		type: 'string',
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		typeOptions: {
+			minValue: 1,
+		},
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['auditLogs'],
-				operation: ['getAuditLogs'],
+				subResource: ['activityLog'],
+				operation: ['getEvents'],
 			},
 		},
-		default: '',
-		description: 'Start date for audit logs (ISO format)',
-		placeholder: '2024-01-01T00:00:00Z',
+		default: 50,
+		description: 'Max number of results to return',
+		required: true,
 	},
 	{
-		displayName: 'End Date',
-		name: 'endDate',
+		displayName: 'Object Type',
+		name: 'objectType',
 		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['auditLogs'],
-				operation: ['getAuditLogs'],
-			},
-		},
-		default: '',
-		description: 'End date for audit logs (ISO format)',
-		placeholder: '2024-12-31T23:59:59Z',
-	},
-	// Feature Flags fields
-	{
-		displayName: 'Feature Name',
-		name: 'featureName',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['featureFlags'],
-				operation: ['getFeatureFlag', 'updateFeatureFlag'],
+				subResource: ['activityLog'],
+				operation: ['getEvents'],
 			},
 		},
 		default: '',
 		required: true,
-		description: 'The name of the feature flag',
+		description: 'Filter by object type',
+	},
+	// Company fields
+	{
+		displayName: 'Customer State',
+		name: 'customerState',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['company'],
+				operation: ['getCustomerState', 'updateCustomerState'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The customer state name',
 	},
 	{
-		displayName: 'Enabled',
-		name: 'enabled',
+		displayName: 'Ignore Cache',
+		name: 'ignoreCache',
 		type: 'boolean',
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['featureFlags'],
-				operation: ['updateFeatureFlag'],
+				subResource: ['company'],
+				operation: ['getCustomerState', 'getCustomerStates', 'getLocale'],
 			},
 		},
-		default: true,
-		description: 'Whether the feature flag is enabled',
-	},
-	// Instance fields
-	{
-		displayName: 'Settings Data',
-		name: 'settingsData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['instance'],
-				operation: ['updateInstanceSettings'],
-			},
-		},
-		default: '{}',
-		required: true,
-		description: 'JSON object containing instance settings',
-		placeholder: '{"setting1":"value1","setting2":"value2"}',
-	},
-	// Security fields
-	{
-		displayName: 'Policy Data',
-		name: 'policyData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['security'],
-				operation: ['updatePasswordPolicy'],
-			},
-		},
-		default: '{}',
-		required: true,
-		description: 'JSON object containing password policy settings',
-		placeholder: '{"minLength":8,"requireUppercase":true,"requireNumbers":true}',
+		default: false,
+		description: 'Whether to ignore cache',
 	},
 	{
-		displayName: 'Security Data',
-		name: 'securityData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['security'],
-				operation: ['updateSecuritySettings'],
-			},
-		},
-		default: '{}',
-		required: true,
-		description: 'JSON object containing security settings',
-		placeholder: '{"twoFactorRequired":true,"sessionTimeout":3600}',
-	},
-	// Settings fields
-	{
-		displayName: 'Setting Key',
-		name: 'settingKey',
+		displayName: 'State Name',
+		name: 'stateName',
 		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['settings'],
-				operation: ['getSettingByKey', 'updateSetting'],
+				subResource: ['company'],
+				operation: ['getCustomerStates'],
 			},
 		},
 		default: '',
-		required: true,
-		description: 'The key of the setting',
+		description: 'Filter by state name',
 	},
 	{
-		displayName: 'Setting Value',
-		name: 'settingValue',
+		displayName: 'Property',
+		name: 'property',
 		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['settings'],
-				operation: ['updateSetting'],
+				subResource: ['company'],
+				operation: ['getProperty', 'updateProperty'],
 			},
 		},
 		default: '',
 		required: true,
-		description: 'The new value for the setting',
+		description: 'The property name',
 	},
 	{
-		displayName: 'Settings Data',
-		name: 'settingsData',
+		displayName: 'State Data',
+		name: 'stateData',
 		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['admin'],
-				subResource: ['settings'],
-				operation: ['updateSettings'],
+				subResource: ['company'],
+				operation: ['updateCustomerState'],
 			},
 		},
-		default: '{}',
+		default: '{"name":"domo.policy.multifactor.maxCodeAttempts","value":"5"}',
 		required: true,
-		description: 'JSON object containing multiple settings',
-		placeholder: '{"key1":"value1","key2":"value2"}',
+		description: 'JSON object containing customer state data',
+	},
+	{
+		displayName: 'Property Data',
+		name: 'propertyData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['company'],
+				operation: ['updateProperty'],
+			},
+		},
+		default: '{"keyspace":"domo","issuer":"DEFAULT_VALUE","key":"card.hide_share_email_ui","value":"true"}',
+		required: true,
+		description: 'JSON object containing property data',
+	},
+	// Access Tokens fields
+	{
+		displayName: 'Name',
+		name: 'name',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['accessTokens'],
+				operation: ['createAccessToken'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The name of the token',
+	},
+	{
+		displayName: 'Owner User ID',
+		name: 'ownerId',
+		type: 'number',
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['accessTokens'],
+				operation: ['createAccessToken'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The User ID of the owner',
+	},
+	{
+		displayName: 'Expires At',
+		name: 'expires',
+		type: 'dateTime',
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['accessTokens'],
+				operation: ['createAccessToken'],
+			},
+		},
+		default: '',
+		required: true,
 	},
 ];
 
