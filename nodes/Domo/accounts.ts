@@ -57,7 +57,10 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/credentials" }}',
+						url: '={{ "/api/data/v1/providers/" + $parameter.providerKey + "/account/" + $parameter.accountId }}',
+						qs: {
+							unmask: 'true',
+						},
 					},
 				},
 			},
@@ -69,7 +72,12 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/connectors/appstore/" + $parameter.connectorId }}',
+						url: '={{ "/api/connectors/appstore/v2/details/connector/"+ $parameter.connectorId }}',
+						qs: {
+							fields: 'all',
+							country: '={{ $parameter.country }}',
+							language: '={{ $parameter.language }}',
+						}
 					},
 				},
 			},
@@ -81,7 +89,7 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/datasets" }}',
+						url: '={{ "/api/data/v2/datasources/account/" + $parameter.accountId}}',
 					},
 				},
 			},
@@ -93,7 +101,7 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'POST',
-						url: '/api/data/v1/accounts/datasets',
+						url: '/api/data/v2/datasources/accounts',
 						body: '={{JSON.parse($parameter.accountIds)}}',
 					},
 				},
@@ -106,19 +114,12 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/providers/" + $parameter.providerId }}',
-					},
-				},
-			},
-			{
-				name: 'Get Provider Image',
-				value: 'getProviderImage',
-				description: 'Get image for a specific provider',
-				action: 'Get provider image',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '={{ "/api/data/v1/providers/" + $parameter.providerId + "/image" }}',
+						url: '={{ "/api/data/v1/providers/" + $parameter.providerKey }}',
+						qs: {
+							fields: 'all',
+							country: '={{ $parameter.country }}',
+							language: '={{ $parameter.language }}',
+						}
 					},
 				},
 			},
@@ -146,7 +147,7 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/providers/" + $parameter.providerId + "/accounts" }}',
+						url: '={{ "/api/data/v1/accounts/provider/" + $parameter.providerKey }}',
 					},
 				},
 			},
@@ -158,7 +159,7 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/data/v1/oauth',
+						url: '/api/data/v1/accounts/templates/user/extended',
 					},
 				},
 			},
@@ -182,7 +183,7 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/data/v1/providers/accounts',
+						url: '/api/data/v2/datasources/providers',
 					},
 				},
 			},
@@ -195,7 +196,34 @@ export const accountOperations: INodeProperties[] = [
 					request: {
 						method: 'POST',
 						url: '/api/search/v1/query',
-						body: '={{JSON.parse($parameter.searchQuery)}}',
+						body: {
+								"count": '={{ $parameter.count }}',
+								"offset": '={{ $parameter.offset }}',
+								"combineResults": false,
+								"query": '={{ $parameter.searchString }}',
+								"filters": '={{JSON.parse($parameter.searchFilters)}}',
+								"facetValuesToInclude": [
+										"DATAPROVIDERNAME",
+										"OWNED_BY_ID",
+										"VALID",
+										"USED",
+										"LAST_MODIFIED_DATE"
+								],
+								"queryProfile": "GLOBAL",
+								"entityList": [
+										[
+												"account"
+										]
+								],
+								"sort": {
+										"fieldSorts": [
+												{
+														"field": "display_name_sort",
+														"sortOrder": "ASC"
+												}
+										]
+								}
+						},
 					},
 				},
 			},
@@ -208,7 +236,11 @@ export const accountOperations: INodeProperties[] = [
 					request: {
 						method: 'PUT',
 						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/access" }}',
-						body: '={{JSON.parse($parameter.accessData)}}',
+						body: {
+								type: '={{$parameter.shareWithType}}',
+								id: '={{$parameter.shareWithId}}',
+								accessLevel: '={{$parameter.accessLevel}}'
+						},
 					},
 				},
 			},
@@ -220,7 +252,7 @@ export const accountOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/credentials" }}',
+						url: '={{ "/api/data/v1/providers/" + $parameter.providerKey + "/account/" + $parameter.accountId}}',
 						body: '={{JSON.parse($parameter.credentials)}}',
 					},
 				},
@@ -240,18 +272,18 @@ export const accountOperations: INodeProperties[] = [
 					},
 				},
 			},
-			{
-				name: 'Validate Credentials',
-				value: 'validateCredentials',
-				description: 'Validate account credentials',
-				action: 'Validate credentials',
-				routing: {
-					request: {
-						method: 'POST',
-						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/validate" }}',
-					},
-				},
-			},
+			// {
+			// 	name: 'Validate Credentials',
+			// 	value: 'validateCredentials',
+			// 	description: 'Validate account credentials',
+			// 	action: 'Validate credentials',
+			// 	routing: {
+			// 		request: {
+			// 			method: 'POST',
+			// 			url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/validate" }}',
+			// 		},
+			// 	},
+			// },
 		],
 		default: 'list',
 	},
@@ -282,20 +314,95 @@ export const accountFields: INodeProperties[] = [
 		required: true,
 		description: 'The ID of the account',
 	},
-	// Provider ID field
 	{
-		displayName: 'Provider ID',
-		name: 'providerId',
-		type: 'string',
+		displayName: 'Share With Type',
+		name: 'shareWithType',
+		type: 'options',
 		displayOptions: {
 			show: {
 				resource: ['account'],
-				operation: ['getProvider', 'getProviderImage', 'listAccountsForProvider'],
+				operation: ['updateAccess'],
+			},
+		},
+		options: [
+			{
+				name: 'User',
+				value: 'USER',
+			},
+			{
+				name: 'Group',
+				value: 'GROUP',
+			},
+		],
+		default: 'USER',
+		required: true,
+		description: 'The type of the share with',
+	},
+	{
+		displayName: 'Share With ID',
+		name: 'shareWithId',
+		type: 'number',
+		displayOptions: {
+			show: {
+				resource: ['account'],
+				operation: ['updateAccess'],
 			},
 		},
 		default: '',
 		required: true,
-		description: 'The ID of the provider',
+		description: 'The ID of the user or group to share with',
+	},
+	//
+	{
+		displayName: 'Access Level',
+		name: 'accessLevel',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['account'],
+				operation: ['updateAccess'],
+			},
+		},
+		options: [
+			{
+				name: 'Can Edit',
+				value: 'CAN_EDIT',
+			},
+			{
+				name: 'Can Share',
+				value: 'CAN_SHARE',
+			},
+			{
+				name: 'Can View',
+				value: 'CAN_VIEW',
+			},
+			{
+				name: 'None',
+				value: 'NONE',
+			},
+			{
+				name: 'Owner',
+				value: 'OWNER',
+			},
+		],
+		default: 'NONE',
+		required: true,
+		description: 'The access level for the share object'
+	},
+	// Provider ID field
+	{
+		displayName: 'Provider Key',
+		name: 'providerKey',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['account'],
+				operation: ['getProvider', 'listAccountsForProvider'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The key of the provider',
 	},
 	// Connector ID field
 	{
@@ -311,6 +418,36 @@ export const accountFields: INodeProperties[] = [
 		default: '',
 		required: true,
 		description: 'The ID of the appstore connector',
+	},
+	// Appstore country
+	{
+		displayName: 'Country',
+		name: 'country',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['account'],
+				operation: ['getAppstoreConnector', 'getProvider'],
+			},
+		},
+		default: 'US',
+		required: true,
+		description: 'The country code for the appstore',
+	},
+	// Connector ID country
+	{
+		displayName: 'Language',
+		name: 'language',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['account'],
+				operation: ['getAppstoreConnector', 'getProvider'],
+			},
+		},
+		default: 'en',
+		required: true,
+		description: 'The language code for the appstore',
 	},
 	// List operation fields
 	{
@@ -345,10 +482,26 @@ export const accountFields: INodeProperties[] = [
 		default: 0,
 		description: 'Number of accounts to skip',
 	},
-	// Search operation fields
+	// // Search operation fields
+	// {
+	// 	displayName: 'Search Query',
+	// 	name: 'searchQuery',
+	// 	type: 'json',
+	// 	displayOptions: {
+	// 		show: {
+	// 			resource: ['account'],
+	// 			operation: ['search'],
+	// 		},
+	// 	},
+	// 	default: '{}',
+	// 	required: true,
+	// 	description: 'JSON query object for searching accounts',
+	// 	placeholder: '{"combineResults":"AND","queries":[{"type":"account","query":"search term"}]}',
+	// },
+	// Account search filters
 	{
-		displayName: 'Search Query',
-		name: 'searchQuery',
+		displayName: 'Search Filters',
+		name: 'searchFilters',
 		type: 'json',
 		displayOptions: {
 			show: {
@@ -356,10 +509,26 @@ export const accountFields: INodeProperties[] = [
 				operation: ['search'],
 			},
 		},
-		default: '{}',
+		default: '',
 		required: true,
-		description: 'JSON query object for searching accounts',
-		placeholder: '{"combineResults":"AND","queries":[{"type":"account","query":"search term"}]}',
+		description: 'JSON object containing account search filters',
+		placeholder: '[{ "filterType": "term", "field": "FIELD_NAME", "value": "FILTER_VALUE", "name": "FILTER NAME", "not": false, "label": "LABEL"  }]',
+	},
+	// Search string
+	{
+		displayName: 'Search String',
+		name: 'searchString',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['account'],
+				operation: ['search'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The search string for the account',
+		placeholder: 'search term',
 	},
 	// Create operation fields
 	{
@@ -406,23 +575,7 @@ export const accountFields: INodeProperties[] = [
 		default: '{}',
 		required: true,
 		description: 'JSON object containing the new credentials',
-		placeholder: '{"username":"user","password":"pass"}',
-	},
-	// Update Access operation fields
-	{
-		displayName: 'Access Data',
-		name: 'accessData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['account'],
-				operation: ['updateAccess'],
-			},
-		},
-		default: '{}',
-		required: true,
-		description: 'JSON object containing access permissions',
-		placeholder: '{"users":[123,456],"groups":[789]}',
+		placeholder: '{"<property>": "<value>"}',
 	},
 	// Get Datasets for Accounts operation field
 	{
