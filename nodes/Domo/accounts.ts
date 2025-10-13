@@ -482,22 +482,6 @@ export const accountFields: INodeProperties[] = [
 		default: 0,
 		description: 'Number of accounts to skip',
 	},
-	// // Search operation fields
-	// {
-	// 	displayName: 'Search Query',
-	// 	name: 'searchQuery',
-	// 	type: 'json',
-	// 	displayOptions: {
-	// 		show: {
-	// 			resource: ['account'],
-	// 			operation: ['search'],
-	// 		},
-	// 	},
-	// 	default: '{}',
-	// 	required: true,
-	// 	description: 'JSON query object for searching accounts',
-	// 	placeholder: '{"combineResults":"AND","queries":[{"type":"account","query":"search term"}]}',
-	// },
 	// Account search filters
 	{
 		displayName: 'Search Filters',

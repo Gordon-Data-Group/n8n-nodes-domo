@@ -32,6 +32,7 @@ export const appdbOperations: INodeProperties[] = [
 		default: 'collections',
 		description: 'The AppDB sub-resource to interact with',
 	},
+	// Datastores Operations
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -52,7 +53,7 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'POST',
-						url: '/api/data/v1/datastores',
+						url: '/api/datastores/v1',
 						body: '={{JSON.parse($parameter.datastoreData)}}',
 					},
 				},
@@ -65,7 +66,7 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'DELETE',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId }}',
+						url: '={{ "/api/datastores/v1/" + $parameter.datastoreId }}',
 					},
 				},
 			},
@@ -77,7 +78,31 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId }}',
+						url: '={{ "/api/datastores/v1/" + $parameter.datastoreId }}',
+					},
+				},
+			},
+			{
+				name: 'Get Datastore Cards',
+				value: 'getDatastoreCards',
+				action: 'Get datastore cards',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/domoapps/apps/v2/card',
+						body: '={{JSON.parse($parameter.cardIds)}}',
+					},
+				},
+			},
+			{
+				name: 'Get Datastore Collections',
+				value: 'getDatastoreCollections',
+				description: 'Get collections for a specific datastore',
+				action: 'Get datastore collections',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/datastores/v1/" + $parameter.datastoreId + "/collections" }}',
 					},
 				},
 			},
@@ -89,30 +114,14 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/data/v1/datastores',
-						qs: {
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
-						},
-					},
-				},
-			},
-			{
-				name: 'Update Datastore',
-				value: 'updateDatastore',
-				description: 'Update a datastore',
-				action: 'Update datastore',
-				routing: {
-					request: {
-						method: 'PUT',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId }}',
-						body: '={{JSON.parse($parameter.datastoreData)}}',
+						url: '/api/datastores/v1',
 					},
 				},
 			},
 		],
 		default: 'listDatastores',
 	},
+	// Collections Operations
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -126,14 +135,27 @@ export const appdbOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Create Collection',
-				value: 'createCollection',
-				description: 'Create a new collection in a datastore',
-				action: 'Create collection',
+				name: 'Create Collection and Datastore',
+				value: 'createCollectionAndDatastore',
+				description: 'Create a new collection and datastore',
+				action: 'Create collection and datastore',
 				routing: {
 					request: {
 						method: 'POST',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections" }}',
+						url: '/api/datastores/v1/collections',
+						body: '={{JSON.parse($parameter.collectionData)}}',
+					},
+				},
+			},
+			{
+				name: 'Create Collection in Datastore',
+				value: 'createCollectionInDatastore',
+				description: 'Create a new collection in an existing datastore',
+				action: 'Create collection in datastore',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{ "/api/datastores/v1/" + $parameter.datastoreId + "/collections/" }}',
 						body: '={{JSON.parse($parameter.collectionData)}}',
 					},
 				},
@@ -146,7 +168,20 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'DELETE',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId }}',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId }}',
+					},
+				},
+			},
+			{
+				name: 'Disable Sync to DataSet',
+				value: 'disableSyncToDataset',
+				description: 'Disable sync to dataset for a collection',
+				action: 'Disable sync to dataset',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId }}',
+						body: '={{JSON.parse($parameter.syncData)}}',
 					},
 				},
 			},
@@ -158,23 +193,43 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId }}',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId }}',
+					},
+				},
+			},
+			{
+				name: 'Get Collection Documents',
+				value: 'getCollectionDocuments',
+				description: 'Get documents from a collection',
+				action: 'Get collection documents',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId + "/documents" }}',
 					},
 				},
 			},
 			{
 				name: 'List Collections',
 				value: 'listCollections',
-				description: 'List all collections in a datastore',
+				description: 'List all collections',
 				action: 'List collections',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections" }}',
-						qs: {
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
-						},
+						url: '/api/datastores/v1/collections',
+					},
+				},
+			},
+			{
+				name: 'Search Collections',
+				value: 'searchCollections',
+				action: 'Search collections',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/datastores/v1/collections/query',
+						body: '={{JSON.parse($parameter.searchQuery)}}',
 					},
 				},
 			},
@@ -186,7 +241,7 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId }}',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId }}',
 						body: '={{JSON.parse($parameter.collectionData)}}',
 					},
 				},
@@ -194,6 +249,7 @@ export const appdbOperations: INodeProperties[] = [
 		],
 		default: 'listCollections',
 	},
+	// Documents Operations
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -214,8 +270,21 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'POST',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId + "/documents" }}',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId + "/documents" }}',
 						body: '={{JSON.parse($parameter.documentData)}}',
+					},
+				},
+			},
+			{
+				name: 'Create Documents',
+				value: 'createDocuments',
+				description: 'Create multiple documents in bulk',
+				action: 'Create documents',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId + "/documents/bulk" }}',
+						body: '={{JSON.parse($parameter.documentsData)}}',
 					},
 				},
 			},
@@ -227,32 +296,46 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'DELETE',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId + "/documents/" + $parameter.documentId }}',
+						url: '={{ "/api/datastores/v2/collections/" + $parameter.collectionId + "/documents/" + $parameter.documentId }}',
 					},
 				},
 			},
 			{
-				name: 'Get Document',
-				value: 'getDocument',
-				description: 'Get a specific document',
-				action: 'Get document',
+				name: 'Delete Documents',
+				value: 'deleteDocuments',
+				description: 'Delete multiple documents',
+				action: 'Delete documents',
 				routing: {
 					request: {
-						method: 'GET',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId + "/documents/" + $parameter.documentId }}',
+						method: 'DELETE',
+						url: '={{ "/api/datastores/v2/collections/" + $parameter.collectionId + "/documents/bulk" }}',
+						qs: {
+							ids: '={{$parameter.documentIds}}',
+						},
 					},
 				},
 			},
 			{
-				name: 'Query Documents',
-				value: 'queryDocuments',
+				name: 'Query Collection Documents',
+				value: 'queryCollectionDocuments',
 				description: 'Query documents in a collection',
-				action: 'Query documents',
+				action: 'Query collection documents',
 				routing: {
 					request: {
 						method: 'POST',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId + "/documents/query" }}',
+						url: '={{ "/api/datastores/v2/collections/" + $parameter.collectionId + "/documents/query" }}',
 						body: '={{JSON.parse($parameter.queryData)}}',
+						qs: {
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
+							count: '={{$parameter.count}}',
+							avg: '={{$parameter.avg}}',
+							sum: '={{$parameter.sum}}',
+							max: '={{$parameter.max}}',
+							min: '={{$parameter.min}}',
+							orderby: '={{$parameter.orderby}}',
+							groupby: '={{$parameter.groupby}}',
+						},
 					},
 				},
 			},
@@ -264,14 +347,28 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId + "/documents/" + $parameter.documentId }}',
+						url: '={{ "/api/datastores/v2/collections/" + $parameter.collectionId + "/documents/" + $parameter.documentId }}',
 						body: '={{JSON.parse($parameter.documentData)}}',
 					},
 				},
 			},
+			{
+				name: 'Upsert Documents',
+				value: 'upsertDocuments',
+				description: 'Upsert multiple documents in bulk',
+				action: 'Upsert documents',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/datastores/v2/collections/" + $parameter.collectionId + "/documents/bulk" }}',
+						body: '={{JSON.parse($parameter.documentsData)}}',
+					},
+				},
+			},
 		],
-		default: 'queryDocuments',
+		default: 'queryCollectionDocuments',
 	},
+	// Permissions Operations
 	{
 		displayName: 'Operation',
 		name: 'operation',
@@ -292,7 +389,19 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId + "/permissions" }}',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId + "/permission" }}',
+					},
+				},
+			},
+			{
+				name: 'Remove Collection Access',
+				value: 'removeCollectionAccess',
+				description: 'Remove access from a collection',
+				action: 'Remove collection access',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId + "/permission/" + $parameter.entityType + "/" + $parameter.entityId }}',
 					},
 				},
 			},
@@ -304,8 +413,11 @@ export const appdbOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '={{ "/api/data/v1/datastores/" + $parameter.datastoreId + "/collections/" + $parameter.collectionId + "/permissions" }}',
-						body: '={{JSON.parse($parameter.permissionsData)}}',
+						url: '={{ "/api/datastores/v1/collections/" + $parameter.collectionId + "/permission/" + $parameter.entityType + "/" + $parameter.entityId }}',
+						qs: {
+							overwrite: '={{$parameter.overwrite}}',
+							permissions: '={{$parameter.permissions}}',
+						},
 					},
 				},
 			},
@@ -315,7 +427,7 @@ export const appdbOperations: INodeProperties[] = [
 ];
 
 export const appdbFields: INodeProperties[] = [
-	// Datastore ID field (used across multiple sub-resources)
+	// Datastore ID field
 	{
 		displayName: 'Datastore ID',
 		name: 'datastoreId',
@@ -323,13 +435,30 @@ export const appdbFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['appdb'],
+				subResource: ['datastores'],
+				operation: ['getDatastore', 'deleteDatastore', 'getDatastoreCollections'],
 			},
 		},
 		default: '',
 		required: true,
 		description: 'The ID of the datastore',
 	},
-	// Collection ID field (for collections, documents, permissions)
+	{
+		displayName: 'Datastore ID',
+		name: 'datastoreId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['collections'],
+				operation: ['createCollectionInDatastore'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The ID of the datastore',
+	},
+	// Collection ID field
 	{
 		displayName: 'Collection ID',
 		name: 'collectionId',
@@ -339,12 +468,15 @@ export const appdbFields: INodeProperties[] = [
 				resource: ['appdb'],
 				subResource: ['collections', 'documents', 'permissions'],
 			},
+			hide: {
+				operation: ['listCollections', 'searchCollections'],
+			}
 		},
 		default: '',
 		required: true,
 		description: 'The ID of the collection',
 	},
-	// Document ID field (for documents)
+	// Document ID field
 	{
 		displayName: 'Document ID',
 		name: 'documentId',
@@ -353,7 +485,7 @@ export const appdbFields: INodeProperties[] = [
 			show: {
 				resource: ['appdb'],
 				subResource: ['documents'],
-				operation: ['getDocument', 'updateDocument', 'deleteDocument'],
+				operation: ['updateDocument', 'deleteDocument'],
 			},
 		},
 		default: '',
@@ -369,47 +501,28 @@ export const appdbFields: INodeProperties[] = [
 			show: {
 				resource: ['appdb'],
 				subResource: ['datastores'],
-				operation: ['createDatastore', 'updateDatastore'],
+				operation: ['createDatastore'],
 			},
 		},
-		default: '{}',
+		default: '',
+		placeholder: '{"name":"My Datastore"}',
 		required: true,
 		description: 'JSON object containing datastore configuration',
-		placeholder: '{"name":"My Datastore","description":"Datastore description"}',
 	},
 	{
-		displayName: 'Limit',
-		name: 'limit',
-		type: 'number',
-		typeOptions: {
-			minValue: 1,
-		},
+		displayName: 'Card IDs',
+		name: 'cardIds',
+		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['appdb'],
 				subResource: ['datastores'],
-				operation: ['listDatastores'],
+				operation: ['getDatastoreCards'],
 			},
 		},
-		default: 50,
-		description: 'Max number of results to return',
-	},
-	{
-		displayName: 'Offset',
-		name: 'offset',
-		type: 'number',
-		typeOptions: {
-			minValue: 0,
-		},
-		displayOptions: {
-			show: {
-				resource: ['appdb'],
-				subResource: ['datastores'],
-				operation: ['listDatastores'],
-			},
-		},
-		default: 0,
-		description: 'Number of datastores to skip',
+		default: '["00000000-0000-0000-0000-000000000000"]',
+		required: true,
+		description: 'JSON array of card IDs',
 	},
 	// Collection operations fields
 	{
@@ -420,47 +533,45 @@ export const appdbFields: INodeProperties[] = [
 			show: {
 				resource: ['appdb'],
 				subResource: ['collections'],
-				operation: ['createCollection', 'updateCollection'],
+				operation: ['createCollectionAndDatastore', 'createCollectionInDatastore', 'updateCollection'],
 			},
 		},
-		default: '{}',
+		default: '',
+		placeholder: '{"name":"My Collection","schema":{"columns":[{"name":"Column 1","type":"STRING"}]},"syncEnabled":true}',
 		required: true,
 		description: 'JSON object containing collection configuration',
-		placeholder: '{"name":"My Collection","schema":{"properties":{"field1":{"type":"string"}}}}',
 	},
 	{
-		displayName: 'Limit',
-		name: 'limit',
-		type: 'number',
-		typeOptions: {
-			minValue: 1,
-		},
+		displayName: 'Search Query',
+		name: 'searchQuery',
+		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['appdb'],
 				subResource: ['collections'],
-				operation: ['listCollections'],
+				operation: ['searchCollections'],
 			},
 		},
-		default: 50,
-		description: 'Max number of results to return',
+		default: '',
+		placeholder: '{"collectionFilteringList":[{"filterType":"nameof","typedValue":"%%"}],"sortBy":"createdOn","direction":"desc","pageSize":100,"pageNumber":1}',
+		required: true,
+		description: 'JSON query object for searching collections',
 	},
 	{
-		displayName: 'Offset',
-		name: 'offset',
-		type: 'number',
-		typeOptions: {
-			minValue: 0,
-		},
+		displayName: 'Sync Data',
+		name: 'syncData',
+		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['appdb'],
 				subResource: ['collections'],
-				operation: ['listCollections'],
+				operation: ['disableSyncToDataset'],
 			},
 		},
-		default: 0,
-		description: 'Number of collections to skip',
+		default: '',
+		placeholder: '{"ID":"00000000-0000-0000-0000-000000000000","syncEnabled":false}',
+		required: true,
+		description: 'JSON object containing sync configuration',
 	},
 	// Document operations fields
 	{
@@ -474,10 +585,24 @@ export const appdbFields: INodeProperties[] = [
 				operation: ['createDocument', 'updateDocument'],
 			},
 		},
-		default: '{}',
+		default: '{"content":{"column1":"value1","column2":"value2"}}',
 		required: true,
 		description: 'JSON object containing document data',
-		placeholder: '{"field1":"value1","field2":"value2"}',
+	},
+	{
+		displayName: 'Documents Data',
+		name: 'documentsData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['createDocuments', 'upsertDocuments'],
+			},
+		},
+		default: '[{"content":{"column1":"value1"}},{"content":{"column1":"value2"}}]',
+		required: true,
+		description: 'JSON array containing multiple documents',
 	},
 	{
 		displayName: 'Query Data',
@@ -487,19 +612,193 @@ export const appdbFields: INodeProperties[] = [
 			show: {
 				resource: ['appdb'],
 				subResource: ['documents'],
-				operation: ['queryDocuments'],
+				operation: ['queryCollectionDocuments'],
 			},
 		},
-		default: '{}',
+		default: '{"$or":[{"content.field1":{"$regex":"value"}}]}',
 		required: true,
-		description: 'JSON object containing query parameters',
-		placeholder: '{"filter":{"field1":"value1"},"limit":10,"offset":0}',
+		description: 'JSON object containing MongoDB-style query',
+	},
+	{
+		displayName: 'Document IDs',
+		name: 'documentIds',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['deleteDocuments'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'Comma-separated list of document IDs to delete',
+	},
+	// Query parameters for queryCollectionDocuments
+	{
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		typeOptions: {
+			minValue: 1,
+		},
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: 50,
+		description: 'Max number of results to return',
+	},
+	{
+		displayName: 'Offset',
+		name: 'offset',
+		type: 'number',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: 0,
+		description: 'Number of documents to skip',
+	},
+	{
+		displayName: 'Count',
+		name: 'count',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: '',
+		description: 'Alias for count aggregation',
+	},
+	{
+		displayName: 'Average',
+		name: 'avg',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: '',
+		description: 'Comma-separated list of properties for average aggregation',
+	},
+	{
+		displayName: 'Sum',
+		name: 'sum',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: '',
+		description: 'Comma-separated list of properties for sum aggregation',
+	},
+	{
+		displayName: 'Max',
+		name: 'max',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: '',
+		description: 'Comma-separated list of properties for max aggregation',
+	},
+	{
+		displayName: 'Min',
+		name: 'min',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: '',
+		description: 'Comma-separated list of properties for min aggregation',
+	},
+	{
+		displayName: 'Order By',
+		name: 'orderby',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: '',
+		description: 'Alias of the aggregation to order by',
+	},
+	{
+		displayName: 'Group By',
+		name: 'groupby',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['documents'],
+				operation: ['queryCollectionDocuments'],
+			},
+		},
+		default: '',
+		description: 'Comma-separated list of properties to group by',
 	},
 	// Permissions operations fields
 	{
-		displayName: 'Permissions Data',
-		name: 'permissionsData',
-		type: 'json',
+		displayName: 'Entity Type',
+		name: 'entityType',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['permissions'],
+				operation: ['updateCollectionPermissions', 'removeCollectionAccess'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The type of entity (e.g., USER, GROUP)',
+	},
+	{
+		displayName: 'Entity ID',
+		name: 'entityId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['permissions'],
+				operation: ['updateCollectionPermissions', 'removeCollectionAccess'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The ID of the entity',
+	},
+	{
+		displayName: 'Overwrite',
+		name: 'overwrite',
+		type: 'boolean',
 		displayOptions: {
 			show: {
 				resource: ['appdb'],
@@ -507,10 +806,21 @@ export const appdbFields: INodeProperties[] = [
 				operation: ['updateCollectionPermissions'],
 			},
 		},
-		default: '{}',
-		required: true,
-		description: 'JSON object containing permissions configuration',
-		placeholder: '{"users":[{"ID":123,"permissions":["READ","WRITE"]}],"groups":[{"ID":456,"permissions":["READ"]}]}',
+		default: false,
+		description: 'Whether to overwrite existing permissions',
+	},
+	{
+		displayName: 'Permissions',
+		name: 'permissions',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appdb'],
+				subResource: ['permissions'],
+				operation: ['updateCollectionPermissions'],
+			},
+		},
+		default: '',
+		description: 'Comma-separated list of permissions (e.g., READ,WRITE)',
 	},
 ];
-
