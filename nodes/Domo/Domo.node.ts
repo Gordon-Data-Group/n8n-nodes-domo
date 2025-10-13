@@ -51,10 +51,6 @@ export class Domo implements INodeType {
 						value: 'admin',
 					},
 					{
-						name: 'AI/Data Science',
-						value: 'aiDataScience',
-					},
-					{
 						name: 'Alert',
 						value: 'alert',
 					},
