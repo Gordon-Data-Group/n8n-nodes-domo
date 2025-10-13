@@ -4,7 +4,6 @@ import { achievementFields, achievementOperations } from './achievements';
 import { adminFields, adminOperations } from './admin';
 import { alertFields, alertOperations } from './alerts';
 import { appdbFields, appdbOperations } from './appdb';
-import { approvalFields, approvalOperations } from './approvals';
 import { appStudioFields, appStudioOperations } from './appStudio';
 import { brandKitFields, brandKitOperations } from './brandKit';
 import { bricksFields, bricksOperations } from './bricks';
@@ -42,7 +41,6 @@ export const domoFields: INodeProperties[] = [
 	...adminFields,
 	...alertFields,
 	...appdbFields,
-	...approvalFields,
 	...appStudioFields,
 	...brandKitFields,
 	...bricksFields,
@@ -80,7 +78,6 @@ export const domoOperations: INodeProperties[] = [
 	...adminOperations,
 	...alertOperations,
 	...appdbOperations,
-	...approvalOperations,
 	...appStudioOperations,
 	...brandKitOperations,
 	...bricksOperations,
