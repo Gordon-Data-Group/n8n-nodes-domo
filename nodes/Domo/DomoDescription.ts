@@ -9,7 +9,6 @@ import { brandKitFields, brandKitOperations } from './brandKit';
 import { bricksFields, bricksOperations } from './bricks';
 import { cardFields, cardOperations } from './cards';
 import { categoryFields, categoryOperations } from './categories';
-import { certificationFields, certificationOperations } from './certification';
 import { codeEngineFields, codeEngineOperations } from './codeEngine';
 import { creditFields, creditOperations } from './credits';
 import { datasetFields, datasetOperations } from './datasets';
@@ -29,7 +28,6 @@ import { rolesFields, rolesOperations } from './roles';
 import { sandboxFields, sandboxOperations } from './sandbox';
 import { scheduledReportsFields, scheduledReportsOperations } from './scheduledReports';
 import { taskCenterFields, taskCenterOperations } from './taskCenter';
-import { tokenFields, tokenOperations } from './tokens';
 import { toolkitFields, toolkitOperations } from './toolkit';
 import { userFields, userOperations } from './users';
 import { workflowsFields, workflowsOperations } from './workflows';
@@ -46,7 +44,6 @@ export const domoFields: INodeProperties[] = [
 	...bricksFields,
 	...cardFields,
 	...categoryFields,
-	...certificationFields,
 	...codeEngineFields,
 	...creditFields,
 	...datasetFields,
@@ -66,7 +63,6 @@ export const domoFields: INodeProperties[] = [
 	...sandboxFields,
 	...scheduledReportsFields,
 	...taskCenterFields,
-	...tokenFields,
 	...toolkitFields,
 	...userFields,
 	...workflowsFields,
@@ -83,7 +79,6 @@ export const domoOperations: INodeProperties[] = [
 	...bricksOperations,
 	...cardOperations,
 	...categoryOperations,
-	...certificationOperations,
 	...codeEngineOperations,
 	...creditOperations,
 	...datasetOperations,
@@ -103,7 +98,6 @@ export const domoOperations: INodeProperties[] = [
 	...sandboxOperations,
 	...scheduledReportsOperations,
 	...taskCenterOperations,
-	...tokenOperations,
 	...toolkitOperations,
 	...userOperations,
 	...workflowsOperations,

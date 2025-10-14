@@ -20,69 +20,20 @@ export const categoryOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'POST',
-						url: '/api/content/v1/categories',
+						url: '/api/entity/v1/properties/category',
 						body: '={{JSON.parse($parameter.categoryData)}}',
 					},
 				},
 			},
 			{
-				name: 'Create Certified Attribute',
-				value: 'createCertifiedAttribute',
-				description: 'Create a new certified attribute',
-				action: 'Create certified attribute',
-				routing: {
-					request: {
-						method: 'POST',
-						url: '/api/content/v1/certified-attributes',
-						body: '={{JSON.parse($parameter.attributeData)}}',
-					},
-				},
-			},
-			{
-				name: 'Delete Category',
-				value: 'deleteCategory',
-				description: 'Delete a category',
-				action: 'Delete category',
-				routing: {
-					request: {
-						method: 'DELETE',
-						url: '={{ "/api/content/v1/categories/" + $parameter.categoryId }}',
-					},
-				},
-			},
-			{
-				name: 'Delete Certified Attribute',
-				value: 'deleteCertifiedAttribute',
-				description: 'Delete a certified attribute',
-				action: 'Delete certified attribute',
-				routing: {
-					request: {
-						method: 'DELETE',
-						url: '={{ "/api/content/v1/certified-attributes/" + $parameter.attributeId }}',
-					},
-				},
-			},
-			{
-				name: 'Get Category',
-				value: 'getCategory',
-				description: 'Get details of a specific category',
-				action: 'Get category',
+				name: 'Get Entity Categories',
+				value: 'getEntityCategories',
+				description: 'Get categories for an entity',
+				action: 'Get entity categories',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/content/v1/categories/" + $parameter.categoryId }}',
-					},
-				},
-			},
-			{
-				name: 'Get Certified Attribute',
-				value: 'getCertifiedAttribute',
-				description: 'Get details of a specific certified attribute',
-				action: 'Get certified attribute',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '={{ "/api/content/v1/certified-attributes/" + $parameter.attributeId }}',
+						url: '={{ "/api/entity/v1/properties/entity/" + $parameter.type + "/" + $parameter.entityId }}',
 					},
 				},
 			},
@@ -94,53 +45,32 @@ export const categoryOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/content/v1/categories',
-						qs: {
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
-						},
+						url: '/api/entity/v1/properties/category',
 					},
 				},
 			},
 			{
-				name: 'List Certified Attributes',
-				value: 'listCertifiedAttributes',
-				description: 'List all certified attributes',
-				action: 'List certified attributes',
+				name: 'List Usage',
+				value: 'listUsage',
+				description: 'List category usage',
+				action: 'List usage',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/content/v1/certified-attributes',
-						qs: {
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
-						},
+						url: '/api/entity/v1/properties/category/usage',
 					},
 				},
 			},
 			{
-				name: 'Update Category',
-				value: 'updateCategory',
-				description: 'Update a category',
-				action: 'Update category',
+				name: 'Upsert Entity Categories',
+				value: 'upsertEntityCategories',
+				description: 'Upsert categories for an entity',
+				action: 'Upsert entity categories',
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '={{ "/api/content/v1/categories/" + $parameter.categoryId }}',
-						body: '={{JSON.parse($parameter.categoryData)}}',
-					},
-				},
-			},
-			{
-				name: 'Update Certified Attribute',
-				value: 'updateCertifiedAttribute',
-				description: 'Update a certified attribute',
-				action: 'Update certified attribute',
-				routing: {
-					request: {
-						method: 'PUT',
-						url: '={{ "/api/content/v1/certified-attributes/" + $parameter.attributeId }}',
-						body: '={{JSON.parse($parameter.attributeData)}}',
+						url: '={{ "/api/entity/v1/properties/entity/" + $parameter.type + "/" + $parameter.entityId }}',
+						body: '={{JSON.parse($parameter.categoriesData)}}',
 					},
 				},
 			},
@@ -150,70 +80,37 @@ export const categoryOperations: INodeProperties[] = [
 ];
 
 export const categoryFields: INodeProperties[] = [
-	// Category ID field
+	// Type field
 	{
-		displayName: 'Category ID',
-		name: 'categoryId',
-		type: 'number',
+		displayName: 'Type',
+		name: 'type',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['category'],
-				operation: ['getCategory', 'updateCategory', 'deleteCategory'],
+				operation: ['getEntityCategories', 'upsertEntityCategories'],
 			},
 		},
 		default: '',
 		required: true,
-		description: 'The ID of the category',
+		description: 'The entity type',
 	},
-	// Certified Attribute ID field
+	// Entity ID field
 	{
-		displayName: 'Attribute ID',
-		name: 'attributeId',
-		type: 'number',
+		displayName: 'Entity ID',
+		name: 'entityId',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['category'],
-				operation: ['getCertifiedAttribute', 'updateCertifiedAttribute', 'deleteCertifiedAttribute'],
+				operation: ['getEntityCategories', 'upsertEntityCategories'],
 			},
 		},
 		default: '',
 		required: true,
-		description: 'The ID of the certified attribute',
+		description: 'The ID of the entity',
 	},
-	// List categories fields
-	{
-		displayName: 'Limit',
-		name: 'limit',
-		type: 'number',
-		typeOptions: {
-			minValue: 1,
-		},
-		displayOptions: {
-			show: {
-				resource: ['category'],
-				operation: ['listCategories', 'listCertifiedAttributes'],
-			},
-		},
-		default: 50,
-		description: 'Max number of results to return',
-	},
-	{
-		displayName: 'Offset',
-		name: 'offset',
-		type: 'number',
-		typeOptions: {
-			minValue: 0,
-		},
-		displayOptions: {
-			show: {
-				resource: ['category'],
-				operation: ['listCategories', 'listCertifiedAttributes'],
-			},
-		},
-		default: 0,
-		description: 'Number of items to skip',
-	},
-	// Create and Update category fields
+	// Create category fields
 	{
 		displayName: 'Category Data',
 		name: 'categoryData',
@@ -221,29 +118,28 @@ export const categoryFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['category'],
-				operation: ['createCategory', 'updateCategory'],
+				operation: ['createCategory'],
 			},
 		},
-		default: '{}',
+		default: '',
+		placeholder: '{"key":"category-key","description":"Category description","values":["value1","value2"]}',
 		required: true,
 		description: 'JSON object containing category configuration',
-		placeholder: '{"name":"My Category","description":"Category description","color":"#FF0000"}',
 	},
-	// Create and Update certified attribute fields
+	// Upsert entity categories fields
 	{
-		displayName: 'Attribute Data',
-		name: 'attributeData',
+		displayName: 'Categories Data',
+		name: 'categoriesData',
 		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['category'],
-				operation: ['createCertifiedAttribute', 'updateCertifiedAttribute'],
+				operation: ['upsertEntityCategories'],
 			},
 		},
-		default: '{}',
+		default: '',
+		placeholder: '[{"key":"category-key","values":["value1","value2"]}]',
 		required: true,
-		description: 'JSON object containing certified attribute configuration',
-		placeholder: '{"name":"Certified Data","description":"Attribute description","dataType":"string"}',
+		description: 'JSON array containing category assignments',
 	},
 ];
-

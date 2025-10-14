@@ -15,7 +15,6 @@ export const dataflowOperations: INodeProperties[] = [
 			{
 				name: 'Add Tag',
 				value: 'addTag',
-				description: 'Add a tag to a dataflow',
 				action: 'Add tag',
 				routing: {
 					request: {
@@ -28,7 +27,6 @@ export const dataflowOperations: INodeProperties[] = [
 			{
 				name: 'Bulk Add Tags',
 				value: 'bulkAddTags',
-				description: 'Add tags to multiple dataflows',
 				action: 'Bulk add tags',
 				routing: {
 					request: {
@@ -39,10 +37,9 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Bulk Delete',
+				name: 'Bulk Delete DataFlows',
 				value: 'bulkDelete',
-				description: 'Delete multiple dataflows',
-				action: 'Bulk delete',
+				action: 'Bulk delete dataflows',
 				routing: {
 					request: {
 						method: 'PUT',
@@ -52,10 +49,21 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Bulk Run',
+				name: 'Bulk Remove Tags',
+				value: 'bulkRemoveTags',
+				action: 'Bulk remove tags',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '/api/dataprocessing/v1/dataflows/bulk/tag/delete',
+						body: '={{JSON.parse($parameter.bulkRemoveTagData)}}',
+					},
+				},
+			},
+			{
+				name: 'Bulk Run DataFlows',
 				value: 'bulkRun',
-				description: 'Run multiple dataflows',
-				action: 'Bulk run',
+				action: 'Bulk run dataflows',
 				routing: {
 					request: {
 						method: 'POST',
@@ -67,7 +75,6 @@ export const dataflowOperations: INodeProperties[] = [
 			{
 				name: 'Bulk Update Owner',
 				value: 'bulkUpdateOwner',
-				description: 'Update owner for multiple dataflows',
 				action: 'Bulk update owner',
 				routing: {
 					request: {
@@ -78,10 +85,9 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Count by Type',
+				name: 'Count DataFlows by Type',
 				value: 'countByType',
-				description: 'Count dataflows by type',
-				action: 'Count by type',
+				action: 'Count dataflows by type',
 				routing: {
 					request: {
 						method: 'GET',
@@ -90,9 +96,8 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Create',
+				name: 'Create DataFlow',
 				value: 'create',
-				description: 'Create a new dataflow',
 				action: 'Create dataflow',
 				routing: {
 					request: {
@@ -103,9 +108,8 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Delete',
+				name: 'Delete DataFlow',
 				value: 'delete',
-				description: 'Delete a dataflow',
 				action: 'Delete dataflow',
 				routing: {
 					request: {
@@ -115,9 +119,8 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Get',
+				name: 'Get DataFlow',
 				value: 'get',
-				description: 'Get a specific dataflow by ID',
 				action: 'Get dataflow',
 				routing: {
 					request: {
@@ -127,10 +130,9 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Get Execution',
+				name: 'Get DataFlow Execution',
 				value: 'getExecution',
-				description: 'Get details of a specific dataflow execution',
-				action: 'Get execution',
+				action: 'Get dataflow execution',
 				routing: {
 					request: {
 						method: 'GET',
@@ -139,26 +141,60 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Get Executions',
+				name: 'Get DataFlow Executions',
 				value: 'getExecutions',
-				description: 'Get execution history for a dataflow',
-				action: 'Get executions',
+				action: 'Get dataflow executions',
 				routing: {
 					request: {
 						method: 'GET',
 						url: '={{ "/api/dataprocessing/v1/dataflows/" + $parameter.dataflowId + "/executions" }}',
 						qs: {
-							limit: '={{Math.min($parameter.limit || 100, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
 						},
 					},
 				},
 			},
 			{
-				name: 'Get SQL Functions',
+				name: 'Get DataFlow Version',
+				value: 'getVersion',
+				action: 'Get dataflow version',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/dataprocessing/v2/dataflows/" + $parameter.dataflowId + "/versions/" + $parameter.versionId }}',
+					},
+				},
+			},
+			{
+				name: 'Get DataFlow Version by Version Number',
+				value: 'getVersionByNumber',
+				action: 'Get dataflow version by version number',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/dataprocessing/v3/dataflows/" + $parameter.dataflowId + "/versions/" + $parameter.versionNumber }}',
+					},
+				},
+			},
+			{
+				name: 'Get Saved Datacenter Filters',
+				value: 'getSavedFilters',
+				action: 'Get saved datacenter filters',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/search/v1/saved',
+						qs: {
+							queryProfile: '={{$parameter.queryProfile}}',
+						},
+					},
+				},
+			},
+			{
+				name: 'Get SQL Functions (General)',
 				value: 'getSqlFunctions',
-				description: 'Get available SQL functions for dataflows',
-				action: 'Get SQL functions',
+				action: 'Get sql functions general',
 				routing: {
 					request: {
 						method: 'GET',
@@ -169,7 +205,6 @@ export const dataflowOperations: INodeProperties[] = [
 			{
 				name: 'Get Tags',
 				value: 'getTags',
-				description: 'Get tags for a dataflow',
 				action: 'Get tags',
 				routing: {
 					request: {
@@ -179,10 +214,9 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Get Timezones',
+				name: 'Get Timezones (General)',
 				value: 'getTimezones',
-				description: 'Get available timezones for dataflows',
-				action: 'Get timezones',
+				action: 'Get timezones general',
 				routing: {
 					request: {
 						method: 'GET',
@@ -191,51 +225,9 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Get Version',
-				value: 'getVersion',
-				description: 'Get a specific version of a dataflow',
-				action: 'Get version',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '={{ "/api/dataprocessing/v2/dataflows/" + $parameter.dataflowId + "/versions/" + $parameter.versionId }}',
-					},
-				},
-			},
-			{
-				name: 'Get Version by Number',
-				value: 'getVersionByNumber',
-				description: 'Get a dataflow version by version number',
-				action: 'Get version by number',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '={{ "/api/dataprocessing/v3/dataflows/" + $parameter.dataflowId + "/versions/" + $parameter.versionNumber }}',
-					},
-				},
-			},
-			{
-				name: 'List',
-				value: 'list',
-				description: 'List all dataflows',
-				action: 'List dataflows',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '/api/dataprocessing/v2/dataflows',
-						qs: {
-							limit: '={{Math.min($parameter.limit || 100, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
-							orderBy: '={{$parameter.orderBy || "name"}}',
-						},
-					},
-				},
-			},
-			{
-				name: 'List Versions',
+				name: 'List DataFlow Versions',
 				value: 'listVersions',
-				description: 'List all versions of a dataflow',
-				action: 'List versions',
+				action: 'List dataflow versions',
 				routing: {
 					request: {
 						method: 'GET',
@@ -244,9 +236,24 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
+				name: 'List DataFlows',
+				value: 'list',
+				action: 'List dataflows',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/dataprocessing/v2/dataflows',
+						qs: {
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
+							orderBy: '={{$parameter.orderBy}}',
+						},
+					},
+				},
+			},
+			{
 				name: 'Remove All Tags',
 				value: 'removeAllTags',
-				description: 'Remove all tags from a dataflow',
 				action: 'Remove all tags',
 				routing: {
 					request: {
@@ -256,21 +263,34 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Run',
+				name: 'Remove Tag',
+				value: 'removeTag',
+				action: 'Remove tag',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{ "/api/dataprocessing/v1/dataflows/" + $parameter.dataflowId + "/tags/" + $parameter.tag }}',
+					},
+				},
+			},
+			{
+				name: 'Run DataFlow',
 				value: 'run',
-				description: 'Run a dataflow',
 				action: 'Run dataflow',
 				routing: {
 					request: {
 						method: 'POST',
 						url: '={{ "/api/dataprocessing/v1/dataflows/" + $parameter.dataflowId + "/executions" }}',
+						qs: {
+							activationTypeOverride: '={{$parameter.activationTypeOverride}}',
+							createPendingExecution: '={{$parameter.createPendingExecution}}',
+						},
 					},
 				},
 			},
 			{
 				name: 'Run Preview',
 				value: 'runPreview',
-				description: 'Run a dataflow preview',
 				action: 'Run preview',
 				routing: {
 					request: {
@@ -281,9 +301,8 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Search',
+				name: 'Search DataFlows',
 				value: 'search',
-				description: 'Search for dataflows',
 				action: 'Search dataflows',
 				routing: {
 					request: {
@@ -294,9 +313,8 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Update',
+				name: 'Update DataFlow',
 				value: 'update',
-				description: 'Update a dataflow',
 				action: 'Update dataflow',
 				routing: {
 					request: {
@@ -307,15 +325,26 @@ export const dataflowOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Update Metadata',
+				name: 'Update Owner, Name, and Description',
 				value: 'updateMetadata',
-				description: 'Update dataflow owner, name, and description',
-				action: 'Update metadata',
+				action: 'Update owner name and description',
 				routing: {
 					request: {
 						method: 'PUT',
 						url: '={{ "/api/dataprocessing/v1/dataflows/" + $parameter.dataflowId + "/patch" }}',
 						body: '={{JSON.parse($parameter.patchData)}}',
+					},
+				},
+			},
+			{
+				name: 'Update Tags',
+				value: 'updateTags',
+				action: 'Update tags',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{ "/api/dataprocessing/v1/dataflows/" + $parameter.dataflowId + "/tags" }}',
+						body: '={{JSON.parse($parameter.updateTagData)}}',
 					},
 				},
 			},
@@ -343,7 +372,9 @@ export const dataflowFields: INodeProperties[] = [
 					'listVersions',
 					'run',
 					'addTag',
+					'updateTags',
 					'removeAllTags',
+					'removeTag',
 					'update',
 					'updateMetadata',
 					'delete',
@@ -399,6 +430,21 @@ export const dataflowFields: INodeProperties[] = [
 		required: true,
 		description: 'The version number (not version ID)',
 	},
+	// Tag field
+	{
+		displayName: 'Tag',
+		name: 'tag',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['dataflow'],
+				operation: ['removeTag'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The tag to remove',
+	},
 	// List operation fields
 	{
 		displayName: 'Limit',
@@ -445,6 +491,47 @@ export const dataflowFields: INodeProperties[] = [
 		default: 'name',
 		description: 'Field to order results by (e.g., name, created, modified)',
 	},
+	// Run DataFlow fields
+	{
+		displayName: 'Activation Type Override',
+		name: 'activationTypeOverride',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['dataflow'],
+				operation: ['run'],
+			},
+		},
+		default: '',
+		description: 'Override the activation type',
+	},
+	{
+		displayName: 'Create Pending Execution',
+		name: 'createPendingExecution',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['dataflow'],
+				operation: ['run'],
+			},
+		},
+		default: false,
+		description: 'Whether to create a pending execution',
+	},
+	// Get Saved Filters field
+	{
+		displayName: 'Query Profile',
+		name: 'queryProfile',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['dataflow'],
+				operation: ['getSavedFilters'],
+			},
+		},
+		default: '',
+		description: 'Query profile parameter',
+	},
 	// Search operation fields
 	{
 		displayName: 'Search Query',
@@ -456,10 +543,10 @@ export const dataflowFields: INodeProperties[] = [
 				operation: ['search'],
 			},
 		},
-		default: '{}',
+		default: '',
+		placeholder: '{"entities":["DATAFLOW"],"query":"*","count":100,"offset":0}',
 		required: true,
 		description: 'JSON search query object',
-		placeholder: '{"entities":["DATAFLOW"],"query":"*","count":100,"offset":0}',
 	},
 	// Create and Update operation fields
 	{
@@ -472,10 +559,10 @@ export const dataflowFields: INodeProperties[] = [
 				operation: ['create', 'update'],
 			},
 		},
-		default: '{}',
+		default: '',
+		placeholder: '{"name":"My DataFlow","actions":[],"engineProperties":{}}',
 		required: true,
 		description: 'JSON object containing dataflow configuration',
-		placeholder: '{"name":"My DataFlow","actions":[],"engineProperties":{}}',
 	},
 	// Update metadata fields
 	{
@@ -488,10 +575,10 @@ export const dataflowFields: INodeProperties[] = [
 				operation: ['updateMetadata'],
 			},
 		},
-		default: '{}',
+		default: '',
+		placeholder: '{"name":"New Name","responsibleUserId":1234,"description":"Description"}',
 		required: true,
 		description: 'JSON object with fields to update (name, description, responsibleUserId, etc.)',
-		placeholder: '{"name":"New Name","responsibleUserId":1234,"description":"Description"}',
 	},
 	// Tag operations fields
 	{
@@ -504,10 +591,25 @@ export const dataflowFields: INodeProperties[] = [
 				operation: ['addTag'],
 			},
 		},
-		default: '{"tag":""}',
+		default: '',
+		placeholder: '{"tag":"MyTag"}',
 		required: true,
 		description: 'JSON object containing tag information',
-		placeholder: '{"tag":"MyTag"}',
+	},
+	{
+		displayName: 'Update Tag Data',
+		name: 'updateTagData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['dataflow'],
+				operation: ['updateTags'],
+			},
+		},
+		default: '',
+		placeholder: '{"flowId":1234,"tags":["tag1"]}',
+		required: true,
+		description: 'JSON object containing flow ID and tags',
 	},
 	// Bulk operations fields
 	{
@@ -520,10 +622,10 @@ export const dataflowFields: INodeProperties[] = [
 				operation: ['bulkRun', 'bulkDelete'],
 			},
 		},
-		default: '{"dataFlowIds":[]}',
+		default: '',
+		placeholder: '{"dataFlowIds":[1234,2345]}',
 		required: true,
 		description: 'JSON object containing array of dataflow IDs',
-		placeholder: '{"dataFlowIds":[1234,2345]}',
 	},
 	{
 		displayName: 'Bulk Tag Data',
@@ -535,10 +637,25 @@ export const dataflowFields: INodeProperties[] = [
 				operation: ['bulkAddTags'],
 			},
 		},
-		default: '{"dataFlowIds":[],"tagNames":[]}',
+		default: '',
+		placeholder: '{"dataFlowIds":[1234,2345],"tagNames":["tag1","tag2"]}',
 		required: true,
 		description: 'JSON object with dataflow IDs and tag names',
+	},
+	{
+		displayName: 'Bulk Remove Tag Data',
+		name: 'bulkRemoveTagData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['dataflow'],
+				operation: ['bulkRemoveTags'],
+			},
+		},
+		default: '',
 		placeholder: '{"dataFlowIds":[1234,2345],"tagNames":["tag1","tag2"]}',
+		required: true,
+		description: 'JSON object with dataflow IDs and tag names to remove',
 	},
 	{
 		displayName: 'Bulk Patch Data',
@@ -550,10 +667,10 @@ export const dataflowFields: INodeProperties[] = [
 				operation: ['bulkUpdateOwner'],
 			},
 		},
-		default: '{"dataFlowIds":[],"responsibleUserId":0}',
+		default: '',
+		placeholder: '{"dataFlowIds":[1234,2345],"responsibleUserId":1234,"enabled":true}',
 		required: true,
 		description: 'JSON object with dataflow IDs and update fields',
-		placeholder: '{"dataFlowIds":[1234,2345],"responsibleUserId":1234,"enabled":true}',
 	},
 	// Preview operation fields
 	{
@@ -566,10 +683,9 @@ export const dataflowFields: INodeProperties[] = [
 				operation: ['runPreview'],
 			},
 		},
-		default: '{"databaseType":"MAGIC","actions":[],"settings":{"zoneId":"UTC"}}',
+		default: '',
+		placeholder: '{"databaseType":"MAGIC","engineProperties":{"kettle.mode":"STRICT"},"actions":[]}',
 		required: true,
 		description: 'JSON object containing dataflow preview configuration',
-		placeholder: '{"databaseType":"MAGIC","engineProperties":{"kettle.mode":"STRICT"},"actions":[]}',
 	},
 ];
-

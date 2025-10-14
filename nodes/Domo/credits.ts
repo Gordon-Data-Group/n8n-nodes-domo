@@ -13,38 +13,24 @@ export const creditOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Get Balance',
-				value: 'getBalance',
-				description: 'Get current credit balance',
-				action: 'Get balance',
+				name: 'Get Credit Balance/Statements',
+				value: 'getCreditBalance',
+				action: 'Get credit balance statements',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/metrics/v1/usage/credits/balance',
+						url: '/api/metrics/v1/usage/credits/reports/balance',
 					},
 				},
 			},
 			{
-				name: 'Get Contract Details',
-				value: 'getContractDetails',
-				description: 'Get subscription and contract details',
-				action: 'Get contract details',
+				name: 'Get Credit Usage Report by Month',
+				value: 'getCreditUsageReport',
+				action: 'Get credit usage report by month',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/metrics/v1/usage/credits/contract/current/details',
-					},
-				},
-			},
-			{
-				name: 'Get Usage Report',
-				value: 'getUsageReport',
-				description: 'Get credit usage report by month',
-				action: 'Get usage report',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '/api/metrics/v1/usage/credits/contract/current/summary',
+						url: '/api/metrics/v1/usage/credits/reports/usage',
 						qs: {
 							startDate: '={{$parameter.startDate}}',
 							endDate: '={{$parameter.endDate}}',
@@ -52,8 +38,19 @@ export const creditOperations: INodeProperties[] = [
 					},
 				},
 			},
+			{
+				name: 'Get Subscription Page/Contract Details',
+				value: 'getSubscriptionDetails',
+				action: 'Get subscription page contract details',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/metrics/v1/usage/credits/reports/subscription',
+					},
+				},
+			},
 		],
-		default: 'getBalance',
+		default: 'getCreditBalance',
 	},
 ];
 
@@ -65,7 +62,7 @@ export const creditFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['credit'],
-				operation: ['getUsageReport'],
+				operation: ['getCreditUsageReport'],
 			},
 		},
 		default: '',
@@ -79,7 +76,7 @@ export const creditFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['credit'],
-				operation: ['getUsageReport'],
+				operation: ['getCreditUsageReport'],
 			},
 		},
 		default: '',
@@ -87,4 +84,3 @@ export const creditFields: INodeProperties[] = [
 		placeholder: '2024-12-31',
 	},
 ];
-

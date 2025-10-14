@@ -13,263 +13,272 @@ export const codeEngineOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Create Script',
-				value: 'createScript',
-				description: 'Create a new code engine script',
-				action: 'Create script',
+				name: 'Create Package Release (Deploy)',
+				value: 'createPackageRelease',
+				description: 'Create a package release (deploy)',
+				action: 'Create package release deploy',
 				routing: {
 					request: {
 						method: 'POST',
-						url: '/api/code-engine/v1/scripts',
-						body: '={{JSON.parse($parameter.scriptData)}}',
+						url: '={{ "/api/codeengine/v2/packages/" + $parameter.packageId + "/versions/" + $parameter.version + "/release" }}',
 					},
 				},
 			},
 			{
-				name: 'Delete Script',
-				value: 'deleteScript',
-				description: 'Delete a code engine script',
-				action: 'Delete script',
+				name: 'Get Package',
+				value: 'getPackage',
+				description: 'Get a package',
+				action: 'Get package',
 				routing: {
 					request: {
-						method: 'DELETE',
-						url: '={{ "/api/code-engine/v1/scripts/" + $parameter.scriptId }}',
+						method: 'GET',
+						url: '={{ "/api/codeengine/v2/packages/" + $parameter.packageId }}',
+						qs: {
+							parts: '={{$parameter.parts}}',
+						},
 					},
 				},
 			},
 			{
-				name: 'Execute Script',
-				value: 'executeScript',
-				description: 'Execute a code engine script',
-				action: 'Execute script',
+				name: 'Get Package Permissions',
+				value: 'getPackagePermissions',
+				action: 'Get package permissions',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/codeengine/v2/packages/" + $parameter.packageId + "/permissions" }}',
+					},
+				},
+			},
+			{
+				name: 'Get Package Version',
+				value: 'getPackageVersion',
+				description: 'Get a package version',
+				action: 'Get package version',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/codeengine/v2/packages/" + $parameter.packageId + "/versions/" + $parameter.version }}',
+						qs: {
+							parts: '={{$parameter.parts}}',
+						},
+					},
+				},
+			},
+			{
+				name: 'Run Function',
+				value: 'runFunction',
+				description: 'Run a function',
+				action: 'Run function',
 				routing: {
 					request: {
 						method: 'POST',
-						url: '={{ "/api/code-engine/v1/scripts/" + $parameter.scriptId + "/execute" }}',
-						body: '={{JSON.parse($parameter.executionData)}}',
+						url: '={{ "/api/codeengine/v2/packages/" + $parameter.packageId + "/versions/" + $parameter.version + "/functions/" + $parameter.functionName }}',
+						body: '={{JSON.parse($parameter.functionData)}}',
 					},
 				},
 			},
 			{
-				name: 'Get Execution',
-				value: 'getExecution',
-				description: 'Get details of a script execution',
-				action: 'Get execution',
+				name: 'Search Packages',
+				value: 'searchPackages',
+				action: 'Search packages',
 				routing: {
 					request: {
-						method: 'GET',
-						url: '={{ "/api/code-engine/v1/executions/" + $parameter.executionId }}',
+						method: 'POST',
+						url: '/api/search/v1/query',
+						body: '={{JSON.parse($parameter.searchQuery)}}',
 					},
 				},
 			},
 			{
-				name: 'Get Execution Logs',
-				value: 'getExecutionLogs',
-				description: 'Get logs from a script execution',
-				action: 'Get execution logs',
+				name: 'Update Package',
+				value: 'updatePackage',
+				description: 'Update a package',
+				action: 'Update package',
 				routing: {
 					request: {
-						method: 'GET',
-						url: '={{ "/api/code-engine/v1/executions/" + $parameter.executionId + "/logs" }}',
+						method: 'POST',
+						url: '/api/codeengine/v2/packages',
+						body: '={{JSON.parse($parameter.packageData)}}',
 					},
 				},
 			},
 			{
-				name: 'Get Script',
-				value: 'getScript',
-				description: 'Get details of a specific script',
-				action: 'Get script',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '={{ "/api/code-engine/v1/scripts/" + $parameter.scriptId }}',
-					},
-				},
-			},
-			{
-				name: 'List Executions',
-				value: 'listExecutions',
-				description: 'List script executions',
-				action: 'List executions',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '/api/code-engine/v1/executions',
-						qs: {
-							scriptId: '={{$parameter.scriptId}}',
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
-						},
-					},
-				},
-			},
-			{
-				name: 'List Packages',
-				value: 'listPackages',
-				description: 'List available packages',
-				action: 'List packages',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '/api/code-engine/v1/packages',
-						qs: {
-							language: '={{$parameter.language}}',
-						},
-					},
-				},
-			},
-			{
-				name: 'List Scripts',
-				value: 'listScripts',
-				description: 'List all code engine scripts',
-				action: 'List scripts',
-				routing: {
-					request: {
-						method: 'GET',
-						url: '/api/code-engine/v1/scripts',
-						qs: {
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
-						},
-					},
-				},
-			},
-			{
-				name: 'Update Script',
-				value: 'updateScript',
-				description: 'Update a code engine script',
-				action: 'Update script',
+				name: 'Update Package Owner',
+				value: 'updatePackageOwner',
+				action: 'Update package owner',
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '={{ "/api/code-engine/v1/scripts/" + $parameter.scriptId }}',
-						body: '={{JSON.parse($parameter.scriptData)}}',
+						url: '={{ "/api/codeengine/v2/packages/" + $parameter.packageId }}',
+						body: '={{JSON.parse($parameter.ownerData)}}',
+					},
+				},
+			},
+			{
+				name: 'Update Package Permissions',
+				value: 'updatePackagePermissions',
+				action: 'Update package permissions',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{ "/api/codeengine/v2/packages/" + $parameter.packageId + "/permissions" }}',
+						body: '={{JSON.parse($parameter.permissionsData)}}',
 					},
 				},
 			},
 		],
-		default: 'listScripts',
+		default: 'searchPackages',
 	},
 ];
 
 export const codeEngineFields: INodeProperties[] = [
-	// Script ID field
+	// Package ID field
 	{
-		displayName: 'Script ID',
-		name: 'scriptId',
+		displayName: 'Package ID',
+		name: 'packageId',
 		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['codeEngine'],
-				operation: ['getScript', 'updateScript', 'deleteScript', 'executeScript', 'listExecutions'],
+				operation: [
+					'getPackage',
+					'getPackageVersion',
+					'getPackagePermissions',
+					'runFunction',
+					'createPackageRelease',
+					'updatePackageOwner',
+					'updatePackagePermissions',
+				],
 			},
 		},
 		default: '',
 		required: true,
-		description: 'The ID of the script',
+		description: 'The ID of the package',
 	},
-	// Execution ID field
+	// Version field
 	{
-		displayName: 'Execution ID',
-		name: 'executionId',
+		displayName: 'Version',
+		name: 'version',
 		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['codeEngine'],
-				operation: ['getExecution', 'getExecutionLogs'],
+				operation: ['getPackageVersion', 'runFunction', 'createPackageRelease'],
 			},
 		},
 		default: '',
 		required: true,
-		description: 'The ID of the execution',
+		description: 'The version of the package',
 	},
-	// List scripts fields
+	// Function Name field
 	{
-		displayName: 'Limit',
-		name: 'limit',
-		type: 'number',
-		typeOptions: {
-			minValue: 1,
-		},
+		displayName: 'Function Name',
+		name: 'functionName',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['codeEngine'],
-				operation: ['listScripts', 'listExecutions'],
+				operation: ['runFunction'],
 			},
 		},
-		default: 50,
-		description: 'Max number of results to return',
-	},
-	{
-		displayName: 'Offset',
-		name: 'offset',
-		type: 'number',
-		typeOptions: {
-			minValue: 0,
-		},
-		displayOptions: {
-			show: {
-				resource: ['codeEngine'],
-				operation: ['listScripts', 'listExecutions'],
-			},
-		},
-		default: 0,
-		description: 'Number of items to skip',
-	},
-	// Create and Update script fields
-	{
-		displayName: 'Script Data',
-		name: 'scriptData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['codeEngine'],
-				operation: ['createScript', 'updateScript'],
-			},
-		},
-		default: '{}',
+		default: '',
 		required: true,
-		description: 'JSON object containing script configuration',
-		placeholder: '{"name":"My Script","language":"python","code":"print(\'Hello World\')","packages":["pandas","numpy"]}',
+		description: 'The name of the function to run',
 	},
-	// Execute script fields
+	// Parts field
 	{
-		displayName: 'Execution Data',
-		name: 'executionData',
+		displayName: 'Parts',
+		name: 'parts',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['codeEngine'],
+				operation: ['getPackage', 'getPackageVersion'],
+			},
+		},
+		default: '',
+		description: 'Parts to include in the response',
+	},
+	// Search Query field
+	{
+		displayName: 'Search Query',
+		name: 'searchQuery',
 		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['codeEngine'],
-				operation: ['executeScript'],
+				operation: ['searchPackages'],
 			},
 		},
-		default: '{}',
-		description: 'JSON object containing execution parameters and inputs',
-		placeholder: '{"parameters":{"param1":"value1"},"timeout":300}',
+		default: '',
+		placeholder: '{"query":"*","entityList":[["package"]],"count":100,"offset":0}',
+		required: true,
+		description: 'JSON query object for searching packages',
 	},
-	// List packages fields
+	// Package Data field
 	{
-		displayName: 'Language',
-		name: 'language',
-		type: 'options',
+		displayName: 'Package Data',
+		name: 'packageData',
+		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['codeEngine'],
-				operation: ['listPackages'],
+				operation: ['updatePackage'],
 			},
 		},
-		options: [
-			{
-				name: 'JavaScript',
-				value: 'javascript',
+		default: '',
+		placeholder: '{"name":"Package Name","version":"1.0.0","code":"","environment":"LAMBDA","language":"JAVASCRIPT","manifest":{"functions":[]}}',
+		required: true,
+		description: 'JSON object containing package configuration',
+	},
+	// Function Data field
+	{
+		displayName: 'Function Data',
+		name: 'functionData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['codeEngine'],
+				operation: ['runFunction'],
 			},
-			{
-				name: 'Python',
-				value: 'python',
+		},
+		default: '',
+		placeholder: '{"inputVariables":{"variable1":"input"},"settings":{"getLogs":true}}',
+		required: true,
+		description: 'JSON object containing function inputs and settings',
+	},
+	// Owner Data field
+	{
+		displayName: 'Owner Data',
+		name: 'ownerData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['codeEngine'],
+				operation: ['updatePackageOwner'],
 			},
-		],
-		default: 'python',
-		description: 'The programming language for packages',
+		},
+		default: '',
+		placeholder: '{"owner":123456}',
+		required: true,
+		description: 'JSON object containing owner ID',
+	},
+	// Permissions Data field
+	{
+		displayName: 'Permissions Data',
+		name: 'permissionsData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['codeEngine'],
+				operation: ['updatePackagePermissions'],
+			},
+		},
+		default: '',
+		placeholder: '[{"ID":"123456","permissions":["ADMIN","READ","WRITE"],"name":"User Name","type":"USER"}]',
+		required: true,
+		description: 'JSON array containing permissions configuration',
 	},
 ];
 
