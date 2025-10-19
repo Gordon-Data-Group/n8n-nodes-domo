@@ -11,370 +11,249 @@ export const filesOperations: INodeProperties[] = [
 				resource: ['files'],
 			},
 		},
-		default: 'create-file',
+		default: 'getFileDetails',
 		options: [
-		{
-			name: 'Create File',
-			value: 'create-file',
-			action: 'Create file',
-			description: 'Include file in body as binary',
-			routing: {
-				request: {
-					method: 'POST',
-					url: '/data/v1/data-files',
+			{
+				name: 'Create File',
+				value: 'createFile',
+				action: 'Create file',
+				description: 'Include file in body as binary',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/data/v1/data-files',
+						qs: {
+							name: '={{$parameter.name}}',
+							public: '={{$parameter.public}}',
+						},
+					},
 				},
 			},
-		},
-		{
-			name: 'Create File Card',
-			value: 'create-file-card',
-			action: 'Create file card',
-			routing: {
-				request: {
-					method: 'POST',
-					url: '/content/v1/cards',
+			{
+				name: 'Create File Card',
+				value: 'createFileCard',
+				action: 'Create file card',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/content/v1/cards',
+						qs: {
+							pageId: '={{$parameter.pageId}}',
+						},
+						body: '={{JSON.parse($parameter.cardData)}}',
+					},
 				},
 			},
-		},
-		{
-			name: 'Get File Details',
-			value: 'get-file-details',
-			action: 'Get file details',
-			routing: {
-				request: {
-					method: 'GET',
-					url: '/data/v1/data-files/={{$parameter.id}}/details',
+			{
+				name: 'Get File Details',
+				value: 'getFileDetails',
+				action: 'Get file details',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/data/v1/data-files/" + $parameter.fileId + "/details" }}',
+						qs: {
+							expand: '={{$parameter.expand}}',
+						},
+					},
 				},
 			},
-		},
-		{
-			name: 'Get Revision',
-			value: 'get-revision',
-			action: 'Get revision',
-			routing: {
-				request: {
-					method: 'GET',
-					url: '/data/v1/data-files/={{$parameter.fileId}}/revisions/={{$parameter.revisionId}}',
+			{
+				name: 'Get Revision',
+				value: 'getRevision',
+				action: 'Get revision',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/data/v1/data-files/" + $parameter.fileId + "/revisions/" + $parameter.revisionId }}',
+						qs: {
+							fileName: '={{$parameter.fileName}}',
+						},
+					},
 				},
 			},
-		},
-		{
-			name: 'Get Revision Details',
-			value: 'get-revision-details',
-			action: 'Get revision details',
-			routing: {
-				request: {
-					method: 'GET',
-					url: '/data/v1/data-files/={{$parameter.fileId}}/revisions/={{$parameter.revisionId}}/details',
+			{
+				name: 'Get Revision Details',
+				value: 'getRevisionDetails',
+				action: 'Get revision details',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/data/v1/data-files/" + $parameter.fileId + "/revisions/" + $parameter.revisionId + "/details" }}',
+					},
 				},
 			},
-		},
-		{
-			name: 'Update File',
-			value: 'update-file',
-			action: 'Update file',
-			description: 'Include new file version in body as binary',
-			routing: {
-				request: {
-					method: 'PUT',
-					url: '/data/v1/data-files/={{$parameter.id}}',
+			{
+				name: 'Update File',
+				value: 'updateFile',
+				action: 'Update file',
+				description: 'Include new file version in body as binary',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/data/v1/data-files/" + $parameter.fileId }}',
+						qs: {
+							public: '={{$parameter.public}}',
+							description: '={{$parameter.description}}',
+						},
+					},
 				},
 			},
-		},
-		{
-			name: 'Update File Card',
-			value: 'update-file-card',
-			action: 'Update file card',
-			routing: {
-				request: {
-					method: 'PUT',
-					url: '/content/v1/cards/={{$parameter.id}}',
+			{
+				name: 'Update File Card',
+				value: 'updateFileCard',
+				action: 'Update file card',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/content/v1/cards/" + $parameter.cardId }}',
+						body: '={{JSON.parse($parameter.cardData)}}',
+					},
 				},
 			},
-		},
 		],
 	},
 ];
 
 export const filesFields: INodeProperties[] = [
-		{
-			displayName: 'FileId ID',
-			name: 'fileId',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['get-revision'],
-				},
-			},
-			default: '',
-			description: 'The ID of the fileId',
-		},
-		{
-			displayName: 'RevisionId ID',
-			name: 'revisionId',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['get-revision'],
-				},
-			},
-			default: '',
-			description: 'The ID of the revisionId',
-		},
-		{
-			displayName: 'FileName',
-			name: 'fileName',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['get-revision'],
-				},
-			},
-			default: '',
-			description: 'The fileName parameter',
-			routing: {
-				request: {
-					qs: {
-						fileName: '={{$parameter.fileName}}',
-					},
-				},
+	// File ID field
+	{
+		displayName: 'File ID',
+		name: 'fileId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['getFileDetails', 'getRevision', 'getRevisionDetails', 'updateFile'],
 			},
 		},
-		{
-			displayName: 'FileId ID',
-			name: 'fileId',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['get-revision-details'],
-				},
-			},
-			default: '',
-			description: 'The ID of the fileId',
-		},
-		{
-			displayName: 'RevisionId ID',
-			name: 'revisionId',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['get-revision-details'],
-				},
-			},
-			default: '',
-			description: 'The ID of the revisionId',
-		},
-		{
-			displayName: 'ID ID',
-			name: 'id',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['get-file-details'],
-				},
-			},
 		default: '',
-		description: 'The ID',
-		},
-		{
-			displayName: 'Expand',
-			name: 'expand',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['get-file-details'],
-				},
-			},
-			default: '',
-			description: 'The expand parameter',
-			routing: {
-				request: {
-					qs: {
-						expand: '={{$parameter.expand}}',
-					},
-				},
+		required: true,
+		description: 'The ID of the file',
+	},
+	// Revision ID field
+	{
+		displayName: 'Revision ID',
+		name: 'revisionId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['getRevision', 'getRevisionDetails'],
 			},
 		},
-		{
-			displayName: 'Name',
-			name: 'name',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['create-file'],
-				},
-			},
-			default: '',
-			description: 'The name parameter',
-			routing: {
-				request: {
-					qs: {
-						name: '={{$parameter.name}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'Public',
-			name: 'public',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['create-file'],
-				},
-			},
-			default: '',
-			description: 'The public parameter',
-			routing: {
-				request: {
-					qs: {
-						public: '={{$parameter.public}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['create-file-card'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'PageId',
-			name: 'pageId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['create-file-card'],
-				},
-			},
-			default: '',
-			description: 'The pageId parameter',
-			routing: {
-				request: {
-					qs: {
-						pageId: '={{$parameter.pageId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'ID ID',
-			name: 'id',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['update-file'],
-				},
-			},
 		default: '',
-		description: 'The ID',
-		},
-		{
-			displayName: 'Public',
-			name: 'public',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['update-file'],
-				},
-			},
-			default: '',
-			description: 'The public parameter',
-			routing: {
-				request: {
-					qs: {
-						public: '={{$parameter.public}}',
-					},
-				},
+		required: true,
+		description: 'The ID of the revision',
+	},
+	// Card ID field
+	{
+		displayName: 'Card ID',
+		name: 'cardId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['updateFileCard'],
 			},
 		},
-		{
-			displayName: 'Description',
-			name: 'description',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['update-file'],
-				},
-			},
-			default: '',
-			description: 'The description parameter',
-			routing: {
-				request: {
-					qs: {
-						description: '={{$parameter.description}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'ID ID',
-			name: 'id',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['update-file-card'],
-				},
-			},
 		default: '',
-		description: 'The ID',
-		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['files'],
-					operation: ['update-file-card'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		required: true,
+		description: 'The ID of the card',
+	},
+	// Query params
+	{
+		displayName: 'File Name',
+		name: 'fileName',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['getRevision'],
 			},
 		},
+		default: '',
+		description: 'The file name parameter',
+	},
+	{
+		displayName: 'Expand',
+		name: 'expand',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['getFileDetails'],
+			},
+		},
+		default: '',
+		description: 'The expand parameter',
+	},
+	{
+		displayName: 'Name',
+		name: 'name',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['createFile'],
+			},
+		},
+		default: '',
+		description: 'The name of the file',
+	},
+	{
+		displayName: 'Public',
+		name: 'public',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['createFile', 'updateFile'],
+			},
+		},
+		default: '',
+		description: 'Whether the file is public',
+	},
+	{
+		displayName: 'Description',
+		name: 'description',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['updateFile'],
+			},
+		},
+		default: '',
+		description: 'The description of the file',
+	},
+	{
+		displayName: 'Page ID',
+		name: 'pageId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['createFileCard'],
+			},
+		},
+		default: '',
+		description: 'The page ID parameter',
+	},
+	// Body params
+	{
+		displayName: 'Card Data',
+		name: 'cardData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['files'],
+				operation: ['createFileCard', 'updateFileCard'],
+			},
+		},
+		default: '',
+		placeholder: '{"type":"document","description":"Description","metadata":{"title":"Title","documentID":"123:123","kpiType":"document"}}',
+		required: true,
+		description: 'JSON object containing card configuration',
+	},
 ];

@@ -11,87 +11,62 @@ export const leftNavigationOperations: INodeProperties[] = [
 				resource: ['leftNavigation'],
 			},
 		},
-		default: 'get-pins',
+		default: 'getPins',
 		options: [
-		{
-			name: 'Get Pins',
-			value: 'get-pins',
-			action: 'Get pins',
-			routing: {
-				request: {
-					method: 'GET',
-					url: '/nav/v1/pins',
+			{
+				name: 'Create Pin',
+				value: 'createPin',
+				action: 'Create pin',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/nav/v1/pins/append',
+						body: '={{JSON.parse($parameter.pinData)}}',
+					},
 				},
 			},
-		},
-		{
-			name: 'Create Pin',
-			value: 'create-pin',
-			action: 'Create pin',
-			routing: {
-				request: {
-					method: 'POST',
-					url: '/nav/v1/pins/append',
+			{
+				name: 'Get Pins',
+				value: 'getPins',
+				action: 'Get pins',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/nav/v1/pins',
+					},
 				},
 			},
-		},
-		{
-			name: 'Update Pins',
-			value: 'update-pins',
-		action: 'Update pins',
-		description: 'The order of pins is determined by their position in the array, not by the order property. Domo UI includes the order property in the request, but it does not affect the order and can be omitted. To reorder, send all pins reordered as desired in the array. The order property will be returned updated to match the order of the array',
-			routing: {
-				request: {
-					method: 'POST',
-					url: '/nav/v1/pins/append',
+			{
+				name: 'Update Pins',
+				value: 'updatePins',
+				action: 'Update pins',
+				description: 'The order of pins is determined by their position in the array, not by the order property. Domo UI includes the order property in the request, but it does not affect the order and can be omitted. To reorder, send all pins reordered as desired in the array. The order property will be returned updated to match the order of the array',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/nav/v1/pins/append',
+						body: '={{JSON.parse($parameter.pinData)}}',
+					},
 				},
 			},
-		},
 		],
 	},
 ];
 
 export const leftNavigationFields: INodeProperties[] = [
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['leftNavigation'],
-					operation: ['create-pin'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+	{
+		displayName: 'Pin Data',
+		name: 'pinData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['leftNavigation'],
+				operation: ['createPin', 'updatePins'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['leftNavigation'],
-					operation: ['update-pins'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
-			},
-		},
+		default: '',
+		placeholder: '{"action":{"ID":"automate_workflow","type":"feature","newTab":false},"icon":"workflow","iconColor":"#FFFFFFB3","iconBackgroundColor":"#FFFFFF00","label":"Label","userID":1234}',
+		required: true,
+		description: 'JSON object or array containing pin configuration',
+	},
 ];

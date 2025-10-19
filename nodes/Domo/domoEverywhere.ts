@@ -11,395 +11,317 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				resource: ['domoEverywhere'],
 			},
 		},
-	default: 'list-publications',
-	options: [
-	{
-		name: 'Count Invites',
-		value: 'count-invites',
-		action: 'Count invites',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/subscriptions/invites/counts',
+		default: 'listPublications',
+		options: [
+			{
+				name: 'Count Invites',
+				value: 'countInvites',
+				action: 'Count invites',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/subscriptions/invites/counts',
+						qs: {
+							searchTerm: '={{$parameter.searchTerm}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Count Summaries',
-		value: 'count-summaries',
-		action: 'Count summaries',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/subscriptions/summaries/counts',
+			{
+				name: 'Count Summaries',
+				value: 'countSummaries',
+				action: 'Count summaries',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/subscriptions/summaries/counts',
+						qs: {
+							searchTerm: '={{$parameter.searchTerm}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Get Publication',
-		value: 'get-publication',
-		action: 'Get publication',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/publications/={{$parameter.id}}',
+			{
+				name: 'Get Publication',
+				value: 'getPublication',
+				action: 'Get publication',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/publish/v2/publications/" + $parameter.publicationId }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Get Status',
-		value: 'get-status',
-		action: 'Get status',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/publications/status',
+			{
+				name: 'Get Status',
+				value: 'getStatus',
+				action: 'Get status',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/publications/status',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Get Subscription Share',
-		value: 'get-subscription-share',
-		action: 'Get subscription share',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/subscriptions/={{$parameter.subscriptionId}}/share',
+			{
+				name: 'Get Subscription Share',
+				value: 'getSubscriptionShare',
+				action: 'Get subscription share',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/publish/v2/subscriptions/" + $parameter.subscriptionId + "/share" }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Get Summary',
-		value: 'get-summary',
-		action: 'Get summary',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/publications/summaries/={{$parameter.publicationId}}',
+			{
+				name: 'Get Summary',
+				value: 'getSummary',
+				action: 'Get summary',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/publish/v2/publications/summaries/" + $parameter.summaryPublicationId }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Automatic Subscription Shares',
-		value: 'list-automatic-subscription-shares',
-		action: 'List automatic subscription shares',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/automatic-subscriptions/shares/v1',
+			{
+				name: 'List Automatic Subscription Shares',
+				value: 'listAutomaticSubscriptionShares',
+				action: 'List automatic subscription shares',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/automatic-subscriptions/shares/v1',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Automatic Subscriptions',
-		value: 'list-automatic-subscriptions',
-		action: 'List automatic subscriptions',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/automatic-subscriptions',
+			{
+				name: 'List Automatic Subscriptions',
+				value: 'listAutomaticSubscriptions',
+				action: 'List automatic subscriptions',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/automatic-subscriptions',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Invites',
-		value: 'list-invites',
-		action: 'List invites',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/subscriptions/invites',
+			{
+				name: 'List Invites',
+				value: 'listInvites',
+				action: 'List invites',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/subscriptions/invites',
+						qs: {
+							searchTerm: '={{$parameter.searchTerm}}',
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Publications',
-		value: 'list-publications',
-		action: 'List publications',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/publications',
+			{
+				name: 'List Publications',
+				value: 'listPublications',
+				action: 'List publications',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/publications',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Summaries',
-		value: 'list-summaries',
-		action: 'List summaries',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/publish/v2/publications/summaries',
+			{
+				name: 'List Publication Summaries',
+				value: 'listPublicationSummaries',
+				action: 'List publication summaries',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/publications/summaries',
+						qs: {
+							public: '={{$parameter.public}}',
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
+							searchTerm: '={{$parameter.searchTerm}}',
+							sort: '={{$parameter.sort}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Update Subscription',
-		value: 'update-subscription',
-		action: 'Update subscription',
-		routing: {
-			request: {
-				method: 'PUT',
-				url: '/publish/v2/subscriptions/={{$parameter.subscriptionId}}',
+			{
+				name: 'List Subscription Summaries',
+				value: 'listSubscriptionSummaries',
+				action: 'List subscription summaries',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/publish/v2/subscriptions/summaries',
+						qs: {
+							searchTerm: '={{$parameter.searchTerm}}',
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	],
+			{
+				name: 'Update Subscription',
+				value: 'updateSubscription',
+				action: 'Update subscription',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/publish/v2/subscriptions/" + $parameter.subscriptionId }}',
+						body: '={{JSON.parse($parameter.subscriptionData)}}',
+					},
+				},
+			},
+		],
 	},
 ];
 
 export const domoEverywhereFields: INodeProperties[] = [
-		{
-			displayName: 'Limit',
-			name: 'limit',
-			type: 'number',
-			typeOptions: {
-				minValue: 1,
-			},
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['list-summaries'],
-				},
-			},
-			default: 50,
-			description: 'Max number of results to return',
-			routing: {
-				request: {
-					qs: {
-						limit: '={{$parameter.limit}}',
-					},
-				},
+	// Publication ID field
+	{
+		displayName: 'Publication ID',
+		name: 'publicationId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: ['getPublication'],
 			},
 		},
-		{
-			displayName: 'Offset',
-			name: 'offset',
-			type: 'number',
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['list-summaries'],
-				},
-			},
-			default: 0,
-			description: 'The number of results to skip',
-			routing: {
-				request: {
-					qs: {
-						offset: '={{$parameter.offset}}',
-					},
-				},
+		default: '',
+		required: true,
+		description: 'The ID of the publication',
+	},
+	// Summary Publication ID field (for get summary)
+	{
+		displayName: 'Publication ID',
+		name: 'summaryPublicationId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: ['getSummary'],
 			},
 		},
-		{
-			displayName: 'Public',
-			name: 'public',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['list-summaries'],
-				},
-			},
-			default: '',
-			description: 'The public parameter',
-			routing: {
-				request: {
-					qs: {
-						public: '={{$parameter.public}}',
-					},
-				},
+		default: '',
+		required: true,
+		description: 'The ID of the publication',
+	},
+	// Subscription ID field
+	{
+		displayName: 'Subscription ID',
+		name: 'subscriptionId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: ['getSubscriptionShare', 'updateSubscription'],
 			},
 		},
-		{
-			displayName: 'Sort',
-			name: 'sort',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['list-summaries'],
-				},
-			},
-			default: '',
-			description: 'The sort parameter',
-			routing: {
-				request: {
-					qs: {
-						sort: '={{$parameter.sort}}',
-					},
-				},
+		default: '',
+		required: true,
+		description: 'The ID of the subscription',
+	},
+	// List fields
+	{
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		typeOptions: {
+			minValue: 1,
+		},
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: ['listPublicationSummaries', 'listSubscriptionSummaries', 'listInvites'],
 			},
 		},
-		{
-			displayName: 'Publication ID',
-			name: 'id',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['get-publication'],
-				},
-			},
-			default: '',
-			description: 'The ID oof the publication',
+		default: 50,
+		description: 'Max number of results to return',
+	},
+	{
+		displayName: 'Offset',
+		name: 'offset',
+		type: 'number',
+		typeOptions: {
+			minValue: 0,
 		},
-		{
-			displayName: 'Publication ID',
-			name: 'publicationId',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['get-summary'],
-				},
-			},
-			default: '',
-			description: 'The ID of the publication',
-		},
-		{
-			displayName: 'Limit',
-			name: 'limit',
-			type: 'number',
-			typeOptions: {
-				minValue: 1,
-			},
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['list-summaries'],
-				},
-			},
-			default: 50,
-			description: 'Max number of results to return',
-			routing: {
-				request: {
-					qs: {
-						limit: '={{$parameter.limit}}',
-					},
-				},
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: ['listPublicationSummaries', 'listSubscriptionSummaries', 'listInvites'],
 			},
 		},
-		{
-			displayName: 'Offset',
-			name: 'offset',
-			type: 'number',
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['list-summaries'],
-				},
-			},
-			default: 0,
-			description: 'The number of results to skip',
-			routing: {
-				request: {
-					qs: {
-						offset: '={{$parameter.offset}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'Limit',
-			name: 'limit',
-			type: 'number',
-			typeOptions: {
-				minValue: 1,
-			},
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['list-invites'],
-				},
-			},
-			default: 50,
-			description: 'Max number of results to return',
-			routing: {
-				request: {
-					qs: {
-						limit: '={{$parameter.limit}}',
-					},
-				},
+		default: 0,
+		description: 'Number of items to skip',
+	},
+	{
+		displayName: 'Search Term',
+		name: 'searchTerm',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: [
+					'countSummaries',
+					'countInvites',
+					'listInvites',
+					'listPublicationSummaries',
+					'listSubscriptionSummaries',
+				],
 			},
 		},
-		{
-			displayName: 'Offset',
-			name: 'offset',
-			type: 'number',
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['list-invites'],
-				},
-			},
-			default: 0,
-			description: 'The number of results to skip',
-			routing: {
-				request: {
-					qs: {
-						offset: '={{$parameter.offset}}',
-					},
-				},
+		default: '',
+		description: 'Search term to filter results',
+	},
+	{
+		displayName: 'Public',
+		name: 'public',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: ['listPublicationSummaries'],
 			},
 		},
-		{
-			displayName: 'SearchTerm',
-			name: 'searchTerm',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['count-summaries', 'count-invites', 'list-invites', 'list-summaries'],
-				},
-			},
-			default: '',
-			description: 'The searchTerm parameter',
-			routing: {
-				request: {
-					qs: {
-						searchTerm: '={{$parameter.searchTerm}}',
-					},
-				},
+		default: '',
+		description: 'Filter by public status',
+	},
+	{
+		displayName: 'Sort',
+		name: 'sort',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: ['listPublicationSummaries'],
 			},
 		},
-		{
-			displayName: 'Subscription ID',
-			name: 'subscriptionId',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['get-subscription-share', 'update-subscription'],
-				},
-			},
-			default: '',
-			description: 'The ID of the subscription',
-		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['domoEverywhere'],
-					operation: ['update-subscription'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		description: 'Sort parameter for results',
+	},
+	// Update subscription field
+	{
+		displayName: 'Subscription Data',
+		name: 'subscriptionData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['domoEverywhere'],
+				operation: ['updateSubscription'],
 			},
 		},
+		default: '',
+		placeholder: '{"publicationID":"00000000-0000-0000-0000-000000000000","domain":"example.com","customerID":"customer123","userID":1234,"userIDs":[2345,3456],"groupIDs":[4567]}',
+		required: true,
+		description: 'JSON object containing subscription configuration',
+	},
 ];

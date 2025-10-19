@@ -11,100 +11,90 @@ export const elevationOperations: INodeProperties[] = [
 				resource: ['elevation'],
 			},
 		},
-		default: 'get-otp-elevation-setting',
+		default: 'getOtpElevationSetting',
 		options: [
-		{
-			name: 'Get OTP Elevation Setting',
-			value: 'get-otp-elevation-setting',
-			action: 'Get otp elevation setting',
-			routing: {
-				request: {
-					method: 'GET',
-					url: '/customer/v1/properties/authentication.otp_elevation',
+			{
+				name: 'Authenticate with OTP',
+				value: 'authenticateWithOtp',
+				action: 'Authenticate with OTP',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/identity/v1/authentication/elevations/" + $parameter.userId }}',
+						body: '={{JSON.parse($parameter.otpData)}}',
+					},
 				},
 			},
-		},
-		{
-			name: 'Authenticate with OTP',
-			value: 'authenticate-with-otp',
-			action: 'Authenticate with OTP',
-			routing: {
-				request: {
-					method: 'PUT',
-					url: '/identity/v1/authentication/elevations/={{$parameter.userId}}',
+			{
+				name: 'Get OTP Elevation Setting',
+				value: 'getOtpElevationSetting',
+				action: 'Get otp elevation setting',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/customer/v1/properties/authentication.otp_elevation',
+					},
 				},
 			},
-		},
-		{
-			name: 'Update OTP Elevation Setting',
-			value: 'update-otp-elevation-setting',
-			action: 'Update otp elevation setting',
-			routing: {
-				request: {
-					method: 'PUT',
-					url: '/customer/v1/properties/authentication.otp_elevation',
+			{
+				name: 'Update OTP Elevation Setting',
+				value: 'updateOtpElevationSetting',
+				action: 'Update otp elevation setting',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '/api/customer/v1/properties/authentication.otp_elevation',
+						body: '={{JSON.parse($parameter.settingData)}}',
+					},
 				},
 			},
-		},
 		],
 	},
 ];
 
 export const elevationFields: INodeProperties[] = [
-		{
-			displayName: 'UserId ID',
-			name: 'userId',
-			type: 'string',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['elevation'],
-					operation: ['authenticate-with-otp'],
-				},
-			},
-			default: '',
-			description: 'The ID of the userId',
-		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['elevation'],
-					operation: ['authenticate-with-otp'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+	{
+		displayName: 'User ID',
+		name: 'userId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['elevation'],
+				operation: ['authenticateWithOtp'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['elevation'],
-					operation: ['update-otp-elevation-setting'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		required: true,
+		description: 'The ID of the user',
+	},
+	{
+		displayName: 'OTP Data',
+		name: 'otpData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['elevation'],
+				operation: ['authenticateWithOtp'],
 			},
 		},
+		default: '',
+		placeholder: '{"timeBasedOneTimePassword":"000000"}',
+		required: true,
+		description: 'JSON object containing OTP authentication data',
+	},
+	{
+		displayName: 'Setting Data',
+		name: 'settingData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['elevation'],
+				operation: ['updateOtpElevationSetting'],
+			},
+		},
+		default: '',
+		placeholder: '{"value":"false"}',
+		required: true,
+		description: 'JSON object containing OTP elevation setting',
+	},
 ];

@@ -11,989 +11,602 @@ export const objectivesOperations: INodeProperties[] = [
 				resource: ['objectives'],
 			},
 		},
-	default: 'list-objectives',
-	options: [
-	{
-		name: 'Create Category',
-		value: 'create-category',
-		action: 'Create category',
-		routing: {
-			request: {
-				method: 'POST',
-				url: '/social/v1/objectives/tags/categories',
+		default: 'listObjectives',
+		options: [
+			{
+				name: 'Create Category',
+				value: 'createCategory',
+				action: 'Create category',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/social/v1/objectives/tags/categories',
+						body: '={{JSON.parse($parameter.categoryData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Create Key Result',
-		value: 'create-key-result',
-		action: 'Create key result',
-		routing: {
-			request: {
-				method: 'POST',
-				url: '/social/v1/objectives/key-results',
+			{
+				name: 'Create Key Result',
+				value: 'createKeyResult',
+				action: 'Create key result',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/social/v1/objectives/key-results',
+						body: '={{JSON.parse($parameter.keyResultData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Create Objective',
-		value: 'create-objective',
-		action: 'Create objective',
-		routing: {
-			request: {
-				method: 'POST',
-				url: '/social/v1/objectives',
+			{
+				name: 'Create Objective',
+				value: 'createObjective',
+				action: 'Create objective',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/social/v1/objectives',
+						body: '={{JSON.parse($parameter.objectiveData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Create Tag',
-		value: 'create-tag',
-		action: 'Create tag',
-		routing: {
-			request: {
-				method: 'POST',
-				url: '/social/v1/objectives/tags',
+			{
+				name: 'Create Tag',
+				value: 'createTag',
+				action: 'Create tag',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/social/v1/objectives/tags',
+						body: '={{JSON.parse($parameter.tagData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Delete Category',
-		value: 'delete-category',
-		action: 'Delete category',
-		routing: {
-			request: {
-				method: 'DELETE',
-				url: '/social/v1/objectives/tags/categories/={{$parameter.id}}',
+			{
+				name: 'Delete Category',
+				value: 'deleteCategory',
+				action: 'Delete category',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{ "/api/social/v1/objectives/tags/categories/" + $parameter.categoryId }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Delete Key Result',
-		value: 'delete-key-result',
-		action: 'Delete key result',
-		routing: {
-			request: {
-				method: 'DELETE',
-				url: '/social/v1/objectives/key-results/={{$parameter.id}}',
+			{
+				name: 'Delete Key Result',
+				value: 'deleteKeyResult',
+				action: 'Delete key result',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{ "/api/social/v1/objectives/key-results/" + $parameter.keyResultId }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Delete Objective',
-		value: 'delete-objective',
-		action: 'Delete objective',
-		routing: {
-			request: {
-				method: 'DELETE',
-				url: '/social/v1/objectives/={{$parameter.id}}',
+			{
+				name: 'Delete Objective',
+				value: 'deleteObjective',
+				action: 'Delete objective',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{ "/api/social/v1/objectives/" + $parameter.objectiveId }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Delete Tag',
-		value: 'delete-tag',
-		action: 'Delete tag',
-		routing: {
-			request: {
-				method: 'DELETE',
-				url: '/social/v1/objectives/tags/={{$parameter.id}}',
+			{
+				name: 'Delete Tag',
+				value: 'deleteTag',
+				action: 'Delete tag',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '={{ "/api/social/v1/objectives/tags/" + $parameter.tagId }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Get Company Objectives Report',
-		value: 'get-company-objectives-report',
-		action: 'Get company objectives report',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v2/objectives/report',
+			{
+				name: 'Get Company Objectives Report',
+				value: 'getCompanyObjectivesReport',
+				action: 'Get company objectives report',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v2/objectives/report',
+						qs: {
+							filterKeyResults: '={{$parameter.filterKeyResults}}',
+							periodId: '={{$parameter.periodId}}',
+							type: '={{$parameter.type}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Get Key Result Chart',
-		value: 'get-key-result-chart',
-		action: 'Get key result chart',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v1/objectives/key-results/={{$parameter.id}}/chart',
+			{
+				name: 'Get Key Result Chart',
+				value: 'getKeyResultChart',
+				action: 'Get key result chart',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/social/v1/objectives/key-results/" + $parameter.keyResultId + "/chart" }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Get Key Result Values',
-		value: 'get-key-result-values',
-		action: 'Get key result values',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v1/objectives/key-results/={{$parameter.id}}/values',
+			{
+				name: 'Get Key Result Values',
+				value: 'getKeyResultValues',
+				action: 'Get key result values',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/social/v1/objectives/key-results/" + $parameter.keyResultId + "/values" }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Categories',
-		value: 'list-categories',
-		action: 'List categories',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v1/objectives/tags/categories',
+			{
+				name: 'List Categories',
+				value: 'listCategories',
+				action: 'List categories',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v1/objectives/tags/categories',
+						qs: {
+							all: '={{$parameter.all}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Events',
-		value: 'list-events',
-		action: 'List events',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v1/objectives/events',
+			{
+				name: 'List Events',
+				value: 'listEvents',
+				action: 'List events',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v1/objectives/events',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Objective Drafts',
-		value: 'list-objective-drafts',
-		action: 'List objective drafts',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v2/objectives/draft',
+			{
+				name: 'List Objective Drafts',
+				value: 'listObjectiveDrafts',
+				action: 'List objective drafts',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v2/objectives/draft',
+						qs: {
+							filterKeyResults: '={{$parameter.filterKeyResults}}',
+							periodId: '={{$parameter.periodId}}',
+							userId: '={{$parameter.userId}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Objectives',
-		value: 'list-objectives',
-		action: 'List objectives',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v1/objectives/search',
+			{
+				name: 'List Objectives',
+				value: 'listObjectives',
+				action: 'List objectives',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v1/objectives/search',
+						qs: {
+							filterKeyResults: '={{$parameter.filterKeyResults}}',
+							periodId: '={{$parameter.periodId}}',
+							query: '={{$parameter.query}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Objectives to Update',
-		value: 'list-objectives-to-update',
-		action: 'List objectives to update',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v1/objectives/needs-update',
+			{
+				name: 'List Objectives to Update',
+				value: 'listObjectivesToUpdate',
+				action: 'List objectives to update',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v1/objectives/needs-update',
+						qs: {
+							filterKeyResults: '={{$parameter.filterKeyResults}}',
+							periodId: '={{$parameter.periodId}}',
+							userId: '={{$parameter.userId}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Periods',
-		value: 'list-periods',
-		action: 'List periods',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v1/objectives/periods',
+			{
+				name: 'List Periods',
+				value: 'listPeriods',
+				action: 'List periods',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v1/objectives/periods',
+						qs: {
+							all: '={{$parameter.all}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Personal Objectives',
-		value: 'list-personal-objectives',
-		action: 'List personal objectives',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v2/objectives/profile',
+			{
+				name: 'List Personal Objectives',
+				value: 'listPersonalObjectives',
+				action: 'List personal objectives',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v2/objectives/profile',
+						qs: {
+							filterKeyResults: '={{$parameter.filterKeyResults}}',
+							includeSampleGoal: '={{$parameter.includeSampleGoal}}',
+							ownerId: '={{$parameter.ownerId}}',
+							periodId: '={{$parameter.periodId}}',
+							type: '={{$parameter.type}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Tags',
-		value: 'list-tags',
-		action: 'List tags',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v1/objectives/tags',
+			{
+				name: 'List Tags',
+				value: 'listTags',
+				action: 'List tags',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v1/objectives/tags',
+						qs: {
+							all: '={{$parameter.all}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List Team Objectives',
-		value: 'list-team-objectives',
-		action: 'List team objectives',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/social/v2/objectives/teams-profile',
+			{
+				name: 'List Team Objectives',
+				value: 'listTeamObjectives',
+				action: 'List team objectives',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/social/v2/objectives/teams-profile',
+						qs: {
+							filterKeyResults: '={{$parameter.filterKeyResults}}',
+							ownerId: '={{$parameter.ownerId}}',
+							periodId: '={{$parameter.periodId}}',
+						},
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Update Category',
-		value: 'update-category',
-		action: 'Update category',
-		routing: {
-			request: {
-				method: 'PUT',
-				url: '/social/v1/objectives/tags/categories/={{$parameter.id}}',
+			{
+				name: 'Update Category',
+				value: 'updateCategory',
+				action: 'Update category',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/social/v1/objectives/tags/categories/" + $parameter.categoryId }}',
+						body: '={{JSON.parse($parameter.categoryData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Update Key Result',
-		value: 'update-key-result',
-		action: 'Update key result',
-		routing: {
-			request: {
-				method: 'PUT',
-				url: '/social/v1/objectives/key-results/={{$parameter.id}}',
+			{
+				name: 'Update Key Result',
+				value: 'updateKeyResult',
+				action: 'Update key result',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/social/v1/objectives/key-results/" + $parameter.keyResultId }}',
+						body: '={{JSON.parse($parameter.keyResultData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Update Key Result Tags',
-		value: 'update-key-result-tags',
-		action: 'Update key result tags',
-		routing: {
-			request: {
-				method: 'PUT',
-				url: '/social/v1/objectives/key-results/={{$parameter.id}}/tags',
+			{
+				name: 'Update Key Result Tags',
+				value: 'updateKeyResultTags',
+				action: 'Update key result tags',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/social/v1/objectives/key-results/" + $parameter.keyResultId + "/tags" }}',
+						qs: {
+							periodId: '={{$parameter.periodId}}',
+						},
+						body: '={{JSON.parse($parameter.tags)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Update Objective',
-		value: 'update-objective',
-		action: 'Update objective',
-		routing: {
-			request: {
-				method: 'PUT',
-				url: '/social/v1/objectives/={{$parameter.id}}',
+			{
+				name: 'Update Objective',
+				value: 'updateObjective',
+				action: 'Update objective',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/social/v1/objectives/" + $parameter.objectiveId }}',
+						qs: {
+							periodId: '={{$parameter.periodId}}',
+						},
+						body: '={{JSON.parse($parameter.objectiveData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Update Tag',
-		value: 'update-tag',
-		action: 'Update tag',
-		routing: {
-			request: {
-				method: 'PUT',
-				url: '/social/v1/objectives/tags/={{$parameter.id}}',
+			{
+				name: 'Update Tag',
+				value: 'updateTag',
+				action: 'Update tag',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/social/v1/objectives/tags/" + $parameter.tagId }}',
+						body: '={{JSON.parse($parameter.tagData)}}',
+					},
+				},
 			},
-		},
-	},
-	],
+		],
 	},
 ];
 
 export const objectivesFields: INodeProperties[] = [
-		{
-			displayName: 'FilterKeyResults',
-			name: 'filterKeyResults',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objectives'],
-				},
-			},
-			default: '',
-			description: 'The filterKeyResults parameter',
-			routing: {
-				request: {
-					qs: {
-						filterKeyResults: '={{$parameter.filterKeyResults}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'PeriodId',
-			name: 'periodId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objectives'],
-				},
-			},
-			default: '',
-			description: 'The periodId parameter',
-			routing: {
-				request: {
-					qs: {
-						periodId: '={{$parameter.periodId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'Query',
-			name: 'query',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objectives'],
-				},
-			},
-			default: '',
-			description: 'The query parameter',
-			routing: {
-				request: {
-					qs: {
-						query: '={{$parameter.query}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'FilterKeyResults',
-			name: 'filterKeyResults',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-personal-objectives'],
-				},
-			},
-			default: '',
-			description: 'The filterKeyResults parameter',
-			routing: {
-				request: {
-					qs: {
-						filterKeyResults: '={{$parameter.filterKeyResults}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'IncludeSampleGoal',
-			name: 'includeSampleGoal',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-personal-objectives'],
-				},
-			},
-			default: '',
-			description: 'The includeSampleGoal parameter',
-			routing: {
-				request: {
-					qs: {
-						includeSampleGoal: '={{$parameter.includeSampleGoal}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'OwnerId',
-			name: 'ownerId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-personal-objectives'],
-				},
-			},
-			default: '',
-			description: 'The ownerId parameter',
-			routing: {
-				request: {
-					qs: {
-						ownerId: '={{$parameter.ownerId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'PeriodId',
-			name: 'periodId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-personal-objectives'],
-				},
-			},
-			default: '',
-			description: 'The periodId parameter',
-			routing: {
-				request: {
-					qs: {
-						periodId: '={{$parameter.periodId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'Type',
-			name: 'type',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-personal-objectives'],
-				},
-			},
-			default: '',
-			description: 'The type parameter',
-			routing: {
-				request: {
-					qs: {
-						type: '={{$parameter.type}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'FilterKeyResults',
-			name: 'filterKeyResults',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-team-objectives'],
-				},
-			},
-			default: '',
-			description: 'The filterKeyResults parameter',
-			routing: {
-				request: {
-					qs: {
-						filterKeyResults: '={{$parameter.filterKeyResults}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'OwnerId',
-			name: 'ownerId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-team-objectives'],
-				},
-			},
-			default: '',
-			description: 'The ownerId parameter',
-			routing: {
-				request: {
-					qs: {
-						ownerId: '={{$parameter.ownerId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'PeriodId',
-			name: 'periodId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-team-objectives'],
-				},
-			},
-			default: '',
-			description: 'The periodId parameter',
-			routing: {
-				request: {
-					qs: {
-						periodId: '={{$parameter.periodId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'All',
-			name: 'all',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-periods'],
-				},
-			},
-			default: '',
-			description: 'The all parameter',
-			routing: {
-				request: {
-					qs: {
-						all: '={{$parameter.all}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'All',
-			name: 'all',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-tags'],
-				},
-			},
-			default: '',
-			description: 'The all parameter',
-			routing: {
-				request: {
-					qs: {
-						all: '={{$parameter.all}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'All',
-			name: 'all',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-categories'],
-				},
-			},
-			default: '',
-			description: 'The all parameter',
-			routing: {
-				request: {
-					qs: {
-						all: '={{$parameter.all}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'FilterKeyResults',
-			name: 'filterKeyResults',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objectives-to-update'],
-				},
-			},
-			default: '',
-			description: 'The filterKeyResults parameter',
-			routing: {
-				request: {
-					qs: {
-						filterKeyResults: '={{$parameter.filterKeyResults}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'PeriodId',
-			name: 'periodId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objectives-to-update'],
-				},
-			},
-			default: '',
-			description: 'The periodId parameter',
-			routing: {
-				request: {
-					qs: {
-						periodId: '={{$parameter.periodId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'UserId',
-			name: 'userId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objectives-to-update'],
-				},
-			},
-			default: '',
-			description: 'The userId parameter',
-			routing: {
-				request: {
-					qs: {
-						userId: '={{$parameter.userId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'FilterKeyResults',
-			name: 'filterKeyResults',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objective-drafts'],
-				},
-			},
-			default: '',
-			description: 'The filterKeyResults parameter',
-			routing: {
-				request: {
-					qs: {
-						filterKeyResults: '={{$parameter.filterKeyResults}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'PeriodId',
-			name: 'periodId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objective-drafts'],
-				},
-			},
-			default: '',
-			description: 'The periodId parameter',
-			routing: {
-				request: {
-					qs: {
-						periodId: '={{$parameter.periodId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'UserId',
-			name: 'userId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['list-objective-drafts'],
-				},
-			},
-			default: '',
-			description: 'The userId parameter',
-			routing: {
-				request: {
-					qs: {
-						userId: '={{$parameter.userId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'FilterKeyResults',
-			name: 'filterKeyResults',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['get-company-objectives-report'],
-				},
-			},
-			default: '',
-			description: 'The filterKeyResults parameter',
-			routing: {
-				request: {
-					qs: {
-						filterKeyResults: '={{$parameter.filterKeyResults}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'PeriodId',
-			name: 'periodId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['get-company-objectives-report'],
-				},
-			},
-			default: '',
-			description: 'The periodId parameter',
-			routing: {
-				request: {
-					qs: {
-						periodId: '={{$parameter.periodId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'Type',
-			name: 'type',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['get-company-objectives-report'],
-				},
-			},
-			default: '',
-			description: 'The type parameter',
-			routing: {
-				request: {
-					qs: {
-						type: '={{$parameter.type}}',
-					},
-				},
-			},
-		},
+	// ID fields
 	{
-		displayName: 'ID',
-		name: 'id',
+		displayName: 'Objective ID',
+		name: 'objectiveId',
 		type: 'string',
-		required: true,
 		displayOptions: {
 			show: {
 				resource: ['objectives'],
-				operation: ['get-key-result-chart', 'get-key-result-values', 'update-objective', 'update-key-result', 'update-key-result-tags', 'update-tag', 'update-category', 'delete-objective', 'delete-key-result', 'delete-tag', 'delete-category'],
+				operation: ['updateObjective', 'deleteObjective'],
 			},
 		},
 		default: '',
-		description: 'The ID of the objective, key result, tag, or category',
+		required: true,
+		description: 'The ID of the objective',
 	},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['create-objective'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+	{
+		displayName: 'Key Result ID',
+		name: 'keyResultId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: [
+					'getKeyResultChart',
+					'getKeyResultValues',
+					'updateKeyResult',
+					'updateKeyResultTags',
+					'deleteKeyResult',
+				],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['create-key-result'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		required: true,
+		description: 'The ID of the key result',
+	},
+	{
+		displayName: 'Tag ID',
+		name: 'tagId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['updateTag', 'deleteTag'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['create-tag'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		required: true,
+		description: 'The ID of the tag',
+	},
+	{
+		displayName: 'Category ID',
+		name: 'categoryId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['updateCategory', 'deleteCategory'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['create-category'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['update-objective'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		required: true,
+		description: 'The ID of the category',
+	},
+	// Query parameters
+	{
+		displayName: 'Filter Key Results',
+		name: 'filterKeyResults',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: [
+					'listObjectives',
+					'listPersonalObjectives',
+					'listTeamObjectives',
+					'listObjectivesToUpdate',
+					'listObjectiveDrafts',
+					'getCompanyObjectivesReport',
+				],
 			},
 		},
-		{
-			displayName: 'PeriodId',
-			name: 'periodId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['update-objective'],
-				},
-			},
-			default: '',
-			description: 'The periodId parameter',
-			routing: {
-				request: {
-					qs: {
-						periodId: '={{$parameter.periodId}}',
-					},
-				},
-			},
-		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['update-key-result'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		description: 'Filter key results',
+	},
+	{
+		displayName: 'Period ID',
+		name: 'periodId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: [
+					'listObjectives',
+					'listPersonalObjectives',
+					'listTeamObjectives',
+					'listObjectivesToUpdate',
+					'listObjectiveDrafts',
+					'getCompanyObjectivesReport',
+					'updateObjective',
+					'updateKeyResultTags',
+				],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['update-key-result-tags'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		description: 'The period ID',
+	},
+	{
+		displayName: 'Query',
+		name: 'query',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['listObjectives'],
 			},
 		},
-		{
-			displayName: 'PeriodId',
-			name: 'periodId',
-			type: 'string',
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['update-key-result-tags'],
-				},
-			},
-			default: '',
-			description: 'The periodId parameter',
-			routing: {
-				request: {
-					qs: {
-						periodId: '={{$parameter.periodId}}',
-					},
-				},
+		default: '',
+		description: 'Search query',
+	},
+	{
+		displayName: 'Include Sample Goal',
+		name: 'includeSampleGoal',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['listPersonalObjectives'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['update-tag'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		description: 'Include sample goal',
+	},
+	{
+		displayName: 'Owner ID',
+		name: 'ownerId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['listPersonalObjectives', 'listTeamObjectives'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['objectives'],
-					operation: ['update-category'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		description: 'The owner ID',
+	},
+	{
+		displayName: 'Type',
+		name: 'type',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['listPersonalObjectives', 'getCompanyObjectivesReport'],
 			},
 		},
+		default: '',
+		description: 'The type',
+	},
+	{
+		displayName: 'User ID',
+		name: 'userId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['listObjectivesToUpdate', 'listObjectiveDrafts'],
+			},
+		},
+		default: '',
+		description: 'The user ID',
+	},
+	{
+		displayName: 'All',
+		name: 'all',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['listPeriods', 'listTags', 'listCategories'],
+			},
+		},
+		default: '',
+		description: 'Return all results',
+	},
+	// JSON body fields
+	{
+		displayName: 'Objective Data',
+		name: 'objectiveData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['createObjective', 'updateObjective'],
+			},
+		},
+		default: '',
+		placeholder: '{"name":"Objective Name","description":"Description","startsAt":"2025-01-01T12:00:00","expiresAt":"2025-01-01T12:00:00","status":"GOOD","owners":[{"ownerID":12345,"ownerType":"USER","primary":true}],"periodID":2,"keyResults":[],"tags":[],"writeAccess":true,"type":"PERSONAL"}',
+		required: true,
+		description: 'JSON object containing objective configuration',
+	},
+	{
+		displayName: 'Key Result Data',
+		name: 'keyResultData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['createKeyResult', 'updateKeyResult'],
+			},
+		},
+		default: '',
+		placeholder: '{"keyResult":{"state":"OPEN","ownerID":12345,"ownerType":"USER","owners":[{"ownerID":12345,"ownerType":"USER","primary":true}],"name":"Key Result Name","description":"Description","startValue":1,"currentValue":1,"targetValue":1,"status":"POOR","operator":"GREATER_THAN_EQUALS_TO","startsAt":"2025-01-01T12:00:00","expiresAt":"2025-01-01T12:00:00"}}',
+		required: true,
+		description: 'JSON object containing key result configuration',
+	},
+	{
+		displayName: 'Tag Data',
+		name: 'tagData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['createTag', 'updateTag'],
+			},
+		},
+		default: '',
+		placeholder: '{"name":"Tag Name","category":{"ID":1,"name":"Category Name"}}',
+		required: true,
+		description: 'JSON object containing tag configuration',
+	},
+	{
+		displayName: 'Category Data',
+		name: 'categoryData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['createCategory', 'updateCategory'],
+			},
+		},
+		default: '',
+		placeholder: '{"name":"Category Name"}',
+		required: true,
+		description: 'JSON object containing category configuration',
+	},
+	{
+		displayName: 'Tags',
+		name: 'tags',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['objectives'],
+				operation: ['updateKeyResultTags'],
+			},
+		},
+		default: '',
+		placeholder: '[1]',
+		required: true,
+		description: 'JSON array of tag IDs',
+	},
 ];

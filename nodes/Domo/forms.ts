@@ -11,196 +11,161 @@ export const formsOperations: INodeProperties[] = [
 				resource: ['forms'],
 			},
 		},
-	default: 'list-search-forms',
-	options: [
-	{
-		name: 'Create Instance',
-		value: 'create-instance',
-		action: 'Create instance',
-		routing: {
-			request: {
-				method: 'POST',
-				url: '/forms/v1/instances',
+		default: 'listSearchForms',
+		options: [
+			{
+				name: 'Create Instance',
+				value: 'createInstance',
+				action: 'Create instance',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/forms/v1/instances',
+						body: '={{JSON.parse($parameter.instanceData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Create Submission',
-		value: 'create-submission',
-		action: 'Create submission',
-		routing: {
-			request: {
-				method: 'POST',
-				url: '/forms/v1/instances/={{$parameter.id}}/submission',
+			{
+				name: 'Create Submission',
+				value: 'createSubmission',
+				action: 'Create submission',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{ "/api/forms/v1/instances/" + $parameter.formId + "/submission" }}',
+						body: '={{JSON.parse($parameter.submissionData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Get Form',
-		value: 'get-form',
-		action: 'Get form',
-		routing: {
-			request: {
-				method: 'GET',
-				url: '/forms/v1/={{$parameter.id}}',
+			{
+				name: 'Get Form',
+				value: 'getForm',
+				action: 'Get form',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/forms/v1/" + $parameter.formId }}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'List/Search Forms',
-		value: 'list-search-forms',
-		action: 'List search forms',
-		routing: {
-			request: {
-				method: 'POST',
-				url: '/search/v1/query',
+			{
+				name: 'List/Search Forms',
+				value: 'listSearchForms',
+				action: 'List search forms',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/search/v1/query',
+						body: '={{JSON.parse($parameter.searchData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Update Form Fields',
-		value: 'update-form-fields',
-		action: 'Update form fields',
-		routing: {
-			request: {
-				method: 'POST',
-				url: '/forms/v1/={{$parameter.id}}/hydration',
+			{
+				name: 'Update Form Fields',
+				value: 'updateFormFields',
+				action: 'Update form fields',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{ "/api/forms/v1/" + $parameter.formId + "/hydration" }}',
+						body: '={{JSON.parse($parameter.fieldData)}}',
+					},
+				},
 			},
-		},
-	},
-	{
-		name: 'Update Instance',
-		value: 'update-instance',
-		action: 'Update instance',
-		routing: {
-			request: {
-				method: 'PUT',
-				url: '/forms/v1/instances/={{$parameter.id}}',
+			{
+				name: 'Update Instance',
+				value: 'updateInstance',
+				action: 'Update instance',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '={{ "/api/forms/v1/instances/" + $parameter.formId }}',
+						body: '={{JSON.parse($parameter.instanceData)}}',
+					},
+				},
 			},
-		},
-	},
-	],
+		],
 	},
 ];
 
 export const formsFields: INodeProperties[] = [
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['forms'],
-					operation: ['list-search-forms'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
-			},
-		},
+	// Form ID field
 	{
 		displayName: 'Form ID',
-		name: 'id',
+		name: 'formId',
 		type: 'string',
-		required: true,
 		displayOptions: {
 			show: {
 				resource: ['forms'],
-				operation: ['get-form', 'create-submission', 'update-instance', 'update-form-fields'],
+				operation: ['getForm', 'createSubmission', 'updateInstance', 'updateFormFields'],
 			},
 		},
 		default: '',
+		required: true,
 		description: 'The ID of the form or instance',
 	},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['forms'],
-					operation: ['create-instance'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+	// List/Search Forms fields
+	{
+		displayName: 'Search Data',
+		name: 'searchData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['forms'],
+				operation: ['listSearchForms'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['forms'],
-					operation: ['create-submission'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		placeholder: '{"count":50,"offset":0,"filters":[],"useEntities":true,"combineResults":true,"facetValueLimit":1000,"entityList":[["form"]],"sort":{"isRelevance":true,"fieldSorts":[{"field":"lastModified","sortOrder":"DESC"}]},"query":"*","hideSearchObjects":false,"state":"facet"}',
+		required: true,
+		description: 'JSON object containing search criteria',
+	},
+	// Create Instance fields
+	{
+		displayName: 'Instance Data',
+		name: 'instanceData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['forms'],
+				operation: ['createInstance', 'updateInstance'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['forms'],
-					operation: ['update-instance'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		placeholder: '{"formID":"00000000-0000-0000-0000-000000000000","fieldConfiguration":{},"submitConfiguration":{"type":"DATASET","name":"Dataset Name"}}',
+		required: true,
+		description: 'JSON object containing instance configuration',
+	},
+	// Create Submission fields
+	{
+		displayName: 'Submission Data',
+		name: 'submissionData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['forms'],
+				operation: ['createSubmission'],
 			},
 		},
-		{
-			displayName: 'Data',
-			name: 'data',
-			type: 'json',
-			required: true,
-			displayOptions: {
-				show: {
-					resource: ['forms'],
-					operation: ['update-form-fields'],
-				},
-			},
-			default: '',
-			description: 'The data to send',
-			routing: {
-				request: {
-					body: {
-						data: '={{JSON.parse($parameter.data)}}',
-					},
-				},
+		default: '',
+		placeholder: '[{"ID":"00000000-0000-0000-0000-000000000000","label":"Field Label","optional":false,"fieldType":"SINGLE_CHOICE","dataType":"text","acceptsInput":true,"acceptsOutput":true,"options":{"values":[]},"alias":"alias","isList":true,"useExternalValues":true,"displayAsDropdown":true,"value":"value"}]',
+		required: true,
+		description: 'JSON array containing submission data',
+	},
+	// Update Form Fields
+	{
+		displayName: 'Field Data',
+		name: 'fieldData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['forms'],
+				operation: ['updateFormFields'],
 			},
 		},
+		default: '',
+		placeholder: '{"00000000-0000-0000-0000-000000000000":{"options":{"type":"DATASET","customMapping":null,"datasetMapping":{"ID":"00000000-0000-0000-0000-000000000000","column":"Column 1"}},"value":{"type":"DATASET"}}}',
+		required: true,
+		description: 'JSON object containing field configuration',
+	},
 ];

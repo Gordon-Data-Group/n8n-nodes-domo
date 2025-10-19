@@ -1,6 +1,4 @@
 import { INodeProperties } from 'n8n-workflow';
-// import { IExecuteFunctions } from 'n8n-workflow';
-// import { parseResponse } from './utils';
 
 export const groupOperations: INodeProperties[] = [
 	{
@@ -15,26 +13,56 @@ export const groupOperations: INodeProperties[] = [
 		},
 		options: [
 			{
+				name: 'Add Members to Group',
+				value: 'addMembers',
+				action: 'Add members to group',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '/api/content/v2/groups/access',
+						body: '={{JSON.parse($parameter.membersData)}}',
+					},
+				},
+			},
+			{
+				name: 'Add or Remove Owners',
+				value: 'addRemoveOwners',
+				action: 'Add or remove owners',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '/api/content/v2/groups/access',
+						body: '={{JSON.parse($parameter.ownersData)}}',
+					},
+				},
+			},
+			{
+				name: 'Bulk Delete Groups',
+				value: 'bulkDelete',
+				action: 'Bulk delete groups',
+				routing: {
+					request: {
+						method: 'DELETE',
+						url: '/api/content/v2/groups',
+						body: '={{JSON.parse($parameter.groupIds)}}',
+					},
+				},
+			},
+			{
 				name: 'Create Group',
 				value: 'create',
-				description: 'Create a new group',
 				action: 'Create group',
 				routing: {
 					request: {
 						method: 'POST',
-						url: '/api/content/v3/groups',
-						body: {
-							name: '={{$parameter.name}}',
-							type: '={{$parameter.type}}',
-							dynamicDefinition: '={{$parameter.dynamicDefinitionJson ? JSON.parse($parameter.dynamicDefinitionJson) : undefined}}',
-						},
+						url: '/api/content/v2/groups',
+						body: '={{JSON.parse($parameter.groupData)}}',
 					},
 				},
 			},
 			{
 				name: 'Delete Group',
 				value: 'delete',
-				description: 'Delete a group by ID',
 				action: 'Delete group',
 				routing: {
 					request: {
@@ -44,16 +72,60 @@ export const groupOperations: INodeProperties[] = [
 				},
 			},
 			{
+				name: 'Get Avatar',
+				value: 'getAvatar',
+				action: 'Get avatar',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/content/v1/avatar/GROUP/" + $parameter.groupId }}',
+						qs: {
+							size: '={{$parameter.size}}',
+							defaultBackground: '={{$parameter.defaultBackground}}',
+							defaultForeground: '={{$parameter.defaultForeground}}',
+							defaultText: '={{$parameter.defaultText}}',
+						},
+					},
+				},
+			},
+			{
 				name: 'Get Group',
 				value: 'get',
-				description: 'Get a specific group by ID',
 				action: 'Get a group',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '={{ "/api/content/v3/groups/" + $parameter.groupId }}',
+						url: '={{ "/api/content/v2/groups/" + $parameter.groupId }}',
+					},
+				},
+			},
+			{
+				name: 'Get Groups',
+				value: 'getGroups',
+				action: 'Get groups',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '/api/content/v2/groups/get',
 						qs: {
-							includeUsers: true,
+							includeActive: '={{$parameter.includeActive}}',
+							includeUsers: '={{$parameter.includeUsers}}',
+						},
+						body: '={{JSON.parse($parameter.groupIds)}}',
+					},
+				},
+			},
+			{
+				name: 'Get Permissions',
+				value: 'getPermissions',
+				action: 'Get permissions',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/content/v2/groups/" + $parameter.groupId + "/permissions" }}',
+						qs: {
+							checkOwnership: '={{$parameter.checkOwnership}}',
+							includeUsers: '={{$parameter.includeUsers}}',
 						},
 					},
 				},
@@ -61,33 +133,38 @@ export const groupOperations: INodeProperties[] = [
 			{
 				name: 'List Groups',
 				value: 'list',
-				description: 'Get a list of groups',
 				action: 'List groups',
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/content/v3/groups',
+						url: '/api/content/v2/groups/grouplist',
 						qs: {
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
+							ascending: '={{$parameter.ascending}}',
+							sort: '={{$parameter.sort}}',
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
+							includeFullMembership: '={{$parameter.includeFullMembership}}',
+							owner: '={{$parameter.owner}}',
+							ownerType: '={{$parameter.ownerType}}',
+							groupType: '={{$parameter.groupType}}',
+							createdAfter: '={{$parameter.createdAfter}}',
+							createdBefore: '={{$parameter.createdBefore}}',
+							members: '={{$parameter.members}}',
+							isManageable: '={{$parameter.isManageable}}',
+							search: '={{$parameter.search}}',
 						},
 					},
 				},
 			},
 			{
-				name: 'Update Group',
-				value: 'update',
-				description: 'Update a group',
-				action: 'Update group',
+				name: 'Update Dynamic Group Rules',
+				value: 'updateDynamicGroupRules',
+				action: 'Update dynamic group rules',
 				routing: {
 					request: {
 						method: 'PUT',
 						url: '/api/content/v2/groups',
-						body: [{
-							groupId: '={{$parameter.groupId}}',
-							name: '={{$parameter.name}}',
-							description: '={{$parameter.description}}',
-						}],
+						body: '={{JSON.parse($parameter.groupData)}}',
 					},
 				},
 			},
@@ -97,6 +174,22 @@ export const groupOperations: INodeProperties[] = [
 ];
 
 export const groupFields: INodeProperties[] = [
+	// Group ID field
+	{
+		displayName: 'Group ID',
+		name: 'groupId',
+		type: 'number',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['get', 'delete', 'getPermissions', 'getAvatar'],
+			},
+		},
+		default: null,
+		required: true,
+		description: 'The ID of the group',
+	},
+	// List Groups fields
 	{
 		displayName: 'Limit',
 		name: 'limit',
@@ -130,87 +223,304 @@ export const groupFields: INodeProperties[] = [
 		description: 'Number of groups to skip',
 	},
 	{
-		displayName: 'Group ID',
-		name: 'groupId',
-		type: 'number',
+		displayName: 'Ascending',
+		name: 'ascending',
+		type: 'boolean',
 		displayOptions: {
 			show: {
 				resource: ['group'],
-				operation: ['get', 'delete', 'update'],
+				operation: ['list'],
 			},
 		},
-		default: null,
-		required: true,
-		description: 'The ID of the group',
+		default: true,
+		description: 'Whether to sort in ascending order',
 	},
 	{
-		displayName: 'Name',
-		name: 'name',
+		displayName: 'Sort',
+		name: 'sort',
 		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['group'],
-				operation: ['create', 'update'],
+				operation: ['list'],
 			},
 		},
 		default: '',
-		description: 'The name of the group',
-		required: true,
+		description: 'Sort field',
 	},
 	{
-		displayName: 'Description',
-		name: 'description',
+		displayName: 'Include Full Membership',
+		name: 'includeFullMembership',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: false,
+		description: 'Whether to include full membership details',
+	},
+	{
+		displayName: 'Owner',
+		name: 'owner',
 		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['group'],
-				operation: ['create', 'update'],
+				operation: ['list'],
 			},
 		},
 		default: '',
-		description: 'The description of the group',
+		description: 'Filter by owner ID',
 	},
 	{
-		displayName: 'Type',
-		name: 'type',
-		type: 'options',
+		displayName: 'Owner Type',
+		name: 'ownerType',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['group'],
-				operation: ['create'],
+				operation: ['list'],
 			},
 		},
-		options: [
-			{
-				name: 'Closed',
-				value: 'closed',
-			},
-			{
-				name: 'Open',
-				value: 'open',
-			},
-			{
-				name: 'Dynamic',
-				value: 'dynamic',
-			},
-		],
-		default: 'closed',
-		description: 'The type of the group',
-		required: true,
+		default: '',
+		description: 'Filter by owner type (USER or GROUP)',
 	},
 	{
-		displayName: 'Dynamic Definition JSON',
-		name: 'dynamicDefinitionJson',
+		displayName: 'Group Type',
+		name: 'groupType',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: '',
+		description: 'Filter by group type',
+	},
+	{
+		displayName: 'Created After',
+		name: 'createdAfter',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: '',
+		description: 'Filter by creation date (after)',
+	},
+	{
+		displayName: 'Created Before',
+		name: 'createdBefore',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: '',
+		description: 'Filter by creation date (before)',
+	},
+	{
+		displayName: 'Members',
+		name: 'members',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: '',
+		description: 'Filter by member IDs',
+	},
+	{
+		displayName: 'Is Manageable',
+		name: 'isManageable',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: false,
+		description: 'Whether to filter by manageable groups',
+	},
+	{
+		displayName: 'Search',
+		name: 'search',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: '',
+		description: 'Search term',
+	},
+	// Get Groups fields
+	{
+		displayName: 'Group IDs',
+		name: 'groupIds',
 		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['group'],
-				operation: ['create', 'update'],
-				type: ['dynamic'],
+				operation: ['getGroups', 'bulkDelete'],
 			},
 		},
 		default: '',
-		description: 'JSON structure for dynamic group definition with expressions',
-		placeholder: '{\n      "expression": {\n        "operator": "OR",\n        "expressions": [...]\n      }\n    }',
+		placeholder: '["1234","2345"]',
+		required: true,
+		description: 'JSON array of group IDs',
+	},
+	{
+		displayName: 'Include Active',
+		name: 'includeActive',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['getGroups'],
+			},
+		},
+		default: false,
+		description: 'Whether to include active status',
+	},
+	{
+		displayName: 'Include Users',
+		name: 'includeUsers',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['getGroups', 'getPermissions'],
+			},
+		},
+		default: false,
+		description: 'Whether to include user details',
+	},
+	// Get Permissions fields
+	{
+		displayName: 'Check Ownership',
+		name: 'checkOwnership',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['getPermissions'],
+			},
+		},
+		default: false,
+		description: 'Whether to check ownership',
+	},
+	// Get Avatar fields
+	{
+		displayName: 'Size',
+		name: 'size',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['getAvatar'],
+			},
+		},
+		default: '',
+		description: 'Avatar size',
+	},
+	{
+		displayName: 'Default Background',
+		name: 'defaultBackground',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['getAvatar'],
+			},
+		},
+		default: '',
+		description: 'Default background color',
+	},
+	{
+		displayName: 'Default Foreground',
+		name: 'defaultForeground',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['getAvatar'],
+			},
+		},
+		default: '',
+		description: 'Default foreground color',
+	},
+	{
+		displayName: 'Default Text',
+		name: 'defaultText',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['getAvatar'],
+			},
+		},
+		default: '',
+		description: 'Default text for avatar',
+	},
+	// Create/Update Group fields
+	{
+		displayName: 'Group Data',
+		name: 'groupData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['create', 'updateDynamicGroupRules'],
+			},
+		},
+		default: '',
+		placeholder: '{"name":"Group Name","type":"dynamic","description":""}',
+		required: true,
+		description: 'JSON object containing group configuration',
+	},
+	// Add/Remove Owners fields
+	{
+		displayName: 'Owners Data',
+		name: 'ownersData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['addRemoveOwners'],
+			},
+		},
+		default: '',
+		placeholder: '[{"groupID":123456,"addOwners":[{"type":"GROUP","ID":"123456"}],"removeOwners":[{"type":"USER","ID":"123456"}]}]',
+		required: true,
+		description: 'JSON array containing owners to add or remove',
+	},
+	// Add Members fields
+	{
+		displayName: 'Members Data',
+		name: 'membersData',
+		type: 'json',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['addMembers'],
+			},
+		},
+		default: '',
+		placeholder: '[{"groupID":252073910,"addMembers":[{"type":"USER","ID":"901072511"}]}]',
+		required: true,
+		description: 'JSON array containing members to add',
 	},
 ];
+
