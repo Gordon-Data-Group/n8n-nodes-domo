@@ -18,7 +18,6 @@ export const userOperations: INodeProperties[] = [
 			{
 				name: 'Create User',
 				value: 'create',
-				description: 'Create a new user',
 				action: 'Create a user',
 				routing: {
 					request: {
@@ -35,19 +34,17 @@ export const userOperations: INodeProperties[] = [
 			{
 				name: 'Delete User',
 				value: 'delete',
-				description: 'Delete a user by ID',
 				action: 'Delete a user',
 				routing: {
 					request: {
 						method: 'DELETE',
-						url: '=/api/content/v3/users/{{ $parameter["userId"].toString() }}',
+						url: '=/api/identity/v1/users/{{ $parameter["userId"].toString() }}',
 					},
 				},
 			},
 			{
 				name: 'Get Authenticated User',
 				value: 'me',
-				description: 'Get the current authenticated user',
 				action: 'Get authenticated user',
 				routing: {
 					request: {
@@ -59,7 +56,6 @@ export const userOperations: INodeProperties[] = [
 			{
 				name: 'Get User',
 				value: 'get',
-				description: 'Get a specific user by ID',
 				action: 'Get a user',
 				routing: {
 					request: {
@@ -71,7 +67,6 @@ export const userOperations: INodeProperties[] = [
 			{
 				name: 'List Users',
 				value: 'list',
-				description: 'Get a list of users',
 				action: 'List users',
 				routing: {
 					request: {
@@ -94,7 +89,6 @@ export const userOperations: INodeProperties[] = [
 			{
 				name: 'Update User',
 				value: 'update',
-				description: 'Update user details by ID',
 				action: 'Update a user',
 				routing: {
 					request: {

@@ -20,7 +20,7 @@ export const reportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v1/reports',
+				url: '/api/content/v1/reports',
 			},
 		},
 	},
@@ -31,7 +31,7 @@ export const reportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'DELETE',
-				url: '/content/v1/reports/={{$parameter.id}}',
+				url: '={{ "/api/content/v1/reports/" + $parameter.id }}',
 			},
 		},
 	},
@@ -42,7 +42,7 @@ export const reportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/reports',
+				url: '/api/content/v1/reports',
 			},
 		},
 	},
@@ -53,7 +53,7 @@ export const reportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/content/v1/reports/={{$parameter.id}}',
+				url: '={{ "/api/content/v1/reports/" + $parameter.id }}',
 			},
 		},
 	},

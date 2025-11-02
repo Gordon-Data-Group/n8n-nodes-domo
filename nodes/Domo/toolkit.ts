@@ -20,7 +20,7 @@ export const toolkitOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/executor/v1/applications/={{$parameter.appId}}/jobs/={{$parameter.jobId}}/triggers',
+				url: '={{ "/api/executor/v1/applications/" + $parameter.appId + "/jobs/" + $parameter.jobId + "/triggers" }}',
 			},
 		},
 	},
@@ -31,7 +31,7 @@ export const toolkitOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'DELETE',
-				url: '/executor/v1/applications/={{$parameter.appId}}/jobs/={{$parameter.jobId}}',
+				url: '={{ "/api/executor/v1/applications/" + $parameter.appId + "/jobs/" + $parameter.jobId }}',
 			},
 		},
 	},
@@ -42,7 +42,7 @@ export const toolkitOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/executor/v1/applications/={{$parameter.applicationId}}/jobs/={{$parameter.jobId}}',
+				url: '={{ "/api/executor/v1/applications/" + $parameter.applicationId + "/jobs/" + $parameter.jobId }}',
 			},
 		},
 	},
@@ -53,7 +53,7 @@ export const toolkitOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/executor/v2/applications/={{$parameter.applicationId}}/jobs',
+				url: '={{ "/api/executor/v2/applications/" + $parameter.applicationId + "/jobs" }}',
 			},
 		},
 	},
@@ -64,7 +64,7 @@ export const toolkitOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/executor/v1/applications',
+				url: '/api/executor/v1/applications',
 			},
 		},
 	},
@@ -75,7 +75,7 @@ export const toolkitOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/executor/v1/applications/={{$parameter.applicationId}}/jobs/={{$parameter.jobId}}/executions',
+				url: '={{ "/api/executor/v1/applications/" + $parameter.applicationId + "/jobs/" + $parameter.jobId + "/executions" }}',
 			},
 		},
 	},
@@ -86,7 +86,7 @@ export const toolkitOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/executor/v1/applications/={{$parameter.applicationId}}/jobs/={{$parameter.jobId}}/share',
+				url: '={{ "/api/executor/v1/applications/" + $parameter.applicationId + "/jobs/" + $parameter.jobId + "/share" }}',
 			},
 		},
 	},
@@ -97,7 +97,7 @@ export const toolkitOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/executor/v1/applications/={{$parameter.appId}}/jobs/={{$parameter.jobId}}',
+				url: '={{ "/api/executor/v1/applications/" + $parameter.appId + "/jobs/" + $parameter.jobId }}',
 			},
 		},
 	},

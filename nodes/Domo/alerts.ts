@@ -72,9 +72,8 @@ export const alertOperations: INodeProperties[] = [
 						url: '/api/social/v4/alerts/ids',
 						body: '={{JSON.parse($parameter.alertIds)}}',
 						qs: {
-							all: '={{$parameter.all}}',
 							subscriberId: '={{$parameter.subscriberId}}',
-							fields: '={{$parameter.fields}}',
+							all: true,
 							limit: '={{$parameter.limit}}',
 							offset: '={{$parameter.offset}}',
 						},
@@ -96,6 +95,7 @@ export const alertOperations: INodeProperties[] = [
 			{
 				name: 'List Alert Triggered Preferences',
 				value: 'listAlertTriggeredPreferences',
+				description: 'Get preferences for authenticated user',
 				action: 'List alert triggered preferences',
 				routing: {
 					request: {
@@ -114,10 +114,9 @@ export const alertOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '/api/social/v4/alerts',
 						qs: {
-							all: '={{$parameter.all}}',
-							fields: '={{$parameter.fields}}',
 							limit: '={{Math.min($parameter.limit || 50, 500)}}',
 							offset: '={{$parameter.offset || 0}}',
+							all: true,
 						},
 					},
 				},
@@ -134,18 +133,6 @@ export const alertOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Search Alerts',
-				value: 'searchAlerts',
-				action: 'Search alerts',
-				routing: {
-					request: {
-						method: 'POST',
-						url: '/api/search/v1/query',
-						body: '={{JSON.parse($parameter.searchQuery)}}',
-					},
-				},
-			},
-			{
 				name: 'Share Alert',
 				value: 'shareAlert',
 				description: 'Share an alert',
@@ -154,13 +141,19 @@ export const alertOperations: INodeProperties[] = [
 					request: {
 						method: 'POST',
 						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId + "/share" }}',
-						body: '={{JSON.parse($parameter.shareData)}}',
+						body: {
+							userMessage: '={{$parameter.shareMessage}}',
+							alertSubscriptions:'={{ $parameter["alertSubscriptions"]["alertSubscription"] }}',
+							sendEmail: '={{$parameter.sendEmail}}',
+							metadata: {}
+						},
 					},
 				},
 			},
 			{
 				name: 'Unshare Alert',
 				value: 'unshareAlert',
+				description: 'Unshare an alert',
 				action: 'Unshare alert',
 				routing: {
 					request: {
@@ -174,19 +167,6 @@ export const alertOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Update Alert',
-				value: 'updateAlert',
-				description: 'Update an alert',
-				action: 'Update alert',
-				routing: {
-					request: {
-						method: 'PATCH',
-						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId }}',
-						body: '={{JSON.parse($parameter.alertData)}}',
-					},
-				},
-			},
-			{
 				name: 'Update Alert Message',
 				value: 'updateAlertMessage',
 				description: 'Update alert message template',
@@ -195,7 +175,43 @@ export const alertOperations: INodeProperties[] = [
 					request: {
 						method: 'PUT',
 						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId + "/message-template" }}',
-						body: '={{JSON.parse($parameter.messageData)}}',
+						body: {
+							body: '={{$parameter.body}}',
+							footer: '={{$parameter.footer}}',
+							header: '={{$parameter.header}}',
+						},
+					},
+				},
+			},
+			{
+				name: 'Update Alert Name',
+				value: 'updateAlertName',
+				description: 'Update an alert name',
+				action: 'Update alert',
+				routing: {
+					request: {
+						method: 'PATCH',
+						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId }}',
+						body: {
+							name: '={{$parameter.name}}',
+							id: '={{$parameter.alertId}}',
+						}
+					},
+				},
+			},
+			{
+				name: 'Update Alert Owner',
+				value: 'updateAlertOwner',
+				description: 'Update an alert owner',
+				action: 'Update alert',
+				routing: {
+					request: {
+						method: 'PATCH',
+						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId }}',
+						body: {
+							owner: '={{$parameter.ownerId}}',
+							id: '={{$parameter.alertId}}',
+						}
 					},
 				},
 			},
@@ -232,8 +248,9 @@ export const alertFields: INodeProperties[] = [
 					'deleteAlert',
 					'shareAlert',
 					'unshareAlert',
-					'updateAlert',
 					'updateAlertMessage',
+					'updateAlertName',
+					'updateAlertOwner',
 					'updateAlertRules',
 				],
 			},
@@ -258,32 +275,6 @@ export const alertFields: INodeProperties[] = [
 		description: 'The ID of the alert action',
 	},
 	// List Alerts fields
-	{
-		displayName: 'All',
-		name: 'all',
-		type: 'boolean',
-		displayOptions: {
-			show: {
-				resource: ['alert'],
-				operation: ['listAlerts', 'getAlerts'],
-			},
-		},
-		default: false,
-		description: 'Whether to retrieve all alerts',
-	},
-	{
-		displayName: 'Fields',
-		name: 'fields',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['alert'],
-				operation: ['listAlerts', 'getAlerts'],
-			},
-		},
-		default: '',
-		description: 'Comma-separated list of fields to return',
-	},
 	{
 		displayName: 'Limit',
 		name: 'limit',
@@ -327,9 +318,10 @@ export const alertFields: INodeProperties[] = [
 				operation: ['getAlerts'],
 			},
 		},
-		default: '["123","456"]',
+		default: '',
+		placeholder: '[123,456]',
 		required: true,
-		description: 'JSON array of alert IDs',
+		description: 'Array of alert IDs',
 	},
 	{
 		displayName: 'Subscriber ID',
@@ -338,27 +330,36 @@ export const alertFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['alert'],
-				operation: ['getAlerts', 'unshareAlert'],
+				operation: ['unshareAlert'],
 			},
 		},
 		default: '',
-		description: 'Subscriber ID to filter by',
 	},
-	// Search Alerts fields
 	{
-		displayName: 'Search Query',
-		name: 'searchQuery',
-		type: 'json',
+		displayName: 'Alert Name',
+		name: 'name',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['alert'],
-				operation: ['searchAlerts'],
+				operation: ['updateAlertName'],
 			},
 		},
 		default: '',
-		placeholder: '{"count":1000,"offset":0,"combineResults":false,"query":"*","filters":[],"entityList":[["alert"]]}',
+	},
+	{
+		displayName: 'Owner ID',
+		name: 'ownerId',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['alert'],
+				operation: ['updateAlertOwner'],
+			},
+		},
+		default: '',
 		required: true,
-		description: 'JSON query object for searching alerts',
+		description: 'The User ID of the owner',
 	},
 	// Create Alert fields
 	{
@@ -376,21 +377,73 @@ export const alertFields: INodeProperties[] = [
 		required: true,
 		description: 'JSON object containing alert configuration',
 	},
-	// Share Alert fields
 	{
-		displayName: 'Share Data',
-		name: 'shareData',
-		type: 'json',
+		displayName: 'Alert Subscriptions',
+		name: 'alertSubscriptions',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
 		displayOptions: {
 			show: {
 				resource: ['alert'],
 				operation: ['shareAlert'],
 			},
 		},
-		default: '',
-		placeholder: '{"userMessage":"","alertSubscriptions":[{"subscriberId":123456,"type":"USER"}],"sendEmail":true}',
-		required: true,
-		description: 'JSON object containing share configuration',
+		default: {},
+		options: [
+			{
+				displayName: 'Alert Subscription',
+				name: 'alertSubscription',
+				values: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{ name: 'User', value: 'USER' },
+							{ name: 'Group', value: 'GROUP' },
+						],
+						default: 'USER',
+						required: true,
+					},
+					{
+						displayName: 'Subscriber ID',
+						name: 'subscriberId',
+						type: 'number',
+						default: '',
+						required: true,
+					},
+				],
+			},
+		],
+	},
+	// Share Alert fields
+	{
+		displayName: 'Share Message',
+		name: 'shareMessage',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['alert'],
+				operation: ['shareAlert'],
+			},
+		},
+		default: 'I thought you might find this alert interesting.',
+		description: 'Message to send with share'
+	},
+	{
+		displayName: 'Send Email',
+		name: 'sendEmail',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['alert'],
+				operation: ['shareAlert'],
+			},
+		},
+		default: false,
+		description: 'Whether to send email notification upon sharing alert'
 	},
 	// Update Alert Rules fields
 	{
@@ -410,9 +463,9 @@ export const alertFields: INodeProperties[] = [
 	},
 	// Update Alert Message fields
 	{
-		displayName: 'Message Data',
-		name: 'messageData',
-		type: 'json',
+		displayName: 'Body',
+		name: 'body',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['alert'],
@@ -420,22 +473,57 @@ export const alertFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		placeholder: '{"body":"","footer":"","header":"","formulas":{}}',
 		required: true,
-		description: 'JSON object containing message template',
+		description: 'HTML Body of the alert message',
+	},
+	{
+		displayName: 'Footer',
+		name: 'footer',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['alert'],
+				operation: ['updateAlertMessage'],
+			},
+		},
+		default: '',
+		description: 'HTML Footer of the alert message',
+	},
+	{
+		displayName: 'Header',
+		name: 'header',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['alert'],
+				operation: ['updateAlertMessage'],
+			},
+		},
+		default: '',
+		description: 'HTML Header of the alert message',
 	},
 	// Unshare Alert fields
 	{
 		displayName: 'Type',
 		name: 'type',
-		type: 'string',
+		type: 'options',
+		options: [
+			{
+				name: 'USER',
+				value: 'USER',
+			},
+			{
+				name: 'GROUP',
+				value: 'GROUP',
+			},
+		],
 		displayOptions: {
 			show: {
 				resource: ['alert'],
 				operation: ['unshareAlert'],
 			},
 		},
-		default: '',
-		description: 'Type of subscriber (USER or GROUP)',
+		default: 'USER',
+		description: 'Type of subscriber',
 	},
 ];

@@ -63,10 +63,6 @@ export class Domo implements INodeType {
 						value: 'appdb',
 					},
 					{
-						name: 'Approval',
-						value: 'approval',
-					},
-					{
 						name: 'Brand Kit',
 						value: 'brandKit',
 					},

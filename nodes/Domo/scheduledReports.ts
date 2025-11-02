@@ -20,7 +20,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v1/reportschedules',
+				url: '/api/content/v1/reportschedules',
 			},
 		},
 	},
@@ -31,7 +31,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v2/views',
+				url: '/api/content/v2/views',
 			},
 		},
 	},
@@ -42,7 +42,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'DELETE',
-				url: '/content/v1/reportschedules/={{$parameter.id}}',
+				url: '={{ "/api/content/v1/reportschedules/" + $parameter.id }}',
 			},
 		},
 	},
@@ -53,7 +53,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'DELETE',
-				url: '/content/v1/reportschedules/={{$parameter.id}}/unsubscribe/recipient',
+				url: '={{ "/api/content/v1/reportschedules/" + $parameter.id + "/unsubscribe/recipient" }}',
 			},
 		},
 	},
@@ -64,7 +64,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/content/v1/reportschedules/={{$parameter.id}}/enabled',
+				url: '={{ "/api/content/v1/reportschedules/" + $parameter.id + "/enabled" }}',
 			},
 		},
 	},
@@ -75,7 +75,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/reportschedules/={{$parameter.id}}',
+				url: '={{ "/api/content/v1/reportschedules/" + $parameter.id }}',
 			},
 		},
 	},
@@ -86,7 +86,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/reportschedules/={{$parameter.id}}/history',
+				url: '={{ "/api/content/v1/reportschedules/" + $parameter.id + "/history" }}',
 			},
 		},
 	},
@@ -97,7 +97,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/reportschedules/resources/={{$parameter.resourceType}}/={{$parameter.resourceId}}',
+				url: '={{ "/api/content/v1/reportschedules/resources/" + $parameter.resourceType + "/" + $parameter.resourceId }}',
 			},
 		},
 	},
@@ -108,7 +108,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v2/views/={{$parameter.id}}',
+				url: '={{ "/api/content/v2/views/" + $parameter.id }}',
 			},
 		},
 	},
@@ -119,7 +119,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/reportschedules/resources',
+				url: '/api/content/v1/reportschedules/resources',
 			},
 		},
 	},
@@ -130,7 +130,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/reportschedules',
+				url: '/api/content/v1/reportschedules',
 			},
 		},
 	},
@@ -141,7 +141,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v1/reportschedules/history/search',
+				url: '/api/content/v1/reportschedules/history/search',
 			},
 		},
 	},
@@ -152,7 +152,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v1/reportschedules/={{$parameter.id}}/sendnow',
+				url: '={{ "/api/content/v1/reportschedules/" + $parameter.id + "/sendnow" }}',
 			},
 		},
 	},
@@ -163,7 +163,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v1/reportschedules/={{$parameter.id}}/unsubscribe',
+				url: '={{ "/api/content/v1/reportschedules/" + $parameter.id + "/unsubscribe" }}',
 			},
 		},
 	},
@@ -174,7 +174,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/content/v1/reportschedules/={{$parameter.id}}',
+				url: '={{ "/api/content/v1/reportschedules/" + $parameter.id }}',
 			},
 		},
 	},
@@ -185,7 +185,7 @@ export const scheduledReportsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/content/v2/views/={{$parameter.id}}',
+				url: '={{ "/api/content/v2/views/" + $parameter.id }}',
 			},
 		},
 	},

@@ -21,7 +21,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/queues/v1/={{$parameter.queueId}}/tasks/={{$parameter.taskId}}/complete',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId + "/tasks/" + $parameter.taskId + "/complete" }}',
 			},
 		},
 	},
@@ -32,7 +32,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/queues/v1/={{$parameter.queueId}}/tasks',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId + "/tasks" }}',
 			},
 		},
 	},
@@ -44,7 +44,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/queues/v1/={{$parameter.queueId}}',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId }}',
 			},
 		},
 	},
@@ -55,7 +55,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/queues/v1/={{$parameter.queueId}}/tasks/={{$parameter.taskId}}',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId + "/tasks/" + $parameter.taskId }}',
 			},
 		},
 	},
@@ -67,7 +67,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/queues/v1',
+				url: '/api/queues/v1',
 			},
 		},
 	},
@@ -79,7 +79,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/queues/v1/tasks/list',
+				url: '/api/queues/v1/tasks/list',
 			},
 		},
 	},
@@ -91,7 +91,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/queues/v1/={{$parameter.queueId}}/tasks/={{$parameter.taskId}}/outputs',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId + "/tasks/" + $parameter.taskId + "/outputs" }}',
 			},
 		},
 	},
@@ -102,7 +102,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/search/v1/query',
+				url: '/api/search/v1/query',
 			},
 		},
 	},
@@ -113,7 +113,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/queues/v1/={{$parameter.currentQueueId}}/tasks/={{$parameter.taskId}}/move',
+				url: '={{ "/api/queues/v1/" + $parameter.currentQueueId + "/tasks/" + $parameter.taskId + "/move" }}',
 			},
 		},
 	},
@@ -125,7 +125,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/queues/v1/={{$parameter.queueId}}/tasks/={{$parameter.taskId}}/assign',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId + "/tasks/" + $parameter.taskId + "/assign" }}',
 			},
 		},
 	},
@@ -136,7 +136,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/queues/v1/={{$parameter.queueId}}/owner/={{$parameter.ownerId}}',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId + "/owner/" + $parameter.ownerId }}',
 			},
 		},
 	},
@@ -148,7 +148,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/queues/v1/={{$parameter.queueId}}/permissions',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId + "/permissions" }}',
 			},
 		},
 	},
@@ -160,7 +160,7 @@ export const taskCenterOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/queues/v1/={{$parameter.queueId}}/tasks/={{$parameter.taskId}}/void',
+				url: '={{ "/api/queues/v1/" + $parameter.queueId + "/tasks/" + $parameter.taskId + "/void" }}',
 			},
 		},
 	},

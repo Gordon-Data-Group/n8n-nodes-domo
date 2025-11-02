@@ -20,7 +20,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/version/v1/repositories/={{$parameter.repositoryId}}/commitRequests',
+				url: '={{ "/api/version/v1/repositories/" + $parameter.repositoryId + "/commitRequests" }}',
 			},
 		},
 	},
@@ -31,7 +31,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/version/v1/repositories/={{$parameter.repositoryId}}/access',
+				url: '={{ "/api/version/v1/repositories/" + $parameter.repositoryId + "/access" }}',
 			},
 		},
 	},
@@ -42,7 +42,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/version/v1/repositories/={{$parameter.repositoryId}}',
+				url: '={{ "/api/version/v1/repositories/" + $parameter.repositoryId }}',
 			},
 		},
 	},
@@ -53,7 +53,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/version/v1/repositories/={{$parameter.repositoryId}}/commitRequests',
+				url: '={{ "/api/version/v1/repositories/" + $parameter.repositoryId + "/commitRequests" }}',
 			},
 		},
 	},
@@ -64,7 +64,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/version/v1/repositories/={{$parameter.repositoryId}}/commits',
+				url: '={{ "/api/version/v1/repositories/" + $parameter.repositoryId + "/commits" }}',
 			},
 		},
 	},
@@ -75,7 +75,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/version/v1/settings',
+				url: '/api/version/v1/settings',
 			},
 		},
 	},
@@ -86,7 +86,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/version/v1/repositories/={{$parameter.repositoryId}}/permissions',
+				url: '={{ "/api/version/v1/repositories/" + $parameter.repositoryId + "/permissions" }}',
 			},
 		},
 	},
@@ -97,7 +97,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/version/v1/commitRequests/search',
+				url: '/api/version/v1/commitRequests/search',
 			},
 		},
 	},
@@ -108,7 +108,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/version/v1/authorizations',
+				url: '/api/version/v1/authorizations',
 			},
 		},
 	},
@@ -119,7 +119,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/version/v1/promotions/search',
+				url: '/api/version/v1/promotions/search',
 			},
 		},
 	},
@@ -130,7 +130,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/version/v1/repositories/search',
+				url: '/api/version/v1/repositories/search',
 			},
 		},
 	},
@@ -141,7 +141,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/version/v1/repositories/={{$parameter.repositoryId}}/deployments/={{$parameter.deploymentId}}/promoteAndSeed',
+				url: '={{ "/api/version/v1/repositories/" + $parameter.repositoryId + "/deployments/" + $parameter.deploymentId + "/promoteAndSeed" }}',
 			},
 		},
 	},
@@ -152,7 +152,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/version/v1/authorizations/aliases',
+				url: '/api/version/v1/authorizations/aliases',
 			},
 		},
 	},
@@ -164,7 +164,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/version/v1/repositories:repositoryId/access',
+				url: '/api/version/v1/repositories:repositoryId/access',
 			},
 		},
 	},
@@ -175,7 +175,7 @@ export const sandboxOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/version/v1/repositories/={{$parameter.repositoryId}}/permissions',
+				url: '={{ "/api/version/v1/repositories/" + $parameter.repositoryId + "/permissions" }}',
 			},
 		},
 	},

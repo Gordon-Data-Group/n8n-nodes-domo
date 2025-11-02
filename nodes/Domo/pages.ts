@@ -15,12 +15,11 @@ export const pageOperations: INodeProperties[] = [
 			{
 				name: 'Bulk Remove Owners',
 				value: 'bulkRemoveOwners',
-				description: 'Remove owners from multiple pages',
 				action: 'Bulk remove owners',
 				routing: {
 					request: {
 						method: 'POST',
-						url: '/api/content/v1/pages/bulk/owner/remove',
+						url: '/api/content/v1/pages/bulk/owners/remove',
 						body: '={{JSON.parse($parameter.bulkData)}}',
 					},
 				},
@@ -39,10 +38,9 @@ export const pageOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Create Layout Writelock',
-				value: 'createLayoutWritelock',
-				description: 'Create a writelock for a layout',
-				action: 'Create layout writelock',
+				name: 'Create Writelock',
+				value: 'createWritelock',
+				action: 'Create writelock',
 				routing: {
 					request: {
 						method: 'PUT',
@@ -75,10 +73,9 @@ export const pageOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Delete Layout Writelock',
-				value: 'deleteLayoutWritelock',
-				description: 'Delete a layout writelock',
-				action: 'Delete layout writelock',
+				name: 'Delete Writelock',
+				value: 'deleteWritelock',
+				action: 'Delete writelock',
 				routing: {
 					request: {
 						method: 'DELETE',
@@ -151,7 +148,6 @@ export const pageOperations: INodeProperties[] = [
 			{
 				name: 'Get Layout',
 				value: 'getLayout',
-				description: 'Get page layout details',
 				action: 'Get layout',
 				routing: {
 					request: {
@@ -356,7 +352,7 @@ export const pageFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['page'],
-				operation: ['getLayout', 'updateLayout', 'createLayoutWritelock', 'deleteLayoutWritelock'],
+				operation: ['getLayout', 'updateLayout', 'createWritelock', 'deleteWritelock'],
 			},
 		},
 		default: '',

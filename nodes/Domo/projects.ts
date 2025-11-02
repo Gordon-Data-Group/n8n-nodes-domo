@@ -20,7 +20,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v1/tasks/={{$parameter.taskId}}/attachments',
+				url: '={{ "/api/content/v1/tasks/" + $parameter.taskId + "/attachments" }}',
 			},
 		},
 	},
@@ -31,7 +31,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v1/projects/={{$parameter.projectId}}/lists',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId + "/lists" }}',
 			},
 		},
 	},
@@ -42,7 +42,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/v1/projects',
+				url: '/api/v1/projects',
 			},
 		},
 	},
@@ -53,7 +53,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v1/projects/={{$parameter.projectId}}/lists/={{$parameter.listId}}/tasks',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId + "/lists/" + $parameter.listId + "/tasks" }}',
 			},
 		},
 	},
@@ -64,7 +64,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'POST',
-				url: '/content/v2/users/={{$parameter.userId}}/tasks',
+				url: '={{ "/api/content/v2/users/" + $parameter.userId + "/tasks" }}',
 			},
 		},
 	},
@@ -75,7 +75,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'DELETE',
-				url: '/content/v1/projects/={{$parameter.projectId}}',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId }}',
 			},
 		},
 	},
@@ -86,7 +86,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/projects/={{$parameter.projectId}}/lists',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId + "/lists" }}',
 			},
 		},
 	},
@@ -97,7 +97,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/projects/={{$parameter.projectId}}',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId }}',
 			},
 		},
 	},
@@ -108,7 +108,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v2/users/={{$parameter.userId}}/projects',
+				url: '={{ "/api/content/v2/users/" + $parameter.userId + "/projects" }}',
 			},
 		},
 	},
@@ -119,7 +119,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/projects/={{$parameter.projectId}}/tags',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId + "/tags" }}',
 			},
 		},
 	},
@@ -130,7 +130,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/tasks/={{$parameter.taskId}}',
+				url: '={{ "/api/content/v1/tasks/" + $parameter.taskId }}',
 			},
 		},
 	},
@@ -141,7 +141,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v2/users/={{$parameter.userId}}/tasks/assignments',
+				url: '={{ "/api/content/v2/users/" + $parameter.userId + "/tasks/assignments" }}',
 			},
 		},
 	},
@@ -152,7 +152,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/projects/={{$parameter.projectId}}/lists/={{$parameter.listId}}/tasks',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId + "/lists/" + $parameter.listId + "/tasks" }}',
 			},
 		},
 	},
@@ -163,7 +163,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/projects/={{$parameter.projectId}}/tasks',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId + "/tasks" }}',
 			},
 		},
 	},
@@ -174,7 +174,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/projects',
+				url: '/api/content/v1/projects',
 			},
 		},
 	},
@@ -185,7 +185,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/tags',
+				url: '/api/content/v1/tags',
 			},
 		},
 	},
@@ -196,7 +196,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/content/v1/projects/={{$parameter.projectId}}/lists/={{$parameter.listId}}',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId + "/lists/" + $parameter.listId }}',
 			},
 		},
 	},
@@ -207,7 +207,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/content/v1/projects/={{$parameter.projectId}}',
+				url: '={{ "/api/content/v1/projects/" + $parameter.projectId }}',
 			},
 		},
 	},
@@ -218,7 +218,7 @@ export const projectsOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'PUT',
-				url: '/content/v1/tasks/={{$parameter.taskId}}',
+				url: '={{ "/api/content/v1/tasks/" + $parameter.taskId }}',
 			},
 		},
 	},

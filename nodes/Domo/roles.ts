@@ -20,7 +20,7 @@ export const rolesOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/authorization/v1/roles/={{$parameter.id}}',
+				url: '={{ "/api/authorization/v1/roles/" + $parameter.id }}',
 			},
 		},
 	},
@@ -31,7 +31,7 @@ export const rolesOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/authorization/v1/roles/={{$parameter.id}}/authorities',
+				url: '={{ "/api/authorization/v1/roles/" + $parameter.id + "/authorities" }}',
 			},
 		},
 	},
@@ -42,7 +42,7 @@ export const rolesOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/content/v1/typeahead',
+				url: '/api/content/v1/typeahead',
 			},
 		},
 	},
@@ -53,7 +53,7 @@ export const rolesOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/authorization/v1/authorities',
+				url: '/api/authorization/v1/authorities',
 			},
 		},
 	},
@@ -64,7 +64,7 @@ export const rolesOperations: INodeProperties[] = [
 		routing: {
 			request: {
 				method: 'GET',
-				url: '/authorization/v1/roles',
+				url: '/api/authorization/v1/roles',
 			},
 		},
 	},
