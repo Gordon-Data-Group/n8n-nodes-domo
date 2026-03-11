@@ -1,4 +1,5 @@
 import { INodeProperties } from 'n8n-workflow';
+import { preSendLogger } from './shared/preSendLogger';
 
 export const appStudioOperations: INodeProperties[] = [
 	{
@@ -21,7 +22,17 @@ export const appStudioOperations: INodeProperties[] = [
 					request: {
 						method: 'PUT',
 						url: '/api/content/v1/dataapps/bulk/owners',
-						body: '={{JSON.parse($parameter.ownersData)}}',
+						body: {
+							note: '={{$parameter.message}}',
+							entityIds: '={{[$parameter.appId]}}',
+							owners: '={{$parameter.owners.owner}}',
+						},
+						qs: {
+							sendEmail: '={{$parameter.sendEmail}}',
+						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -34,7 +45,13 @@ export const appStudioOperations: INodeProperties[] = [
 					request: {
 						method: 'POST',
 						url: '/api/content/v1/dataapps/bulk/owners/remove',
-						body: '={{JSON.parse($parameter.ownersData)}}',
+						body: {
+							entityIds: '={{[$parameter.appId]}}',
+							owners: '={{$parameter.owners.owner}}',
+						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -49,6 +66,9 @@ export const appStudioOperations: INodeProperties[] = [
 						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId + "/views" }}',
 						body: '={{JSON.parse($parameter.viewData)}}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -60,6 +80,9 @@ export const appStudioOperations: INodeProperties[] = [
 					request: {
 						method: 'DELETE',
 						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -73,6 +96,9 @@ export const appStudioOperations: INodeProperties[] = [
 						method: 'DELETE',
 						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId + "/views/" + $parameter.viewId }}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -84,20 +110,16 @@ export const appStudioOperations: INodeProperties[] = [
 					request: {
 						method: 'PUT',
 						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId + "/duplicate" }}',
-						body: '={{JSON.parse($parameter.duplicateData)}}',
+						body: {
+							title: '={{$parameter.title}}',
+							duplicateCards: '={{$parameter.duplicateCards}}',
+							beacon: '={{$parameter.beacon}}',
+							cardPrefix: '={{$parameter.cardPrefix}}',
+							worksheetToApp: '={{$parameter.worksheetToApp}}',
+						},
 					},
-				},
-			},
-			{
-				name: 'Duplicate App Synchronously',
-				value: 'duplicateAppSync',
-				description: 'Duplicate an app synchronously',
-				action: 'Duplicate app synchronously',
-				routing: {
-					request: {
-						method: 'PUT',
-						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId + "/duplicate/synchronous" }}',
-						body: '={{JSON.parse($parameter.duplicateData)}}',
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -111,6 +133,9 @@ export const appStudioOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId }}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -123,6 +148,9 @@ export const appStudioOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId + "/adminsummary" }}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -134,6 +162,9 @@ export const appStudioOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId + "/access" }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -163,27 +194,58 @@ export const appStudioOperations: INodeProperties[] = [
 					request: {
 						method: 'POST',
 						url: '/api/content/v1/dataapps/adminsummary',
-						body: '={{JSON.parse($parameter.summaryData)}}',
+						body: {
+							"includeTitleClause": '={{$parameter.includeTitleClause}}',
+							"includeOwnerClause": '={{$parameter.includeOwnerClause}}',
+							"orderBy": '={{$parameter.orderBy}}',
+							"ascending": '={{$parameter.ascending}}',
+							"titleSearchText": '={{$parameter.titleSearchText}}'
+						},
 						qs: {
 							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							skip: '={{$parameter.skip || 0}}',
+							offset: '={{$parameter.offset || 0}}',
 						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
+		{
+			name: 'Share App',
+			value: 'shareApp',
+			description: 'Share an app with users or groups',
+			action: 'Share app',
+			routing: {
+				request: {
+					method: 'POST',
+					url: '/api/content/v1/dataapps/share',
+					body: {
+						message: '={{$parameter.message}}',
+						dataAppIds: '={{[$parameter.appId]}}',
+						recipients: '={{$parameter.recipients.recipient}}',
+					},
+					qs: {
+						sendEmail: '={{$parameter.sendEmail}}',
+					},
+				},
+				send: {
+					preSend: [preSendLogger],
+				},
+			},
+		},
 			{
-				name: 'Share App',
-				value: 'shareApp',
-				description: 'Share an app with users or groups',
-				action: 'Share app',
+				name: 'Unshare App',
+				value: 'unshareApp',
+				description: 'Unshare an app with users or groups',
+				action: 'Unshare app',
 				routing: {
 					request: {
-						method: 'POST',
-						url: '/api/content/v1/dataapps/share',
-						body: '={{JSON.parse($parameter.shareData)}}',
-						qs: {
-							sendEmail: '={{$parameter.sendEmail}}',
-						},
+						method: 'DELETE',
+						url: '={{ "/api/content/v1/dataapps/" + $parameter.appId + "/share/" + $parameter.unshareType + "/" + $parameter.unshareWithId }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -202,6 +264,8 @@ export const appStudioFields: INodeProperties[] = [
 			show: {
 				resource: ['appStudio'],
 				operation: [
+					'bulkAddOwners',
+					'bulkRemoveOwners',
 					'getApp',
 					'getAppAdminSummary',
 					'getAppAccess',
@@ -210,12 +274,57 @@ export const appStudioFields: INodeProperties[] = [
 					'deleteAppView',
 					'duplicateApp',
 					'duplicateAppSync',
+					'shareApp',
+					'unshareApp',
 				],
 			},
 		},
 		default: '',
 		required: true,
 		description: 'The ID of the app',
+	},
+	// Bulk Add Owners fields
+	{
+		displayName: 'Owners',
+		name: 'owners',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['bulkAddOwners', 'bulkRemoveOwners'],
+			},
+		},
+		default: {},
+		options: [
+			{
+				displayName: 'Owner',
+				name: 'owner',
+				values: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{ name: 'User', value: 'USER' },
+							{ name: 'Group', value: 'GROUP' },
+						],
+						default: 'USER',
+						required: true,
+					},
+					{
+						displayName: 'Owner ID',
+						name: 'id',
+						type: 'number',
+						default: '',
+						required: true,
+						description: 'The ID of the user or group to share with',
+					},
+				],
+			},
+		],
 	},
 	// View ID field
 	{
@@ -243,7 +352,7 @@ export const appStudioFields: INodeProperties[] = [
 				operation: ['listApps'],
 			},
 		},
-		default: '',
+		default: 'views',
 		description: 'Parts to include in the response',
 	},
 	{
@@ -256,7 +365,7 @@ export const appStudioFields: INodeProperties[] = [
 				operation: ['listApps'],
 			},
 		},
-		default: false,
+		default: true,
 		description: 'Whether to include hidden views',
 	},
 	{
@@ -269,7 +378,7 @@ export const appStudioFields: INodeProperties[] = [
 				operation: ['listApps'],
 			},
 		},
-		default: false,
+		default: true,
 		description: 'Whether to show authoring mode',
 	},
 	// List Apps Admin Summary fields
@@ -290,8 +399,8 @@ export const appStudioFields: INodeProperties[] = [
 		description: 'Max number of results to return',
 	},
 	{
-		displayName: 'Skip',
-		name: 'skip',
+		displayName: 'Offset',
+		name: 'offset',
 		type: 'number',
 		typeOptions: {
 			minValue: 0,
@@ -303,12 +412,65 @@ export const appStudioFields: INodeProperties[] = [
 			},
 		},
 		default: 0,
-		description: 'Number of apps to skip',
+		description: 'Number of records to skip',
 	},
 	{
-		displayName: 'Summary Data',
-		name: 'summaryData',
-		type: 'json',
+		displayName: 'Include Title Clause',
+		name: 'includeTitleClause',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['listAppsAdminSummary'],
+			},
+		},
+		default: true,
+		description: 'Whether to include title clause',
+	},
+	{
+		displayName: 'Include Owner Clause',
+		name: 'includeOwnerClause',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['listAppsAdminSummary'],
+			},
+		},
+		default: true,
+		description: 'Whether to include owner clause',
+	},
+	{
+		displayName: 'Order By',
+		name: 'orderBy',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['listAppsAdminSummary'],
+			},
+		},
+		default: 'title',
+		description: 'Field to order results by',
+		required: true,
+	},
+	{
+		displayName: 'Ascending',
+		name: 'ascending',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['listAppsAdminSummary'],
+			},
+		},
+		default: false,
+		description: 'Whether to sort in ascending order',
+	},
+	{
+		displayName: 'Title Search Text',
+		name: 'titleSearchText',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['appStudio'],
@@ -316,25 +478,63 @@ export const appStudioFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		placeholder: '{"includeTitleClause":true,"includeOwnerClause":true,"orderBy":"title","ascending":false,"titleSearchText":""}',
-		required: true,
-		description: 'JSON object containing summary filter criteria',
+		description: 'Title search text to filter results',
 	},
 	// Share App fields
 	{
-		displayName: 'Share Data',
-		name: 'shareData',
-		type: 'json',
+		displayName: 'Message',
+		name: 'message',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['appStudio'],
 				operation: ['shareApp'],
 			},
 		},
-		default: '',
-		placeholder: '{"message":"I thought you might find this app interesting.","dataAppIds":["12345"],"recipients":[{"ID":123456,"type":"user"}]}',
-		required: true,
-		description: 'JSON object containing share configuration',
+		default: 'I thought you might find this interesting.',
+		description: 'Message to send with share notification',
+	},
+	{
+		displayName: 'Recipients',
+		name: 'recipients',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['shareApp'],
+			},
+		},
+		default: {},
+		options: [
+			{
+				displayName: 'Recipient',
+				name: 'recipient',
+				values: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{ name: 'User', value: 'user' },
+							{ name: 'Group', value: 'group' },
+						],
+						default: 'user',
+						required: true,
+					},
+					{
+						displayName: 'Share With ID',
+						name: 'id',
+						type: 'number',
+						default: '',
+						required: true,
+						description: 'The ID of the user or group to share with',
+					},
+				],
+			},
+		],
 	},
 	{
 		displayName: 'Send Email',
@@ -343,7 +543,7 @@ export const appStudioFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['appStudio'],
-				operation: ['shareApp'],
+				operation: ['shareApp', 'bulkAddOwners'],
 			},
 		},
 		default: true,
@@ -365,27 +565,11 @@ export const appStudioFields: INodeProperties[] = [
 		required: true,
 		description: 'JSON object containing view configuration',
 	},
-	// Bulk Owners fields
-	{
-		displayName: 'Owners Data',
-		name: 'ownersData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['appStudio'],
-				operation: ['bulkAddOwners', 'bulkRemoveOwners'],
-			},
-		},
-		default: '',
-		placeholder: '{"entityIds":["123456"],"owners":[{"type":"USER","ID":1234}],"sendEmail":false}',
-		required: true,
-		description: 'JSON object containing owners configuration',
-	},
 	// Duplicate App fields
 	{
-		displayName: 'Duplicate Data',
-		name: 'duplicateData',
-		type: 'json',
+		displayName: 'Title',
+		name: 'title',
+		type: 'string',
 		displayOptions: {
 			show: {
 				resource: ['appStudio'],
@@ -393,8 +577,94 @@ export const appStudioFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		placeholder: '{"title":"Duplicated App","duplicateCards":true,"beacon":0,"cardPrefix":"Copy of","worksheetToApp":true}',
 		required: true,
-		description: 'JSON object containing duplication configuration',
+		description: 'Title of the duplicated app',
+	},
+	{
+		displayName: 'Card Prefix',
+		name: 'cardPrefix',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['duplicateApp', 'duplicateAppSync'],
+			},
+		},
+		default: '',
+		description: 'Prefix of the duplicated cards',
+	},
+	{
+		displayName: 'Beacon',
+		name: 'beacon',
+		type: 'number',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['duplicateApp', 'duplicateAppSync'],
+			},
+		},
+		default: 0,
+		required: true,
+		description: 'Beacon to use for the duplicated app',
+	},
+	{
+		displayName: 'Worksheet To App',
+		name: 'worksheetToApp',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['duplicateApp', 'duplicateAppSync'],
+			},
+		},
+		default: true,
+		required: true,
+		description: 'Whether to convert the duplicated worksheet to an app',
+	},
+	{
+		displayName: 'Duplicate Cards',
+		name: 'duplicateCards',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['duplicateApp', 'duplicateAppSync'],
+			},
+		},
+		default: true,
+		required: true,
+		description: 'Whether to duplicate cards',
+	},
+	{
+		displayName: 'Unshare Type',
+		name: 'unshareType',
+		type: 'options',
+		options: [
+			{ name: 'User', value: 'user' },
+			{ name: 'Group', value: 'group' },
+		],
+		default: 'user',
+		required: true,
+		description: 'Type of recipient',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['unshareApp'],
+			},
+		},
+	},
+	{
+		displayName: 'Unshare With ID',
+		name: 'unshareWithId',
+		type: 'number',
+		displayOptions: {
+			show: {
+				resource: ['appStudio'],
+				operation: ['unshareApp'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The ID of the user or group to unshare with',
 	},
 ];

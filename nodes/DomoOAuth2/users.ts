@@ -41,11 +41,22 @@ export const usersOperations: INodeProperties[] = [
 		name: 'List Users',
 		value: 'list-users',
 		action: 'List users',
-		description: 'Get a list of all users in your Domo instance',
+		description: 'Get a list of users in your Domo instance',
 		routing: {
 			request: {
 				method: 'GET',
 				url: '/v1/users',
+			},
+			operations: {
+				pagination: {
+					type: 'offset',
+					properties: {
+						limitParameter: 'limit',
+						offsetParameter: 'offset',
+						pageSize: 50,
+						type: 'query',
+					},
+				},
 			},
 		},
 	},
@@ -114,6 +125,19 @@ export const usersFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'Get All Records',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['users'],
+				operation: ['list-users'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
+	{
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
@@ -124,6 +148,7 @@ export const usersFields: INodeProperties[] = [
 			show: {
 				resource: ['users'],
 				operation: ['list-users'],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -131,7 +156,7 @@ export const usersFields: INodeProperties[] = [
 		routing: {
 			request: {
 				qs: {
-					limit: '={{$parameter.limit}}',
+					limit: '={{Math.min(50, $parameter.limit)}}',
 				},
 			},
 		},
@@ -144,6 +169,7 @@ export const usersFields: INodeProperties[] = [
 			show: {
 				resource: ['users'],
 				operation: ['list-users'],
+				returnAll: [false],
 			},
 		},
 		default: 0,

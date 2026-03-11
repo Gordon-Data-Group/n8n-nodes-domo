@@ -1,4 +1,5 @@
-import { INodeProperties } from 'n8n-workflow';
+import { IExecuteSingleFunctions, IHttpRequestOptions, INodeProperties } from 'n8n-workflow';
+import { preSendLogger } from './shared/preSendLogger';
 
 export const alertOperations: INodeProperties[] = [
 	{
@@ -23,6 +24,9 @@ export const alertOperations: INodeProperties[] = [
 						url: '/api/social/v4/alerts',
 						body: '={{JSON.parse($parameter.alertData)}}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -34,6 +38,9 @@ export const alertOperations: INodeProperties[] = [
 					request: {
 						method: 'DELETE',
 						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -59,6 +66,9 @@ export const alertOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId + "/actions/" + $parameter.actionId }}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -78,6 +88,20 @@ export const alertOperations: INodeProperties[] = [
 							offset: '={{$parameter.offset}}',
 						},
 					},
+					operations: {
+						pagination: {
+							type: 'offset',
+							properties: {
+								limitParameter: 'limit',
+								offsetParameter: 'offset',
+								pageSize: 50,
+								type: 'query',
+							},
+						},
+					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -89,6 +113,9 @@ export const alertOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId + "/evaluations" }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -102,6 +129,9 @@ export const alertOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '/api/messaging/v3/preferences/immediate/user/current/alert_triggered',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -114,9 +144,20 @@ export const alertOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '/api/social/v4/alerts',
 						qs: {
-							limit: '={{Math.min($parameter.limit || 50, 500)}}',
-							offset: '={{$parameter.offset || 0}}',
+							limit: '={{$parameter.limit}}',
+							offset: '={{$parameter.offset}}',
 							all: true,
+						},
+					},
+					operations: {
+						pagination: {
+							type: 'offset',
+							properties: {
+								limitParameter: 'limit',
+								offsetParameter: 'offset',
+								pageSize: 50,
+								type: 'query',
+							},
 						},
 					},
 				},
@@ -129,6 +170,9 @@ export const alertOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/api/messaging/v3/subscriptions/schedule/primary/immediate',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -148,6 +192,25 @@ export const alertOperations: INodeProperties[] = [
 							metadata: {}
 						},
 					},
+					send: {
+						preSend: [
+							async function(this: IExecuteSingleFunctions, requestOptions: IHttpRequestOptions) {
+								// Get the alert subscriptions collection
+								const alertSubscriptions = this.getNodeParameter('alertSubscriptions.alertSubscription', []) as Array<{type: string, subscriberId: string}>;
+
+								// Update the body with evaluated values
+								requestOptions.body = {
+									userMessage: this.getNodeParameter('shareMessage', '') as string,
+									alertSubscriptions: alertSubscriptions,
+									sendEmail: this.getNodeParameter('sendEmail', true) as boolean,
+									metadata: {}
+								};
+
+								return requestOptions;
+							},
+							preSendLogger,
+						],
+					},
 				},
 			},
 			{
@@ -163,6 +226,9 @@ export const alertOperations: INodeProperties[] = [
 							subscriberId: '={{$parameter.subscriberId}}',
 							type: '={{$parameter.type}}',
 						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -181,6 +247,9 @@ export const alertOperations: INodeProperties[] = [
 							header: '={{$parameter.header}}',
 						},
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -196,6 +265,9 @@ export const alertOperations: INodeProperties[] = [
 							name: '={{$parameter.name}}',
 							id: '={{$parameter.alertId}}',
 						}
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -224,6 +296,9 @@ export const alertOperations: INodeProperties[] = [
 						method: 'PUT',
 						url: '={{ "/api/social/v4/alerts/" + $parameter.alertId }}',
 						body: '={{JSON.parse($parameter.rulesData)}}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -274,7 +349,21 @@ export const alertFields: INodeProperties[] = [
 		required: true,
 		description: 'The ID of the alert action',
 	},
-	// List Alerts fields
+	// List Alerts / Get Alerts fields
+
+	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['alert'],
+				operation: ['listAlerts', 'getAlerts'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
 	{
 		displayName: 'Limit',
 		name: 'limit',
@@ -286,6 +375,7 @@ export const alertFields: INodeProperties[] = [
 			show: {
 				resource: ['alert'],
 				operation: ['listAlerts', 'getAlerts'],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -302,6 +392,7 @@ export const alertFields: INodeProperties[] = [
 			show: {
 				resource: ['alert'],
 				operation: ['listAlerts', 'getAlerts'],
+				returnAll: [false],
 			},
 		},
 		default: 0,

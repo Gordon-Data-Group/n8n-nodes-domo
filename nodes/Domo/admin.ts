@@ -1,4 +1,5 @@
 import { INodeProperties } from 'n8n-workflow';
+import { preSendLogger } from './shared/preSendLogger';
 
 export const adminOperations: INodeProperties[] = [
 	{
@@ -55,6 +56,9 @@ export const adminOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '/api/data/v1/accesstokens',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -72,6 +76,9 @@ export const adminOperations: INodeProperties[] = [
 							"expires": "={{$parameter.expires}}",
 					}
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -83,6 +90,9 @@ export const adminOperations: INodeProperties[] = [
 					request: {
 						method: 'DELETE',
 						url: '={{ "/api/data/v1/accesstokens/" + $parameter.id }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -110,6 +120,9 @@ export const adminOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/api/audit/v1/user-audits/objectTypes',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -158,6 +171,9 @@ export const adminOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '/api/metrics/v1/usage/credits/contract/current/summary',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -184,8 +200,11 @@ export const adminOperations: INodeProperties[] = [
 						url: '/api/content/v1/customer-states',
 						qs: {
 							ignoreCache: '={{$parameter.ignoreCache}}',
-							stateName: '={{$parameter.stateName}}',
+							stateName: '={{$parameter.customerStates}}',
 						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -198,6 +217,9 @@ export const adminOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '/api/content/v1/landings/customer',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -209,6 +231,9 @@ export const adminOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '/api/datascience/v1/settings',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -219,6 +244,9 @@ export const adminOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/api/content/v1/licenses/total/current',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -234,6 +262,9 @@ export const adminOperations: INodeProperties[] = [
 							ignoreCache: '={{$parameter.ignoreCache}}',
 						},
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -244,6 +275,9 @@ export const adminOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{ "/api/customer/v1/properties/" + $parameter.property }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -256,6 +290,12 @@ export const adminOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/companysettings',
+						headers: {
+							'X-Requested-With': 'XMLHttpRequest',
+						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -268,6 +308,9 @@ export const adminOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '/api/query/v1/datasources/customer-stats',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -278,30 +321,6 @@ export const adminOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/api/dataprocessing/v1/dataflows/timezones',
-					},
-				},
-			},
-			{
-				name: 'Update Customer State',
-				value: 'updateCustomerState',
-				action: 'Update customer state',
-				routing: {
-					request: {
-						method: 'PUT',
-						url: '={{ "/api/content/v1/customer-states/" + $parameter.customerState }}',
-						body: '={{JSON.parse($parameter.stateData)}}',
-					},
-				},
-			},
-			{
-				name: 'Update Property',
-				value: 'updateProperty',
-				action: 'Update property',
-				routing: {
-					request: {
-						method: 'PUT',
-						url: '={{ "/api/customer/v1/properties/" + $parameter.property }}',
-						body: '={{JSON.parse($parameter.propertyData)}}',
 					},
 				},
 			},
@@ -329,6 +348,9 @@ export const adminOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/api/identity/v1/developer-tokens',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -390,6 +412,21 @@ export const adminFields: INodeProperties[] = [
 		placeholder: '1717862400000',
 		required: true,
 	},
+
+	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['admin'],
+				subResource: ['activityLog'],
+				operation: ['getEvents'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
 	{
 		displayName: 'Offset',
 		name: 'offset',
@@ -402,6 +439,7 @@ export const adminFields: INodeProperties[] = [
 				resource: ['admin'],
 				subResource: ['activityLog'],
 				operation: ['getEvents'],
+				returnAll: [false],
 			},
 		},
 		default: 0,
@@ -420,6 +458,7 @@ export const adminFields: INodeProperties[] = [
 				resource: ['admin'],
 				subResource: ['activityLog'],
 				operation: ['getEvents'],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -450,7 +489,7 @@ export const adminFields: INodeProperties[] = [
 			show: {
 				resource: ['admin'],
 				subResource: ['company'],
-				operation: ['getCustomerState', 'updateCustomerState'],
+				operation: ['getCustomerState'],
 			},
 		},
 		default: '',
@@ -472,8 +511,8 @@ export const adminFields: INodeProperties[] = [
 		description: 'Whether to ignore cache',
 	},
 	{
-		displayName: 'State Name',
-		name: 'stateName',
+		displayName: 'Customer States',
+		name: 'customerStates',
 		type: 'string',
 		displayOptions: {
 			show: {
@@ -483,7 +522,8 @@ export const adminFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		description: 'Filter by state name',
+		required: true,
+		description: 'CSV list of the customer state names',
 	},
 	{
 		displayName: 'Property',
@@ -493,44 +533,12 @@ export const adminFields: INodeProperties[] = [
 			show: {
 				resource: ['admin'],
 				subResource: ['company'],
-				operation: ['getProperty', 'updateProperty'],
+				operation: ['getProperty'],
 			},
 		},
 		default: '',
 		required: true,
 		description: 'The property name',
-	},
-	{
-		displayName: 'State Data',
-		name: 'stateData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['company'],
-				operation: ['updateCustomerState'],
-			},
-		},
-		default: '',
-		placeholder: '{"name":"domo.policy.multifactor.maxCodeAttempts","value":"5"}',
-		required: true,
-		description: 'JSON object containing customer state data',
-	},
-	{
-		displayName: 'Property Data',
-		name: 'propertyData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['admin'],
-				subResource: ['company'],
-				operation: ['updateProperty'],
-			},
-		},
-		default: '',
-		placeholder: '{"keyspace":"domo","issuer":"DEFAULT_VALUE","key":"card.hide_share_email_ui","value":"true"}',
-		required: true,
-		description: 'JSON object containing property data',
 	},
 	// Access Tokens fields
 	{

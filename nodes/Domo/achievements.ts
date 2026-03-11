@@ -1,4 +1,5 @@
-import { INodeProperties } from 'n8n-workflow';
+import { INodeProperties, IExecuteSingleFunctions, IHttpRequestOptions } from 'n8n-workflow';
+import { preSendLogger } from './shared/preSendLogger';
 
 export const achievementOperations: INodeProperties[] = [
 	{
@@ -13,10 +14,10 @@ export const achievementOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Add Achievement Admin',
+				name: 'Add Admin',
 				value: 'addAchievementAdmin',
-				description: 'Assign an achievement to a user',
-				action: 'Assign achievement to user',
+				description: 'Allow user to assign achievement to other users',
+				action: 'Add achievement admin',
 				routing: {
 					request: {
 						method: 'POST',
@@ -24,6 +25,9 @@ export const achievementOperations: INodeProperties[] = [
 						body: {
 							userId: '={{$parameter.userId}}'
 						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -40,6 +44,9 @@ export const achievementOperations: INodeProperties[] = [
 							achievementId: '={{$parameter.achievementId}}'
 						},
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -52,12 +59,32 @@ export const achievementOperations: INodeProperties[] = [
 						method: 'POST',
 						url: '/api/content/v1/achievements',
 						body: {
+							administrators: '={{$parameter.administrators.administrator}}',
 							name: '={{$parameter.name}}',
 							description: '={{$parameter.description}}',
 							image: '={{$parameter.image}}',
 						},
 					},
+					send: {
+						preSend: [
+							async function(this: IExecuteSingleFunctions, requestOptions: IHttpRequestOptions) {
+								// Get the administrators collection
+								const administrators = this.getNodeParameter('administrators.administrator', []) as Array<{userId: string}>;
+
+								// Keep the structure as objects with userId key
+								const adminIds = administrators.map(admin => ({ userId: admin.userId }));
+
+								// Update the body with the mapped IDs
+								requestOptions.body = {
+									...requestOptions.body as object,
+									administrators: adminIds,
+								};
+								return requestOptions;
+							}, preSendLogger,
+						],
+					},
 				},
+
 			},
 			{
 				name: 'Delete',
@@ -69,17 +96,23 @@ export const achievementOperations: INodeProperties[] = [
 						method: 'DELETE',
 						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId }}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
-				name: 'Delete Achievement Admin',
+				name: 'Delete Admin',
 				value: 'deleteAchievementAdmin',
-				description: 'Revoke an achievement from a user',
-				action: 'Revoke achievement from user',
+				description: 'Revoke user as admin from achievement',
+				action: 'Revoke achievement admin',
 				routing: {
 					request: {
 						method: 'DELETE',
 						url: '={{ "api/content/v1/achievements/" + $parameter.achievementId + "/admins/" + $parameter.adminId }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -93,9 +126,11 @@ export const achievementOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId }}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
-
 			{
 				name: 'Get Achievement Admins',
 				value: 'getAchievementAdmins',
@@ -105,6 +140,9 @@ export const achievementOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{ "/api/content/v1/achievements/" + $parameter.achievementId + "/admins" }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -122,6 +160,9 @@ export const achievementOperations: INodeProperties[] = [
 							offset: '={{$parameter.offset || 0}}',
 						},
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -137,6 +178,9 @@ export const achievementOperations: INodeProperties[] = [
 							limit: '={{$parameter.limit}}',
 							offset: '={{$parameter.offset}}',
 						}
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -155,6 +199,9 @@ export const achievementOperations: INodeProperties[] = [
 							image: '={{$parameter.image}}',
 						},
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 		],
@@ -163,7 +210,7 @@ export const achievementOperations: INodeProperties[] = [
 ];
 
 export const achievementFields: INodeProperties[] = [
-	// Achievement ID field (for get, update, delete, assignToUser, revokeFromUser)
+	// Achievement ID field (for get, update, delete, assignToUser)
 	{
 		displayName: 'Achievement ID',
 		name: 'achievementId',
@@ -171,14 +218,14 @@ export const achievementFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['achievement'],
-				operation: ['get', 'update', 'delete', 'assignToUser', 'revokeFromUser', 'getAchievementAdmins', 'deleteAchievementAdmin', 'addAchievementAdmin'],
+				operation: ['get', 'update', 'delete', 'assignToUser', 'getAchievementAdmins', 'deleteAchievementAdmin', 'addAchievementAdmin'],
 			},
 		},
 		default: '',
 		required: true,
 		description: 'The ID of the achievement',
 	},
-	// User ID field (for assignToUser, revokeFromUser, listUserAchievements)
+	// User ID field (for assignToUser, listUserAchievements)
 	{
 		displayName: 'User ID',
 		name: 'userId',
@@ -186,7 +233,7 @@ export const achievementFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['achievement'],
-				operation: ['assignToUser', 'revokeFromUser', 'listUserAchievements', 'addAchievementAdmin'],
+				operation: ['assignToUser', 'listUserAchievements', 'addAchievementAdmin'],
 			},
 		},
 		default: '',
@@ -209,6 +256,20 @@ export const achievementFields: INodeProperties[] = [
 			description: 'The ID of the admin (Not the user ID)',
 		},
 	// List operation fields
+
+	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['achievement'],
+				operation: ['list', 'listUserAchievements'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
 	{
 		displayName: 'Limit',
 		name: 'limit',
@@ -220,6 +281,7 @@ export const achievementFields: INodeProperties[] = [
 			show: {
 				resource: ['achievement'],
 				operation: ['list', 'listUserAchievements'],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -236,6 +298,7 @@ export const achievementFields: INodeProperties[] = [
 			show: {
 				resource: ['achievement'],
 				operation: ['list', 'listUserAchievements'],
+				returnAll: [false],
 			},
 		},
 		default: 0,
@@ -284,5 +347,36 @@ export const achievementFields: INodeProperties[] = [
 		required: true,
 		description: 'Base64 encoded image of the achievement',
 		placeholder: 'data:image/png;base64,iVBORw...',
-	}
+	},
+	{
+		displayName: 'Administrators',
+		name: 'administrators',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		displayOptions: {
+			show: {
+				resource: ['achievement'],
+				operation: ['create'],
+			},
+		},
+		default: {},
+		options: [
+			{
+				displayName: 'Administrator',
+				name: 'administrator',
+				values: [
+					{
+						displayName: 'User ID',
+						name: 'userId',
+						type: 'number',
+						default: '',
+						required: true,
+						description: 'The User ID of the administrator',
+					},
+				],
+			},
+		],
+	},
 ];

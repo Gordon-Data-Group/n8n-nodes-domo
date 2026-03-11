@@ -1,4 +1,5 @@
-import { INodeProperties } from 'n8n-workflow';
+import { INodeProperties, IExecuteSingleFunctions, IHttpRequestOptions } from 'n8n-workflow';
+import { preSendLogger } from './shared/preSendLogger';
 
 export const accountOperations: INodeProperties[] = [
 	{
@@ -23,6 +24,9 @@ export const accountOperations: INodeProperties[] = [
 						url: '/api/data/v1/accounts',
 						body: '={{JSON.parse($parameter.accountData)}}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -34,6 +38,9 @@ export const accountOperations: INodeProperties[] = [
 					request: {
 						method: 'DELETE',
 						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId }}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -47,10 +54,13 @@ export const accountOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId }}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
-				name: 'Get Account Credentials',
+				name: 'Get Credentials',
 				value: 'getCredentials',
 				description: 'Get credentials for a specific account',
 				action: 'Get account credentials',
@@ -61,6 +71,9 @@ export const accountOperations: INodeProperties[] = [
 						qs: {
 							unmask: 'true',
 						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -90,6 +103,9 @@ export const accountOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '={{ "/api/data/v2/datasources/account/" + $parameter.accountId}}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -121,6 +137,21 @@ export const accountOperations: INodeProperties[] = [
 							language: '={{ $parameter.language }}',
 						}
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
+				},
+			},
+			{
+				name: 'Get Shares',
+				value: 'getShares',
+				description: 'Get shares for a specific account',
+				action: 'Get shares',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '={{ "/api/data/v2/accounts/share/" + $parameter.accountId }}',
+					},
 				},
 			},
 			{
@@ -136,6 +167,9 @@ export const accountOperations: INodeProperties[] = [
 							limit: '={{Math.min($parameter.limit || 50, 500)}}',
 							offset: '={{$parameter.offset || 0}}',
 						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -160,6 +194,9 @@ export const accountOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/api/data/v1/accounts/templates/user/extended',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -188,54 +225,14 @@ export const accountOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Search',
-				value: 'search',
-				description: 'Search for accounts based on criteria',
-				action: 'Search accounts',
-				routing: {
-					request: {
-						method: 'POST',
-						url: '/api/search/v1/query',
-						body: {
-								"count": '={{ $parameter.count }}',
-								"offset": '={{ $parameter.offset }}',
-								"combineResults": false,
-								"query": '={{ $parameter.searchString }}',
-								"filters": '={{JSON.parse($parameter.searchFilters)}}',
-								"facetValuesToInclude": [
-										"DATAPROVIDERNAME",
-										"OWNED_BY_ID",
-										"VALID",
-										"USED",
-										"LAST_MODIFIED_DATE"
-								],
-								"queryProfile": "GLOBAL",
-								"entityList": [
-										[
-												"account"
-										]
-								],
-								"sort": {
-										"fieldSorts": [
-												{
-														"field": "display_name_sort",
-														"sortOrder": "ASC"
-												}
-										]
-								}
-						},
-					},
-				},
-			},
-			{
-				name: 'Update Access',
-				value: 'updateAccess',
-				description: 'Update account access permissions',
-				action: 'Update account access',
+				name: 'Share',
+				value: 'share',
+				description: 'Share account with a user or group',
+				action: 'Share account',
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/access" }}',
+						url: '={{ "/api/data/v2/accounts/share/" + $parameter.accountId }}',
 						body: {
 								type: '={{$parameter.shareWithType}}',
 								id: '={{$parameter.shareWithId}}',
@@ -255,6 +252,9 @@ export const accountOperations: INodeProperties[] = [
 						url: '={{ "/api/data/v1/providers/" + $parameter.providerKey + "/account/" + $parameter.accountId}}',
 						body: '={{JSON.parse($parameter.credentials)}}',
 					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -266,24 +266,21 @@ export const accountOperations: INodeProperties[] = [
 					request: {
 						method: 'PUT',
 						url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/name" }}',
-						body: {
-							name: '={{$parameter.name}}',
-						},
+					},
+					send: {
+						preSend: [
+							async function(this: IExecuteSingleFunctions, requestOptions: IHttpRequestOptions) {
+								requestOptions.body = this.getNodeParameter('name') as string;
+								if (requestOptions.headers) {
+									requestOptions.headers['Content-Type'] = 'text/plain';
+								}
+								return requestOptions;
+							},
+							preSendLogger,
+						],
 					},
 				},
 			},
-			// {
-			// 	name: 'Validate Credentials',
-			// 	value: 'validateCredentials',
-			// 	description: 'Validate account credentials',
-			// 	action: 'Validate credentials',
-			// 	routing: {
-			// 		request: {
-			// 			method: 'POST',
-			// 			url: '={{ "/api/data/v1/accounts/" + $parameter.accountId + "/validate" }}',
-			// 		},
-			// 	},
-			// },
 		],
 		default: 'list',
 	},
@@ -302,11 +299,11 @@ export const accountFields: INodeProperties[] = [
 					'get',
 					'getCredentials',
 					'getDatasetsForAccount',
+					'getShares',
 					'updateName',
 					'updateCredentials',
-					'updateAccess',
+					'share',
 					'delete',
-					'validateCredentials',
 				],
 			},
 		},
@@ -321,7 +318,7 @@ export const accountFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['account'],
-				operation: ['updateAccess'],
+				operation: ['share'],
 			},
 		},
 		options: [
@@ -345,7 +342,7 @@ export const accountFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['account'],
-				operation: ['updateAccess'],
+				operation: ['share'],
 			},
 		},
 		default: '',
@@ -360,7 +357,7 @@ export const accountFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['account'],
-				operation: ['updateAccess'],
+				operation: ['share'],
 			},
 		},
 		options: [
@@ -397,7 +394,7 @@ export const accountFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['account'],
-				operation: ['getProvider', 'listAccountsForProvider'],
+				operation: ['getProvider', 'listAccountsForProvider', 'updateCredentials'],
 			},
 		},
 		default: '',
@@ -451,6 +448,19 @@ export const accountFields: INodeProperties[] = [
 	},
 	// List operation fields
 	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['account'],
+				operation: ['list'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
+	{
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
@@ -461,6 +471,7 @@ export const accountFields: INodeProperties[] = [
 			show: {
 				resource: ['account'],
 				operation: ['list'],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -477,42 +488,11 @@ export const accountFields: INodeProperties[] = [
 			show: {
 				resource: ['account'],
 				operation: ['list'],
+				returnAll: [false],
 			},
 		},
 		default: 0,
 		description: 'Number of accounts to skip',
-	},
-	// Account search filters
-	{
-		displayName: 'Search Filters',
-		name: 'searchFilters',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['account'],
-				operation: ['search'],
-			},
-		},
-		default: '',
-		required: true,
-		description: 'JSON object containing account search filters',
-		placeholder: '[{ "filterType": "term", "field": "FIELD_NAME", "value": "FILTER_VALUE", "name": "FILTER NAME", "not": false, "label": "LABEL"  }]',
-	},
-	// Search string
-	{
-		displayName: 'Search String',
-		name: 'searchString',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['account'],
-				operation: ['search'],
-			},
-		},
-		default: '',
-		required: true,
-		description: 'The search string for the account',
-		placeholder: 'search term',
 	},
 	// Create operation fields
 	{

@@ -1,4 +1,95 @@
+import type { IExecuteSingleFunctions, IHttpRequestOptions } from 'n8n-workflow';
 import { INodeProperties } from 'n8n-workflow';
+import { preSendLogger } from './shared/preSendLogger';
+
+// Match n8n expressions: ={{ ... }} or {{ ... }}
+const EXPRESSION_REGEX = /^\s*=\{\{[\s\S]*\}\}\s*$|^\s*\{\{[\s\S]*\}\}\s*$/;
+
+/** Normalize to #RRGGBB or return empty string if not valid hex */
+function normalizeHex(s: unknown): string {
+	if (s == null || typeof s !== 'string') return '';
+	const trimmed = s.trim().replace(/^#/, '');
+	if (/^[0-9A-Fa-f]{3}$/.test(trimmed)) {
+		return '#' + (trimmed[0] + trimmed[0] + trimmed[1] + trimmed[1] + trimmed[2] + trimmed[2]);
+	}
+	if (/^[0-9A-Fa-f]{6}$/.test(trimmed)) return '#' + trimmed;
+	return '';
+}
+
+function stripLeadingEqualsFromStrings(obj: unknown): unknown {
+	if (typeof obj === 'string') {
+		return obj.charAt(0) === '=' ? obj.slice(1) : obj;
+	}
+	if (Array.isArray(obj)) {
+		return obj.map(stripLeadingEqualsFromStrings);
+	}
+	if (obj !== null && typeof obj === 'object') {
+		const out: Record<string, unknown> = {};
+		for (const [k, v] of Object.entries(obj)) {
+			out[k] = stripLeadingEqualsFromStrings(v);
+		}
+		return out;
+	}
+	return obj;
+}
+
+async function resolveExpressionsInBody(
+	this: IExecuteSingleFunctions,
+	requestOptions: IHttpRequestOptions,
+): Promise<IHttpRequestOptions> {
+	const self = this;
+	function resolve(obj: unknown): unknown {
+		if (typeof obj === 'string' && EXPRESSION_REGEX.test(obj)) {
+			const expr = obj.trimStart().startsWith('={{') ? obj : `=${obj.trim()}`;
+			return self.evaluateExpression(expr, 0);
+		}
+		if (Array.isArray(obj)) {
+			return obj.map((item) => resolve(item));
+		}
+		if (obj !== null && typeof obj === 'object') {
+			const out: Record<string, unknown> = {};
+			for (const [k, v] of Object.entries(obj)) {
+				out[k] = resolve(v);
+			}
+			return out;
+		}
+		return obj;
+	}
+	if (requestOptions.body != null) {
+		let body = resolve(requestOptions.body) as IHttpRequestOptions['body'];
+		body = stripLeadingEqualsFromStrings(body) as IHttpRequestOptions['body'];
+		requestOptions.body = body;
+	}
+	return requestOptions;
+}
+
+async function normalizeAvatarHexColors(
+	_requestOptions: IHttpRequestOptions,
+): Promise<IHttpRequestOptions> {
+	const body = _requestOptions.body as Record<string, unknown> | undefined;
+	if (body && typeof body === 'object' && !Array.isArray(body)) {
+		if ('background' in body) body.background = normalizeHex(body.background);
+		if ('foreground' in body) body.foreground = normalizeHex(body.foreground);
+	}
+	return _requestOptions;
+}
+
+async function prepareUpdateAvatarBody(
+	this: IExecuteSingleFunctions,
+	requestOptions: IHttpRequestOptions,
+): Promise<IHttpRequestOptions> {
+	const body = requestOptions.body as Record<string, unknown> | undefined;
+	if (!body || typeof body !== 'object' || Array.isArray(body)) return requestOptions;
+	const avatarType = this.getNodeParameter('avatarType', 0) as string;
+	if (avatarType === 'image') {
+		delete body.background;
+		delete body.foreground;
+		delete body.text;
+	} else {
+		delete body.encodedImage;
+	}
+	return requestOptions;
+}
 
 export const groupOperations: INodeProperties[] = [
 	{
@@ -12,30 +103,6 @@ export const groupOperations: INodeProperties[] = [
 			},
 		},
 		options: [
-			{
-				name: 'Add Members to Group',
-				value: 'addMembers',
-				action: 'Add members to group',
-				routing: {
-					request: {
-						method: 'PUT',
-						url: '/api/content/v2/groups/access',
-						body: '={{JSON.parse($parameter.membersData)}}',
-					},
-				},
-			},
-			{
-				name: 'Add or Remove Owners',
-				value: 'addRemoveOwners',
-				action: 'Add or remove owners',
-				routing: {
-					request: {
-						method: 'PUT',
-						url: '/api/content/v2/groups/access',
-						body: '={{JSON.parse($parameter.ownersData)}}',
-					},
-				},
-			},
 			{
 				name: 'Bulk Delete Groups',
 				value: 'bulkDelete',
@@ -56,7 +123,14 @@ export const groupOperations: INodeProperties[] = [
 					request: {
 						method: 'POST',
 						url: '/api/content/v2/groups',
-						body: '={{JSON.parse($parameter.groupData)}}',
+						body: {
+							name: '={{$parameter.name}}',
+							description: '={{$parameter.description}}',
+							type: '={{$parameter.type}}',
+						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -78,6 +152,9 @@ export const groupOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
+						headers: {
+							'Accept': '*/*',
+						},
 						url: '={{ "/api/content/v1/avatar/GROUP/" + $parameter.groupId }}',
 						qs: {
 							size: '={{$parameter.size}}',
@@ -85,6 +162,9 @@ export const groupOperations: INodeProperties[] = [
 							defaultForeground: '={{$parameter.defaultForeground}}',
 							defaultText: '={{$parameter.defaultText}}',
 						},
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -140,20 +220,51 @@ export const groupOperations: INodeProperties[] = [
 						url: '/api/content/v2/groups/grouplist',
 						qs: {
 							ascending: '={{$parameter.ascending}}',
-							sort: '={{$parameter.sort}}',
 							limit: '={{$parameter.limit}}',
 							offset: '={{$parameter.offset}}',
 							includeFullMembership: '={{$parameter.includeFullMembership}}',
-							owner: '={{$parameter.owner}}',
-							ownerType: '={{$parameter.ownerType}}',
-							groupType: '={{$parameter.groupType}}',
-							createdAfter: '={{$parameter.createdAfter}}',
-							createdBefore: '={{$parameter.createdBefore}}',
-							members: '={{$parameter.members}}',
-							isManageable: '={{$parameter.isManageable}}',
 							search: '={{$parameter.search}}',
+							// Only include the following parameters if they are not empty
+							owner: '={{ $parameter.ownerFilter?.owner?.id != null && $parameter.ownerFilter.owner.id !== "" ? $parameter.ownerFilter.owner.id : undefined }}',
+							ownerType: '={{ $parameter.ownerFilter?.owner?.type != null && $parameter.ownerFilter.owner.type !== "" ? $parameter.ownerFilter.owner.type : undefined }}',
+							createdBefore: '={{ $parameter.createdBefore ? (typeof $parameter.createdBefore.toISOString === "function" ? $parameter.createdBefore.toISOString() : $parameter.createdBefore) : undefined }}',
+							createdAfter: '={{ $parameter.createdAfter ? (typeof $parameter.createdAfter.toISOString === "function" ? $parameter.createdAfter.toISOString() : $parameter.createdAfter) : undefined }}',
+							groupType: '={{ $parameter.typeFilter != null && $parameter.typeFilter !== "" &&$parameter.typeFilter.toLowerCase() !== "none" ? $parameter.typeFilter : undefined }}',
 						},
 					},
+				},
+			},
+			{
+				name: 'Modify Group Members',
+				value: 'modifyGroupMembers',
+				action: 'Modify group members',
+				routing: {
+					request: {
+						method: 'PUT',
+						url: '/api/content/v2/groups/access',
+						body: '={{ (() => { const gid = $parameter.groupId; const toId = (o) => (o && (o.id != null || o.id === 0) ? { type: o.type, id: String(o.id) } : null); const ao = ($parameter.addOwners && $parameter.addOwners.owner) || []; const ro = ($parameter.removeOwners && $parameter.removeOwners.owner) || []; const am = ($parameter.addMembers && $parameter.addMembers.member) || []; const rm = ($parameter.removeMembers && $parameter.removeMembers.member) || []; const addOwners = ao.map(toId).filter(Boolean); const removeOwners = ro.map(toId).filter(Boolean); const addMembers = am.map(toId).filter(Boolean); const removeMembers = rm.map(toId).filter(Boolean); const entry = { groupId: gid }; if (addOwners.length) entry.addOwners = addOwners; if (removeOwners.length) entry.removeOwners = removeOwners; if (addMembers.length) entry.addMembers = addMembers; if (removeMembers.length) entry.removeMembers = removeMembers; return [entry]; })() }}',
+					},
+					send: {
+						preSend: [resolveExpressionsInBody, preSendLogger],
+					},
+				},
+			},
+			{
+				name: 'Update Avatar',
+				value: 'updateAvatar',
+				action: 'Update avatar',
+				routing: {
+					request: {
+						method: 'POST',
+						url: '={{ "/api/content/v1/avatar/GROUP/" + $parameter.groupId }}',
+						body: {
+							background: '={{$parameter.avatarBackground}}',
+							foreground: '={{$parameter.avatarForeground}}',
+							text: '={{$parameter.avatarText}}',
+							encodedImage: '={{$parameter.avatarEncodedImage}}',
+						},
+					},
+					send: { preSend: [prepareUpdateAvatarBody, normalizeAvatarHexColors, preSendLogger] },
 				},
 			},
 			{
@@ -164,7 +275,10 @@ export const groupOperations: INodeProperties[] = [
 					request: {
 						method: 'PUT',
 						url: '/api/content/v2/groups',
-						body: '={{JSON.parse($parameter.groupData)}}',
+						body: '={{JSON.parse($parameter.dynamicGroupDefinition)}}',
+					},
+					send: {
+						preSend: [preSendLogger],
 					},
 				},
 			},
@@ -182,7 +296,7 @@ export const groupFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['group'],
-				operation: ['get', 'delete', 'getPermissions', 'getAvatar'],
+				operation: ['get', 'delete', 'getPermissions', 'getAvatar', 'modifyGroupMembers', 'updateAvatar'],
 			},
 		},
 		default: null,
@@ -190,6 +304,19 @@ export const groupFields: INodeProperties[] = [
 		description: 'The ID of the group',
 	},
 	// List Groups fields
+	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
 	{
 		displayName: 'Limit',
 		name: 'limit',
@@ -201,6 +328,7 @@ export const groupFields: INodeProperties[] = [
 			show: {
 				resource: ['group'],
 				operation: ['list'],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -217,6 +345,7 @@ export const groupFields: INodeProperties[] = [
 			show: {
 				resource: ['group'],
 				operation: ['list'],
+				returnAll: [false],
 			},
 		},
 		default: 0,
@@ -236,19 +365,6 @@ export const groupFields: INodeProperties[] = [
 		description: 'Whether to sort in ascending order',
 	},
 	{
-		displayName: 'Sort',
-		name: 'sort',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['list'],
-			},
-		},
-		default: '',
-		description: 'Sort field',
-	},
-	{
 		displayName: 'Include Full Membership',
 		name: 'includeFullMembership',
 		type: 'boolean',
@@ -260,97 +376,6 @@ export const groupFields: INodeProperties[] = [
 		},
 		default: false,
 		description: 'Whether to include full membership details',
-	},
-	{
-		displayName: 'Owner',
-		name: 'owner',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['list'],
-			},
-		},
-		default: '',
-		description: 'Filter by owner ID',
-	},
-	{
-		displayName: 'Owner Type',
-		name: 'ownerType',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['list'],
-			},
-		},
-		default: '',
-		description: 'Filter by owner type (USER or GROUP)',
-	},
-	{
-		displayName: 'Group Type',
-		name: 'groupType',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['list'],
-			},
-		},
-		default: '',
-		description: 'Filter by group type',
-	},
-	{
-		displayName: 'Created After',
-		name: 'createdAfter',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['list'],
-			},
-		},
-		default: '',
-		description: 'Filter by creation date (after)',
-	},
-	{
-		displayName: 'Created Before',
-		name: 'createdBefore',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['list'],
-			},
-		},
-		default: '',
-		description: 'Filter by creation date (before)',
-	},
-	{
-		displayName: 'Members',
-		name: 'members',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['list'],
-			},
-		},
-		default: '',
-		description: 'Filter by member IDs',
-	},
-	{
-		displayName: 'Is Manageable',
-		name: 'isManageable',
-		type: 'boolean',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['list'],
-			},
-		},
-		default: false,
-		description: 'Whether to filter by manageable groups',
 	},
 	{
 		displayName: 'Search',
@@ -436,7 +461,7 @@ export const groupFields: INodeProperties[] = [
 		description: 'Avatar size',
 	},
 	{
-		displayName: 'Default Background',
+		displayName: 'Default Background Color (Hex)',
 		name: 'defaultBackground',
 		type: 'string',
 		displayOptions: {
@@ -446,10 +471,10 @@ export const groupFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		description: 'Default background color',
+		description: 'Default background color in hex (e.g. #FFFFFF or #FFF)',
 	},
 	{
-		displayName: 'Default Foreground',
+		displayName: 'Default Foreground Color (Hex)',
 		name: 'defaultForeground',
 		type: 'string',
 		displayOptions: {
@@ -459,7 +484,7 @@ export const groupFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		description: 'Default foreground color',
+		description: 'Default foreground color in hex (e.g. #000000 or #000)',
 	},
 	{
 		displayName: 'Default Text',
@@ -472,55 +497,447 @@ export const groupFields: INodeProperties[] = [
 			},
 		},
 		default: '',
-		description: 'Default text for avatar',
+		description: 'Default text for avatar (max 3 characters)',
+	},
+	// Update Avatar fields
+	{
+		displayName: 'Avatar Type',
+		name: 'avatarType',
+		type: 'options',
+		options: [
+			{ name: 'Text', value: 'text' },
+			{ name: 'Image', value: 'image' },
+		],
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['updateAvatar'],
+			},
+		},
+		default: 'text',
+		description: 'Type of avatar',
+	},
+	{
+		displayName: 'Avatar Encoded Image',
+		name: 'avatarEncodedImage',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['updateAvatar'],
+				avatarType: ['image'],
+			},
+		},
+		default: '',
+		placeholder: 'data:image/png;base64,iVBORw0KGgo... or paste raw base64',
+		description:
+			'Base64-encoded image (e.g. from a previous node\'s binary data, or a data URL like data:image/png;base64,...). Data URL prefix is stripped before sending.',
+	},
+	{
+		displayName: 'Avatar Background Color (Hex)',
+		name: 'avatarBackground',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['updateAvatar'],
+				avatarType: ['text'],
+			},
+		},
+		default: '',
+		placeholder: '#FFFFFF',
+		description: 'Background color in hex (e.g. #FFFFFF or #FFF)',
+	},
+	{
+		displayName: 'Avatar Foreground Color (Hex)',
+		name: 'avatarForeground',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['updateAvatar'],
+				avatarType: ['text'],
+			},
+		},
+		default: '',
+		placeholder: '#000000',
+		description: 'Foreground color in hex (e.g. #000000 or #000)',
+	},
+	{
+		displayName: 'Avatar Text',
+		name: 'avatarText',
+		type: 'string',
+		typeOptions: {
+			maxLength: 3,
+		},
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['updateAvatar'],
+				avatarType: ['text'],
+			},
+		},
+		default: '',
+		description: 'Text (max 3 characters) for avatar',
 	},
 	// Create/Update Group fields
 	{
-		displayName: 'Group Data',
-		name: 'groupData',
+		displayName: 'Name',
+		name: 'name',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['create'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The name of the group',
+	},
+	{
+		displayName: 'Description',
+		name: 'description',
+		type: 'string',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['create'],
+			},
+		},
+		default: '',
+		required: true,
+		description: 'The description of the group',
+	},
+	{
+		displayName: 'Type',
+		name: 'type',
+		type: 'options',
+		options: [
+			{
+				name: 'Open',
+				value: 'open',
+			},
+			{
+				name: 'Closed',
+				value: 'closed',
+			},
+			{
+				name: 'Dynamic',
+				value: 'dynamic',
+			},
+		],
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['create'],
+			},
+		},
+		default: 'open',
+		required: true,
+		description: 'The type of the group',
+	},
+	{
+		displayName: 'Type',
+		name: 'typeFilter',
+		type: 'options',
+		options: [
+			{
+				name: 'Ad Hoc',
+				value: 'adHoc',
+			},
+			{
+				name: 'Closed',
+				value: 'closed',
+			},
+			{
+				name: 'Directory',
+				value: 'directory',
+			},
+			{
+				name: 'Dynamic',
+				value: 'dynamic',
+			},
+			{
+				name: 'None',
+				value: '',
+			},
+			{
+				name: 'Open',
+				value: 'open',
+			},
+			{
+				name: 'System',
+				value: 'system',
+			},
+		],
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: '',
+		description: 'Filter by type',
+	},
+	// List Groups: single owner filter
+	{
+		displayName: 'Owner Filter',
+		name: 'ownerFilter',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: false,
+		},
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: {},
+		description: 'Filter the list by a single owner (user or group)',
+		options: [
+			{
+				displayName: 'Owner',
+				name: 'owner',
+				values: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{ name: 'User', value: 'USER' },
+							{ name: 'Group', value: 'GROUP' },
+						],
+						default: 'USER',
+						required: true,
+					},
+					{
+						displayName: 'Owner ID',
+						name: 'id',
+						type: 'number',
+						default: '',
+						required: true,
+						description: 'The ID of the user or group to share with',
+					},
+				],
+			},
+		],
+	},
+	// Modify Group Members: multiple owner entries
+	{
+		displayName: 'Add Owners',
+		name: 'addOwners',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['modifyGroupMembers'],
+			},
+		},
+		default: {},
+		description: 'Add owners to a group; each entry can target a group and specify owners to add',
+		options: [
+			{
+				displayName: 'Owner',
+				name: 'owner',
+				values: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{ name: 'User', value: 'USER' },
+							{ name: 'Group', value: 'GROUP' },
+						],
+						default: 'USER',
+						required: true,
+					},
+					{
+						displayName: 'Owner ID',
+						name: 'id',
+						type: 'number',
+						default: '',
+						required: true,
+						description: 'The ID of the user or group to share with',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Remove Owners',
+		name: 'removeOwners',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['modifyGroupMembers'],
+			},
+		},
+		default: {},
+		description: 'Remove owners from a group; each entry can target a group and specify owners to remove',
+		options: [
+			{
+				displayName: 'Owner',
+				name: 'owner',
+				values: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{ name: 'User', value: 'USER' },
+							{ name: 'Group', value: 'GROUP' },
+						],
+						default: 'USER',
+						required: true,
+					},
+					{
+						displayName: 'Owner ID',
+						name: 'id',
+						type: 'number',
+						default: '',
+						required: true,
+						description: 'The ID of the user or group to share with',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Add Members',
+		name: 'addMembers',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['modifyGroupMembers'],
+			},
+		},
+		default: {},
+		description: 'Add owners to a group; each entry can target a group and specify owners to add',
+		options: [
+			{
+				displayName: 'Member',
+				name: 'member',
+				values: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{ name: 'User', value: 'USER' },
+							{ name: 'Group', value: 'GROUP' },
+						],
+						default: 'USER',
+						required: true,
+					},
+					{
+						displayName: 'Member ID',
+						name: 'id',
+						type: 'number',
+						default: '',
+						required: true,
+						description: 'The ID of the user or group to add as a member',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Remove Members',
+		name: 'removeMembers',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['modifyGroupMembers'],
+			},
+		},
+		default: {},
+		description: 'Remove members from a group; each entry can target a group and specify members to remove',
+		options: [
+			{
+				displayName: 'Member',
+				name: 'member',
+				values: [
+					{
+						displayName: 'Type',
+						name: 'type',
+						type: 'options',
+						options: [
+							{ name: 'User', value: 'USER' },
+							{ name: 'Group', value: 'GROUP' },
+						],
+						default: 'USER',
+						required: true,
+					},
+					{
+						displayName: 'Member ID',
+						name: 'id',
+						type: 'number',
+						default: '',
+						required: true,
+						description: 'The ID of the user or group to remove as a member',
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Created Before',
+		name: 'createdBefore',
+		type: 'dateTime',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: '',
+		description: 'Filter by creation date',
+	},
+	{
+		displayName: 'Created After',
+		name: 'createdAfter',
+		type: 'dateTime',
+		displayOptions: {
+			show: {
+				resource: ['group'],
+				operation: ['list'],
+			},
+		},
+		default: '',
+		description: 'Filter by creation date',
+	},
+	// updateDynamicGroupRules: always show Dynamic Group Definition
+	{
+		displayName: 'Dynamic Group Definition',
+		name: 'dynamicGroupDefinition',
 		type: 'json',
 		displayOptions: {
 			show: {
 				resource: ['group'],
-				operation: ['create', 'updateDynamicGroupRules'],
+				operation: ['updateDynamicGroupRules'],
 			},
 		},
 		default: '',
 		placeholder: '{"name":"Group Name","type":"dynamic","description":""}',
 		required: true,
 		description: 'JSON object containing group configuration',
-	},
-	// Add/Remove Owners fields
-	{
-		displayName: 'Owners Data',
-		name: 'ownersData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['addRemoveOwners'],
-			},
-		},
-		default: '',
-		placeholder: '[{"groupID":123456,"addOwners":[{"type":"GROUP","ID":"123456"}],"removeOwners":[{"type":"USER","ID":"123456"}]}]',
-		required: true,
-		description: 'JSON array containing owners to add or remove',
-	},
-	// Add Members fields
-	{
-		displayName: 'Members Data',
-		name: 'membersData',
-		type: 'json',
-		displayOptions: {
-			show: {
-				resource: ['group'],
-				operation: ['addMembers'],
-			},
-		},
-		default: '',
-		placeholder: '[{"groupID":252073910,"addMembers":[{"type":"USER","ID":"901072511"}]}]',
-		required: true,
-		description: 'JSON array containing members to add',
-	},
+	}
 ];
 

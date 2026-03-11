@@ -8,7 +8,7 @@ import { appStudioFields, appStudioOperations } from './appStudio';
 import { brandKitFields, brandKitOperations } from './brandKit';
 import { bricksFields, bricksOperations } from './bricks';
 import { cardFields, cardOperations } from './cards';
-import { categoryFields, categoryOperations } from './categories';
+import { categoryFields } from './categories';
 import { codeEngineFields, codeEngineOperations } from './codeEngine';
 import { creditFields, creditOperations } from './credits';
 import { datasetFields, datasetOperations } from './datasets';
@@ -78,7 +78,7 @@ export const domoOperations: INodeProperties[] = [
 	...brandKitOperations,
 	...bricksOperations,
 	...cardOperations,
-	...categoryOperations,
+	// ...categoryOperations,
 	...codeEngineOperations,
 	...creditOperations,
 	...datasetOperations,

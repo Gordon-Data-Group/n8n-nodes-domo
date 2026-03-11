@@ -361,15 +361,15 @@ export const bricksFields: INodeProperties[] = [
 	{
 		displayName: 'Creator',
 		name: 'creator',
-		type: 'string',
+		type: 'boolean',
 		displayOptions: {
 			show: {
 				resource: ['bricks'],
 				operation: ['listAppDesigns', 'countAppDesigns'],
 			},
 		},
-		default: '',
-		description: 'Filter by creator',
+		default: false,
+		description: 'Whether to filter to authenticated user',
 	},
 	{
 		displayName: 'Deleted',

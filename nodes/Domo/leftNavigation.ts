@@ -14,14 +14,15 @@ export const leftNavigationOperations: INodeProperties[] = [
 		default: 'getPins',
 		options: [
 			{
-				name: 'Create Pin',
-				value: 'createPin',
-				action: 'Create pin',
+				name: 'Create/Update Pins',
+				value: 'updatePins',
+				action: 'Update pins',
+				description: 'The order of pins is determined by their position in the array. To add a pin, send the pin data in the array without an ID.',
 				routing: {
 					request: {
 						method: 'POST',
-						url: '/api/nav/v1/pins/append',
-						body: '={{JSON.parse($parameter.pinData)}}',
+						url: '/api/nav/v1/pins',
+						body: '={{$parameter.pinData}}',
 					},
 				},
 			},
@@ -33,19 +34,6 @@ export const leftNavigationOperations: INodeProperties[] = [
 					request: {
 						method: 'GET',
 						url: '/api/nav/v1/pins',
-					},
-				},
-			},
-			{
-				name: 'Update Pins',
-				value: 'updatePins',
-				action: 'Update pins',
-				description: 'The order of pins is determined by their position in the array, not by the order property. Domo UI includes the order property in the request, but it does not affect the order and can be omitted. To reorder, send all pins reordered as desired in the array. The order property will be returned updated to match the order of the array',
-				routing: {
-					request: {
-						method: 'POST',
-						url: '/api/nav/v1/pins/append',
-						body: '={{JSON.parse($parameter.pinData)}}',
 					},
 				},
 			},

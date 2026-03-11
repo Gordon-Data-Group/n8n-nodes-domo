@@ -1,7 +1,6 @@
 // import { IExecuteFunctions, IHttpRequestMethods, INodeProperties } from 'n8n-workflow';
 import { INodeProperties } from 'n8n-workflow';
-
-// TODO: Fix include all records in list operation
+import { preSendLogger } from './shared/preSendLogger';
 
 export const userOperations: INodeProperties[] = [
 	{
@@ -23,11 +22,16 @@ export const userOperations: INodeProperties[] = [
 					request: {
 						body: {
 							displayName: '={{$parameter.displayName}}',
-							email: '={{$parameter.email}}',
 							roleId: '={{$parameter.roleId}}',
+							"detail": {
+								"email": '={{$parameter.email}}'
+						}
 						},
 						method: 'POST',
 						url: '/api/content/v3/users',
+						qs: {
+							sendEmail: '={{$parameter.sendEmail}}',
+						},
 					},
 				},
 			},
@@ -38,7 +42,7 @@ export const userOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'DELETE',
-						url: '=/api/identity/v1/users/{{ $parameter["userId"].toString() }}',
+						url: '=/api/identity/v1/users/{{ $parameter.userId.toString() }}',
 					},
 				},
 			},
@@ -60,7 +64,10 @@ export const userOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/api/content/v3/users/{{ $parameter["userId"].toString() }}',
+						url: '=/api/identity/v1/users/{{ $parameter.userId.toString() }}',
+						qs: {
+							parts: 'DETAILED',
+						},
 					},
 				},
 			},
@@ -71,7 +78,12 @@ export const userOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/content/v3/users',
+						url: '/api/identity/v1/users',
+						qs: {
+							attributes: '={{ ($parameter.attributesToRetrieve?.attribute ?? []).map(a => a.key).filter(Boolean).join(",") }}',
+							limit: '={{ $parameter.returnAll ? 50 : Math.min($parameter.limit ?? 50, 50) }}',
+							offset: '={{ $parameter.offset ?? 0 }}',
+						},
 					},
 					operations: {
 						pagination: {
@@ -84,6 +96,19 @@ export const userOperations: INodeProperties[] = [
 							},
 						},
 					},
+					output: {
+						postReceive: [
+							{
+								type: 'rootProperty',
+								properties: {
+									property: 'users',
+								},
+							},
+						],
+					},
+					send: {
+						preSend: [preSendLogger],
+					},
 				},
 			},
 			{
@@ -92,27 +117,10 @@ export const userOperations: INodeProperties[] = [
 				action: 'Update a user',
 				routing: {
 					request: {
-						method: 'PUT',
-						url: '=/api/content/v3/users/{{ $parameter["userId"].toString() }}',
+						method: 'PATCH',
+						url: '=/api/identity/v1/users/{{ $parameter.userId }}',
 						body: {
-							displayName: '={{$parameter.displayName}}',
-							email: '={{$parameter.email}}',
-							alternateEmail: '={{$parameter.alternateEmail}}',
-							phoneNumber: '={{$parameter.phoneNumber}}',
-							deskPhoneNumber: '={{$parameter.deskPhoneNumber}}',
-							title: '={{$parameter.title}}',
-							department: '={{$parameter.department}}',
-							webLandingPage: '={{$parameter.webLandingPage}}',
-							webMobileLandingPage: '={{$parameter.webMobileLandingPage}}',
-							roleId: '={{$parameter.roleId}}',
-							employeeId: '={{$parameter.employeeId.toString()}}',
-							employeeNumber: '={{$parameter.employeeNumber.toString()}}',
-							invitorUserId: '={{$parameter.invitorUserId.toString()}}',
-							hireDate: '={{$parameter.hireDate}}',
-							reportsTo: '={{$parameter.reportsTo.toString()}}',
-							locale: '={{$parameter.locale}}',
-							timeZone: '={{$parameter.timeZone}}',
-							employeeLocation: '={{$parameter.employeeLocation}}',
+							attributes: '={{ ($parameter.attributesToUpdate?.attribute ?? []).map(a => ({ key: a.key, values: a.value != null && a.value !== "" ? [a.value] : [] })) }}',
 						},
 					},
 				},
@@ -123,9 +131,10 @@ export const userOperations: INodeProperties[] = [
 ];
 
 export const userFields: INodeProperties[] = [
+
 	{
-		displayName: 'Get All Records',
-		name: 'getAllRecords',
+		displayName: 'Return All',
+		name: 'returnAll',
 		type: 'boolean',
 		displayOptions: {
 			show: {
@@ -134,7 +143,7 @@ export const userFields: INodeProperties[] = [
 			},
 		},
 		default: false,
-		description: 'Whether to fetch all records by automatically handling pagination',
+		description: 'Whether to return all results or only up to a given limit',
 	},
 	{
 		displayName: 'Limit',
@@ -147,7 +156,7 @@ export const userFields: INodeProperties[] = [
 			show: {
 				resource: ['user'],
 				operation: ['list'],
-				getAllRecords: [false],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -164,36 +173,11 @@ export const userFields: INodeProperties[] = [
 			show: {
 				resource: ['user'],
 				operation: ['list'],
-				getAllRecords: [false],
+				returnAll: [false],
 			},
 		},
 		default: 0,
 		description: 'Number of users to skip',
-	},
-	{
-		displayName: 'Empty Value Handling',
-		name: 'emptyValueHandling',
-		type: 'options',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		options: [
-			{
-				name: 'Ignore Empty Values',
-				value: 'ignore',
-				description: 'Skip fields that are empty or null',
-			},
-			{
-				name: 'Overwrite with Empty Values',
-				value: 'overwrite',
-				description: 'Include empty/null values in the update',
-			},
-		],
-		default: 'ignore',
-		description: 'How to handle empty or null values when updating user',
 	},
 	{
 		displayName: 'User ID',
@@ -219,7 +203,7 @@ export const userFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['user'],
-				operation: ['create', 'update'],
+				operation: ['create'],
 			},
 		},
 		default: '',
@@ -236,7 +220,7 @@ export const userFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['user'],
-				operation: ['create', 'update'],
+				operation: ['create'],
 			},
 		},
 		default: '',
@@ -254,7 +238,7 @@ export const userFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['user'],
-				operation: ['create', 'update'],
+				operation: ['create'],
 			},
 		},
 		required: true,
@@ -263,202 +247,85 @@ export const userFields: INodeProperties[] = [
 		description: 'Role ID (1=Admin, 2=Privileged, 3=Editor, 4=Participant, 5=Social) or custom role ID',
 	},
 	{
-		displayName: 'Alternate Email',
-		name: 'alternateEmail',
-		type: 'string',
+		displayName: 'Attributes to Retrieve',
+		name: 'attributesToRetrieve',
+		type: 'fixedCollection',
 		typeOptions: {
-			email: true,
+			multipleValues: true,
 		},
 		displayOptions: {
 			show: {
 				resource: ['user'],
-				operation: ['update'],
+				operation: ['list'],
 			},
 		},
-		default: '',
-		placeholder: 'alternate@example.com',
-		description: 'The alternate email address of the user',
+		default: {},
+		description: 'Attributes to retrieve (one value per attribute; add multiple entries for multiple attributes)',
+		options: [
+			{
+				displayName: 'Attribute',
+				name: 'attribute',
+				values: [
+					{
+						displayName: 'Key',
+						name: 'key',
+						type: 'string',
+						default: '',
+						description: 'Attribute key (e.g. emailAddress)',
+					}
+				],
+			},
+		],
 	},
 	{
-		displayName: 'Phone Number',
-		name: 'phoneNumber',
-		type: 'string',
+		displayName: 'Attributes to Update',
+		name: 'attributesToUpdate',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
 		displayOptions: {
 			show: {
 				resource: ['user'],
 				operation: ['update'],
 			},
 		},
-		default: '',
-		description: 'The phone number of the user',
+		default: {},
+		description: 'Attributes to update (one value per attribute; add multiple entries for multiple attributes)',
+		options: [
+			{
+				displayName: 'Attribute',
+				name: 'attribute',
+				values: [
+					{
+						displayName: 'Key',
+						name: 'key',
+						type: 'string',
+						default: '',
+						description: 'Attribute key (e.g. emailAddress)',
+					},
+					{
+						displayName: 'Value',
+						name: 'value',
+						type: 'string',
+						default: '',
+						description: 'Single value for this attribute',
+					},
+				],
+			},
+		],
 	},
 	{
-		displayName: 'Desk Phone Number',
-		name: 'deskPhoneNumber',
-		type: 'string',
+		displayName: 'Send Email',
+		name: 'sendEmail',
+		type: 'boolean',
 		displayOptions: {
 			show: {
 				resource: ['user'],
-				operation: ['update'],
+				operation: ['create'],
 			},
 		},
-		default: '',
-		description: 'The desk phone number of the user',
-	},
-	{
-		displayName: 'Title',
-		name: 'title',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: '',
-		description: 'The job title of the user',
-	},
-	{
-		displayName: 'Department',
-		name: 'department',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: '',
-		description: 'The department of the user',
-	},
-	{
-		displayName: 'Web Landing Page ID',
-		name: 'webLandingPage',
-		type: 'number',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: null,
-		description: 'The web landing page ID for the user',
-	},
-	{
-		displayName: 'Web Mobile Landing Page ID',
-		name: 'webMobileLandingPage',
-		type: 'number',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: null,
-		description: 'The mobile web landing page ID for the user',
-	},
-	{
-		displayName: 'Employee ID',
-		name: 'employeeId',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: '',
-		description: 'The employee ID of the user',
-	},
-	{
-		displayName: 'Employee Number',
-		name: 'employeeNumber',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: '',
-		description: 'The employee number of the user',
-	},
-	{
-		displayName: 'Invitor User ID',
-		name: 'invitorUserId',
-		type: 'number',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: null,
-		description: 'The ID of the user who invited this user',
-	},
-	{
-		displayName: 'Hire Date',
-		name: 'hireDate',
-		type: 'dateTime',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: null,
-		description: 'The hire date in Unix timestamp milliseconds format',
-	},
-	{
-		displayName: 'Reports To',
-		name: 'reportsTo',
-		type: 'number',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: null,
-		description: 'The user ID of the person this user reports to',
-	},
-	{
-		displayName: 'Locale',
-		name: 'locale',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: '',
-		description: 'The locale setting for the user (e.g., en-US)',
-	},
-	{
-		displayName: 'Time Zone',
-		name: 'timeZone',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: '',
-		description: 'The time zone for the user (e.g., America/New_York)',
-	},
-	{
-		displayName: 'Employee Location',
-		name: 'employeeLocation',
-		type: 'string',
-		displayOptions: {
-			show: {
-				resource: ['user'],
-				operation: ['update'],
-			},
-		},
-		default: '',
-		description: 'The physical location of the employee',
+		default: false,
+		description: 'Whether to send email notification',
 	},
 ];
