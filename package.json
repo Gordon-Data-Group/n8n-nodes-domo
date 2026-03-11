@@ -1,7 +1,7 @@
 {
   "name": "n8n-nodes-domo",
   "version": "0.0.1",
-  "description": "Complete Domo integration for n8n with Product APIs (Token Auth) and Platform APIs (OAuth2)",
+  "description": "Complete Domo integration for n8n with Product APIs (Token Auth)",
   "keywords": [
     "n8n-community-node-package"
   ],
@@ -9,7 +9,7 @@
   "homepage": "",
   "author": {
     "name": "Gordon Data Group",
-    "email": "grant@gordondatagroup.com"
+    "email": "n8n.domo.node@gordondatagroup.com"
   },
   "repository": {
     "type": "git",
