@@ -33,12 +33,10 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/DomoTokenApi.credentials.js",
-      "dist/credentials/DomoOAuth2Api.credentials.js"
+      "dist/credentials/DomoTokenApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Domo/Domo.node.js",
-      "dist/nodes/DomoOAuth2/DomoOAuth2.node.js"
+      "dist/nodes/Domo/Domo.node.js"
     ]
   },
   "devDependencies": {
