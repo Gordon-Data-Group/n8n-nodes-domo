@@ -9,3 +9,5 @@ yarn.lock
 api-definitions/
 oauth-api-requests/
 postman-collections/
+.claude/
+.env

@@ -8,6 +8,7 @@ import { brandKitFields, brandKitOperations } from './brandKit';
 import { bricksFields, bricksOperations } from './bricks';
 import { groupFields, groupOperations } from './groups';
 import { leftNavigationFields, leftNavigationOperations } from './leftNavigation';
+import { rolesFields, rolesOperations } from './roles';
 import { userFields, userOperations } from './users';
 
 // Combine all fields
@@ -21,6 +22,7 @@ export const domoFields: INodeProperties[] = [
 	...bricksFields,
 	...groupFields,
 	...leftNavigationFields,
+	...rolesFields,
 	...userFields,
 ];
 
@@ -34,5 +36,6 @@ export const domoOperations: INodeProperties[] = [
 	...bricksOperations,
 	...groupOperations,
 	...leftNavigationOperations,
+	...rolesOperations,
 	...userOperations,
 ];
