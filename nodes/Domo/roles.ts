@@ -20,7 +20,7 @@ export const rolesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/authorization/v1/roles/{{ $parameter.roleId }}',
+						url: '=/api/authorization/v1/roles/{{ $parameter.roleId }}',
 					},
 					send: {
 						preSend: [preSendLogger],
@@ -34,7 +34,7 @@ export const rolesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/authorization/v1/roles/{{ $parameter.roleId }}/authorities',
+						url: '=/api/authorization/v1/roles/{{ $parameter.roleId }}/authorities',
 					},
 					send: {
 						preSend: [preSendLogger],
@@ -48,7 +48,7 @@ export const rolesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/content/v1/typeahead',
+						url: '/api/content/v1/typeahead',
 						qs: {
 							authorities: '={{ $parameter.authority }}',
 							limit: '={{ $parameter.limit }}',
@@ -69,7 +69,7 @@ export const rolesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/authorization/v1/authorities',
+						url: '/api/authorization/v1/authorities',
 					},
 					send: {
 						preSend: [preSendLogger],
@@ -83,7 +83,7 @@ export const rolesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/authorization/v1/roles',
+						url: '/api/authorization/v1/roles',
 					},
 					send: {
 						preSend: [preSendLogger],
