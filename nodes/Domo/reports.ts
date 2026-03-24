@@ -1,5 +1,18 @@
 import { INodeProperties } from 'n8n-workflow';
+import type { IHttpRequestOptions, IExecuteSingleFunctions } from 'n8n-workflow';
 import { preSendLogger } from './shared/preSendLogger';
+
+async function preSendReportCardIds(
+	this: IExecuteSingleFunctions,
+	requestOptions: IHttpRequestOptions,
+): Promise<IHttpRequestOptions> {
+	const cardIds = this.getNodeParameter('cardIds') as { card?: Array<{ id: number }> };
+	const body = requestOptions.body as Record<string, unknown>;
+	if (body) {
+		body.cardIds = (cardIds?.card ?? []).map((c) => c.id);
+	}
+	return requestOptions;
+}
 
 export const reportsOperations: INodeProperties[] = [
 	{
@@ -30,11 +43,10 @@ export const reportsOperations: INodeProperties[] = [
 								accessCode: '={{ $parameter.accessCode || null }}',
 								tokenId: null,
 							},
-							cardIds: '={{ ($parameter.cardIds?.card ?? []).map(c => c.id) }}',
 						},
 					},
 					send: {
-						preSend: [preSendLogger],
+						preSend: [preSendReportCardIds, preSendLogger],
 					},
 				},
 			},
@@ -84,11 +96,10 @@ export const reportsOperations: INodeProperties[] = [
 								accessCode: '={{ $parameter.accessCode || null }}',
 								tokenId: null,
 							},
-							cardIds: '={{ ($parameter.cardIds?.card ?? []).map(c => c.id) }}',
 						},
 					},
 					send: {
-						preSend: [preSendLogger],
+						preSend: [preSendReportCardIds, preSendLogger],
 					},
 				},
 			},
