@@ -12,7 +12,6 @@ export async function preSendLogger(this: IExecuteSingleFunctions, requestOption
 	this.logger.debug('║              REQUEST LOGGED                               ║');
 	this.logger.debug('╚═══════════════════════════════════════════════════════════╝');
 	this.logger.debug(`URL: ${requestOptions.url}`);
-	this.logger.debug(`HEADERS: ${JSON.stringify(requestOptions.headers, null, 2)}`);
 	this.logger.debug(`METHOD: ${requestOptions.method}`);
 	this.logger.debug(`BODY: ${JSON.stringify(requestOptions.body, null, 2)}`);
 	this.logger.debug(`QS: ${JSON.stringify(requestOptions.qs, null, 2)}`);
