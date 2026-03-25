@@ -53,7 +53,7 @@ export const categoriesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'POST',
-						url: '/entity/v1/properties/category',
+						url: '/api/entity/v1/properties/category',
 						body: {
 							key: '={{ $parameter.key }}',
 							description: '={{ $parameter.description || undefined }}',
@@ -71,7 +71,7 @@ export const categoriesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/entity/v1/properties/entity/{{ $parameter.entityType }}/{{ $parameter.entityId }}',
+						url: '=/api/entity/v1/properties/entity/{{ $parameter.entityType }}/{{ $parameter.entityId }}',
 					},
 					send: {
 						preSend: [preSendLogger],
@@ -85,7 +85,7 @@ export const categoriesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/entity/v1/properties/category',
+						url: '/api/entity/v1/properties/category',
 					},
 					send: {
 						preSend: [preSendLogger],
@@ -99,7 +99,7 @@ export const categoriesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/entity/v1/properties/category/usage',
+						url: '/api/entity/v1/properties/category/usage',
 					},
 					send: {
 						preSend: [preSendLogger],
@@ -113,7 +113,7 @@ export const categoriesOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '=/entity/v1/properties/entity/{{ $parameter.entityType }}/{{ $parameter.entityId }}',
+						url: '=/api/entity/v1/properties/entity/{{ $parameter.entityType }}/{{ $parameter.entityId }}',
 					},
 					send: {
 						preSend: [preSendUpsertCategories, preSendLogger],
