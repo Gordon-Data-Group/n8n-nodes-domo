@@ -1,5 +1,6 @@
 import { INodeProperties } from 'n8n-workflow';
 import { accountFields, accountOperations } from './accounts';
+import { categoriesFields, categoriesOperations } from './categories';
 import { creditsFields, creditsOperations } from './credits';
 import { elevationFields, elevationOperations } from './elevation';
 import { achievementFields, achievementOperations } from './achievements';
@@ -18,6 +19,7 @@ import { userFields, userOperations } from './users';
 export const domoFields: INodeProperties[] = [
 	...accountFields,
 	...achievementFields,
+	...categoriesFields,
 	...adminFields,
 	...alertFields,
 	...appdbFields,
@@ -35,6 +37,7 @@ export const domoFields: INodeProperties[] = [
 export const domoOperations: INodeProperties[] = [
 	...accountOperations,
 	...achievementOperations,
+	...categoriesOperations,
 	...adminOperations,
 	...alertOperations,
 	...appdbOperations,
