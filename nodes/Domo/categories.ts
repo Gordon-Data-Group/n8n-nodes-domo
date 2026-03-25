@@ -132,10 +132,7 @@ export const categoriesFields: INodeProperties[] = [
 		name: 'entityType',
 		type: 'options',
 		options: [
-			{ name: 'Card', value: 'CARD' },
-			{ name: 'DataFlow', value: 'DATAFLOW' },
-			{ name: 'Dataset', value: 'DATASET' },
-			{ name: 'Page', value: 'PAGE' },
+			{ name: 'Data Source', value: 'DATA_SOURCE' },
 		],
 		displayOptions: {
 			show: {
@@ -143,7 +140,7 @@ export const categoriesFields: INodeProperties[] = [
 				operation: ['getEntity', 'upsert'],
 			},
 		},
-		default: 'CARD',
+		default: 'DATA_SOURCE',
 		required: true,
 		description: 'The type of Domo entity',
 	},
