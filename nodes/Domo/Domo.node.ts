@@ -50,6 +50,10 @@ export class Domo implements INodeType {
 						value: 'achievement',
 					},
 					{
+						name: 'Approval',
+						value: 'approval',
+					},
+					{
 						name: 'Admin',
 						value: 'admin',
 					},
