@@ -12,6 +12,12 @@ async function preSendBinaryUpload(
 	const binaryData = this.helpers.assertBinaryData(binaryPropertyName);
 	const buffer = await this.helpers.getBinaryDataBuffer(binaryPropertyName);
 	requestOptions.body = buffer;
+	requestOptions.json = false;
+	// Clear any existing Content-Type set by requestDefaults (handles both casings)
+	if (requestOptions.headers) {
+		delete requestOptions.headers['Content-Type'];
+		delete requestOptions.headers['content-type'];
+	}
 	requestOptions.headers = {
 		...requestOptions.headers,
 		'Content-Type': binaryData.mimeType || 'application/octet-stream',
