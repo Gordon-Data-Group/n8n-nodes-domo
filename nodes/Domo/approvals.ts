@@ -415,6 +415,20 @@ export const approvalsOperations: INodeProperties[] = [
 // ── Fields ───────────────────────────────────────────────────────────────────
 
 export const approvalsFields: INodeProperties[] = [
+	// ── Notice ────────────────────────────────────────────────────────────────
+	{
+		displayName:
+			'Note: Domo will return a 404 Not Found error if the Approvals feature is not enabled in your Domo instance.',
+		name: 'approvalsNotice',
+		type: 'notice',
+		displayOptions: {
+			show: {
+				resource: ['approval'],
+			},
+		},
+		default: '',
+	},
+
 	// ── Shared: Template ID (getTemplate, updateTemplate) ─────────────────────
 	{
 		displayName: 'Template ID',
