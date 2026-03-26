@@ -1,9 +1,9 @@
 import { INodeProperties } from 'n8n-workflow';
 import type { IHttpRequestOptions, IExecuteSingleFunctions } from 'n8n-workflow';
+import FormData from 'form-data';
 import { preSendLogger } from './shared/preSendLogger';
 
-// Reads binary data from the input item and sets it as the request body,
-// overriding Content-Type with the file's MIME type.
+// Sends binary data as multipart/form-data under the "file" key.
 async function preSendBinaryUpload(
 	this: IExecuteSingleFunctions,
 	requestOptions: IHttpRequestOptions,
@@ -11,16 +11,22 @@ async function preSendBinaryUpload(
 	const binaryPropertyName = this.getNodeParameter('binaryPropertyName') as string;
 	const binaryData = this.helpers.assertBinaryData(binaryPropertyName);
 	const buffer = await this.helpers.getBinaryDataBuffer(binaryPropertyName);
-	requestOptions.body = buffer;
+
+	const form = new FormData();
+	form.append('file', buffer, {
+		filename: binaryData.fileName || 'upload',
+		contentType: binaryData.mimeType || 'application/octet-stream',
+	});
+
+	requestOptions.body = form as unknown as FormData;
 	requestOptions.json = false;
-	// Clear any existing Content-Type set by requestDefaults (handles both casings)
 	if (requestOptions.headers) {
 		delete requestOptions.headers['Content-Type'];
 		delete requestOptions.headers['content-type'];
 	}
 	requestOptions.headers = {
 		...requestOptions.headers,
-		'Content-Type': binaryData.mimeType || 'application/octet-stream',
+		...form.getHeaders(),
 	};
 	return requestOptions;
 }
