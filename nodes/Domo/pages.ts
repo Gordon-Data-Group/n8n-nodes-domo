@@ -14,13 +14,13 @@ async function preSendListPagesAdminSummary(
 	const addPageWithNoOwner = this.getNodeParameter('addPageWithNoOwner') as boolean;
 	const includePermissionsList = this.getNodeParameter('includePermissionsList') as boolean;
 	const includePageTitleClause = this.getNodeParameter('includePageTitleClause') as boolean;
-	const pageTitleSearchText = this.getNodeParameter('pageTitleSearchText') as string;
+	const pageTitleSearchText = this.getNodeParameter('pageTitleSearchText', '') as string;
 	const includeLastModifiedDateClause = this.getNodeParameter(
 		'includeLastModifiedDateClause',
 	) as boolean;
-	const lastModifiedDateOperand = this.getNodeParameter('lastModifiedDateOperand') as string;
-	const lastModifiedStartDate = this.getNodeParameter('lastModifiedStartDate') as string;
-	const lastModifiedEndDate = this.getNodeParameter('lastModifiedEndDate') as string;
+	const lastModifiedDateOperand = this.getNodeParameter('lastModifiedDateOperand', 'BETWEEN') as string;
+	const lastModifiedStartDate = this.getNodeParameter('lastModifiedStartDate', '') as string;
+	const lastModifiedEndDate = this.getNodeParameter('lastModifiedEndDate', '') as string;
 	const includeCardCountClause = this.getNodeParameter('includeCardCountClause') as boolean;
 
 	const body: Record<string, unknown> = {
