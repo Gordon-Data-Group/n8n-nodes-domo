@@ -1,4 +1,5 @@
 import { IExecuteSingleFunctions, IHttpRequestOptions, INodeProperties } from 'n8n-workflow';
+import { preSendLogger } from './shared/preSendLogger';
 
 // ─── preSend helpers ──────────────────────────────────────────────────────────
 
@@ -145,7 +146,7 @@ export const pagesOperations: INodeProperties[] = [
 						url: '/api/content/v1/pages/bulk/owners/remove',
 					},
 					send: {
-						preSend: [preSendBulkRemoveOwners],
+						preSend: [preSendBulkRemoveOwners, preSendLogger],
 					},
 				},
 			},
@@ -162,6 +163,7 @@ export const pagesOperations: INodeProperties[] = [
 							parentPageId: '={{$parameter.parentPageId || 0}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -173,6 +175,7 @@ export const pagesOperations: INodeProperties[] = [
 						method: 'PUT',
 						url: '=/api/content/v4/pages/layouts/{{$parameter.layoutId}}/writelock',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -184,6 +187,7 @@ export const pagesOperations: INodeProperties[] = [
 						method: 'DELETE',
 						url: '=/api/content/v3/pages/analyzer/{{$parameter.filterViewId}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -195,6 +199,7 @@ export const pagesOperations: INodeProperties[] = [
 						method: 'DELETE',
 						url: '=/api/content/v1/pages/{{$parameter.pageId}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -206,6 +211,7 @@ export const pagesOperations: INodeProperties[] = [
 						method: 'DELETE',
 						url: '=/api/content/v4/pages/layouts/{{$parameter.layoutId}}/writelock',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -221,7 +227,7 @@ export const pagesOperations: INodeProperties[] = [
 						},
 					},
 					send: {
-						preSend: [preSendDuplicatePage],
+						preSend: [preSendDuplicatePage, preSendLogger],
 					},
 				},
 			},
@@ -238,7 +244,7 @@ export const pagesOperations: INodeProperties[] = [
 						},
 					},
 					send: {
-						preSend: [preSendDuplicatePage],
+						preSend: [preSendDuplicatePage, preSendLogger],
 					},
 				},
 			},
@@ -256,6 +262,7 @@ export const pagesOperations: INodeProperties[] = [
 							expandUsers: '={{$parameter.expandUsers}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -267,6 +274,7 @@ export const pagesOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '=/api/content/v4/pages/layouts/{{$parameter.layoutId}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -283,6 +291,7 @@ export const pagesOperations: INodeProperties[] = [
 							includeHidden: '={{$parameter.includeHidden}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -298,6 +307,7 @@ export const pagesOperations: INodeProperties[] = [
 							includeV4PageLayouts: '={{$parameter.includeV4PageLayouts}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -313,6 +323,7 @@ export const pagesOperations: INodeProperties[] = [
 							includeV4PageLayouts: '={{$parameter.includeV4PageLayouts}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -324,6 +335,7 @@ export const pagesOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '=/api/content/v3/pages/{{$parameter.pageId}}/analyzer/named',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -340,7 +352,7 @@ export const pagesOperations: INodeProperties[] = [
 						},
 					},
 					send: {
-						preSend: [preSendListPagesAdminSummary],
+						preSend: [preSendListPagesAdminSummary, preSendLogger],
 					},
 				},
 			},
@@ -354,7 +366,7 @@ export const pagesOperations: INodeProperties[] = [
 						url: '/api/content/v1/pages/bulk/move',
 					},
 					send: {
-						preSend: [preSendMovePages],
+						preSend: [preSendMovePages, preSendLogger],
 					},
 				},
 			},
@@ -370,6 +382,7 @@ export const pagesOperations: INodeProperties[] = [
 							resourceIds: '={{$parameter.resourceIds || undefined}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -382,6 +395,7 @@ export const pagesOperations: INodeProperties[] = [
 						url: '/api/content/v1/pages/pageorder',
 						body: '={{JSON.parse($parameter.pageOrderData)}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -397,7 +411,7 @@ export const pagesOperations: INodeProperties[] = [
 						},
 					},
 					send: {
-						preSend: [preSendShareAccess],
+						preSend: [preSendShareAccess, preSendLogger],
 					},
 				},
 			},
@@ -411,6 +425,7 @@ export const pagesOperations: INodeProperties[] = [
 						url: '=/api/content/v3/pages/{{$parameter.pageId}}/analyzer',
 						body: '={{JSON.parse($parameter.filterViewData)}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -423,6 +438,7 @@ export const pagesOperations: INodeProperties[] = [
 						url: '=/api/content/v4/pages/layouts/{{$parameter.layoutId}}',
 						body: '={{JSON.parse($parameter.layoutData)}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -438,6 +454,7 @@ export const pagesOperations: INodeProperties[] = [
 							locked: '={{$parameter.locked}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 		],
