@@ -14,6 +14,7 @@ import { bricksFields, bricksOperations } from './bricks';
 import { groupFields, groupOperations } from './groups';
 import { leftNavigationFields, leftNavigationOperations } from './leftNavigation';
 import { pagesFields, pagesOperations } from './pages';
+import { projectsFields, projectsOperations } from './projects';
 import { reportsFields, reportsOperations } from './reports';
 import { rolesFields, rolesOperations } from './roles';
 import { scheduledReportsFields, scheduledReportsOperations } from './scheduledReports';
@@ -36,6 +37,7 @@ export const domoFields: INodeProperties[] = [
 	...groupFields,
 	...leftNavigationFields,
 	...pagesFields,
+	...projectsFields,
 	...reportsFields,
 	...rolesFields,
 	...scheduledReportsFields,
@@ -58,6 +60,7 @@ export const domoOperations: INodeProperties[] = [
 	...groupOperations,
 	...leftNavigationOperations,
 	...pagesOperations,
+	...projectsOperations,
 	...reportsOperations,
 	...rolesOperations,
 	...scheduledReportsOperations,
