@@ -16,6 +16,7 @@ import { leftNavigationFields, leftNavigationOperations } from './leftNavigation
 import { pagesFields, pagesOperations } from './pages';
 import { reportsFields, reportsOperations } from './reports';
 import { rolesFields, rolesOperations } from './roles';
+import { scheduledReportsFields, scheduledReportsOperations } from './scheduledReports';
 import { userFields, userOperations } from './users';
 
 // Combine all fields
@@ -37,6 +38,7 @@ export const domoFields: INodeProperties[] = [
 	...pagesFields,
 	...reportsFields,
 	...rolesFields,
+	...scheduledReportsFields,
 	...userFields,
 ];
 
@@ -58,5 +60,6 @@ export const domoOperations: INodeProperties[] = [
 	...pagesOperations,
 	...reportsOperations,
 	...rolesOperations,
+	...scheduledReportsOperations,
 	...userOperations,
 ];
