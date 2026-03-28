@@ -35,11 +35,27 @@ async function preSendCreateTask(
 	const taskName = this.getNodeParameter('taskName') as string;
 	const disabled = this.getNodeParameter('disabled') as boolean;
 	const priority = this.getNodeParameter('priority') as number;
-	const ownersData = this.getNodeParameter('owners') as { owner: Array<{ userId: number }> };
+	const primaryTaskOwner = this.getNodeParameter('primaryTaskOwner') as number;
+	const dueDate = this.getNodeParameter('dueDate', 0) as number;
+	const description = this.getNodeParameter('description', '') as string;
+	const contributorsData = this.getNodeParameter('contributors') as {
+		contributor: Array<{ assignedTo: number }>;
+	};
+	const tagsData = this.getNodeParameter('tags') as { tag: Array<{ tag: string }> };
 
-	const owners: number[] = ownersData?.owner ? ownersData.owner.map((o) => o.userId) : [];
+	const contributors: Array<{ assignedTo: number; assignedBy: number }> = contributorsData?.contributor
+		? contributorsData.contributor.map((c) => ({ assignedTo: c.assignedTo, assignedBy: primaryTaskOwner }))
+		: [];
 
-	requestOptions.body = { taskName, disabled, owners, priority };
+	const tags: Array<{ tag: string }> = tagsData?.tag ? tagsData.tag : [];
+
+	const body: Record<string, unknown> = { taskName, disabled, priority, primaryTaskOwner };
+	if (dueDate) body.dueDate = dueDate;
+	if (description) body.description = description;
+	if (contributors.length) body.contributors = contributors;
+	if (tags.length) body.tags = tags;
+
+	requestOptions.body = body;
 	return requestOptions;
 }
 
@@ -460,6 +476,7 @@ export const projectsFields: INodeProperties[] = [
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
+		description: 'Max number of results to return',
 		default: 50,
 		typeOptions: { minValue: 1 },
 		displayOptions: {
@@ -651,6 +668,45 @@ export const projectsFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'Owner',
+		name: 'primaryTaskOwner',
+		type: 'number',
+		required: true,
+		default: 0,
+		description: 'User ID of the primary task owner',
+		displayOptions: {
+			show: {
+				resource: ['projects'],
+				operation: ['createTask'],
+			},
+		},
+	},
+	{
+		displayName: 'Due Date',
+		name: 'dueDate',
+		type: 'number',
+		default: 0,
+		description: 'Due date as a Unix timestamp in milliseconds (e.g. 1773295200000)',
+		displayOptions: {
+			show: {
+				resource: ['projects'],
+				operation: ['createTask'],
+			},
+		},
+	},
+	{
+		displayName: 'Description',
+		name: 'description',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['projects'],
+				operation: ['createTask'],
+			},
+		},
+	},
+	{
 		displayName: 'Disabled',
 		name: 'disabled',
 		type: 'boolean',
@@ -675,12 +731,12 @@ export const projectsFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Owners',
-		name: 'owners',
+		displayName: 'Contributors',
+		name: 'contributors',
 		type: 'fixedCollection',
 		typeOptions: { multipleValues: true },
 		default: {},
-		description: 'Users assigned as task owners',
+		description: 'Users assigned as contributors to the task',
 		displayOptions: {
 			show: {
 				resource: ['projects'],
@@ -689,14 +745,42 @@ export const projectsFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'owner',
-				displayName: 'Owner',
+				name: 'contributor',
+				displayName: 'Contributor',
 				values: [
 					{
 						displayName: 'User ID',
-						name: 'userId',
+						name: 'assignedTo',
 						type: 'number',
 						default: 0,
+					},
+				],
+			},
+		],
+	},
+	{
+		displayName: 'Tags',
+		name: 'tags',
+		type: 'fixedCollection',
+		typeOptions: { multipleValues: true },
+		default: {},
+		description: 'Tags to attach to the task',
+		displayOptions: {
+			show: {
+				resource: ['projects'],
+				operation: ['createTask'],
+			},
+		},
+		options: [
+			{
+				name: 'tag',
+				displayName: 'Tag',
+				values: [
+					{
+						displayName: 'Tag',
+						name: 'tag',
+						type: 'string',
+						default: '',
 					},
 				],
 			},
