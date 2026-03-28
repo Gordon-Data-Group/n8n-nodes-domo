@@ -762,10 +762,11 @@ export const projectsFields: INodeProperties[] = [
 		displayName: 'List Type',
 		name: 'listType',
 		type: 'options',
-		default: 'TASK',
+		default: 'todo',
 		options: [
-			{ name: 'Task', value: 'TASK' },
-			{ name: 'Scheduled', value: 'SCHEDULED' },
+			{ name: 'To Do', value: 'todo' },
+			{ name: 'In Progress', value: 'workingOn' },
+			{ name: 'Completed', value: 'complete' },
 		],
 		displayOptions: {
 			show: {
