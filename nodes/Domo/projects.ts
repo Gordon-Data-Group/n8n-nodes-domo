@@ -1,4 +1,5 @@
 import { IExecuteSingleFunctions, IHttpRequestOptions, INodeProperties } from 'n8n-workflow';
+import { preSendLogger } from './shared/preSendLogger';
 
 // ─── preSend helpers ──────────────────────────────────────────────────────────
 
@@ -109,6 +110,7 @@ export const projectsOperations: INodeProperties[] = [
 							previewImage: '={{$parameter.previewImage}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -125,6 +127,7 @@ export const projectsOperations: INodeProperties[] = [
 							listOrder: '={{$parameter.listOrder}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -137,7 +140,7 @@ export const projectsOperations: INodeProperties[] = [
 						url: '/api/content/v1/projects',
 					},
 					send: {
-						preSend: [preSendCreateProject],
+						preSend: [preSendCreateProject, preSendLogger],
 					},
 				},
 			},
@@ -151,7 +154,7 @@ export const projectsOperations: INodeProperties[] = [
 						url: '=/api/content/v1/projects/{{$parameter.projectId}}/lists/{{$parameter.listId}}/tasks',
 					},
 					send: {
-						preSend: [preSendCreateTask],
+						preSend: [preSendCreateTask, preSendLogger],
 					},
 				},
 			},
@@ -165,7 +168,7 @@ export const projectsOperations: INodeProperties[] = [
 						url: '=/api/content/v1/tasks/user/{{$parameter.userId}}',
 					},
 					send: {
-						preSend: [preSendCreateUserTask],
+						preSend: [preSendCreateUserTask, preSendLogger],
 					},
 				},
 			},
@@ -178,6 +181,7 @@ export const projectsOperations: INodeProperties[] = [
 						method: 'DELETE',
 						url: '=/api/content/v1/projects/{{$parameter.projectId}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -192,6 +196,7 @@ export const projectsOperations: INodeProperties[] = [
 							archived: '={{$parameter.archivedFilter}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -203,6 +208,7 @@ export const projectsOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '=/api/content/v1/projects/{{$parameter.projectId}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -219,6 +225,7 @@ export const projectsOperations: INodeProperties[] = [
 							status: '={{$parameter.statusFilter || undefined}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -233,6 +240,7 @@ export const projectsOperations: INodeProperties[] = [
 							archived: '={{$parameter.archivedFilter}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -244,6 +252,7 @@ export const projectsOperations: INodeProperties[] = [
 						method: 'GET',
 						url: '=/api/content/v1/tasks/{{$parameter.taskId}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -260,6 +269,7 @@ export const projectsOperations: INodeProperties[] = [
 							status: '={{$parameter.statusFilter || undefined}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -274,6 +284,7 @@ export const projectsOperations: INodeProperties[] = [
 							fields: '={{$parameter.fields || undefined}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -290,6 +301,7 @@ export const projectsOperations: INodeProperties[] = [
 							assignedToOwnerId: '={{$parameter.assignedToOwnerId || undefined}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -306,6 +318,7 @@ export const projectsOperations: INodeProperties[] = [
 							status: '={{$parameter.statusFilter || undefined}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -320,6 +333,7 @@ export const projectsOperations: INodeProperties[] = [
 							q: '={{$parameter.q || undefined}}',
 						},
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -332,7 +346,7 @@ export const projectsOperations: INodeProperties[] = [
 						url: '=/api/content/v1/projects/{{$parameter.projectId}}/lists/{{$parameter.listId}}',
 					},
 					send: {
-						preSend: [preSendUpdateList],
+						preSend: [preSendUpdateList, preSendLogger],
 					},
 				},
 			},
@@ -346,6 +360,7 @@ export const projectsOperations: INodeProperties[] = [
 						url: '=/api/content/v1/projects/{{$parameter.projectId}}',
 						body: '={{JSON.parse($parameter.projectData)}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 			{
@@ -358,6 +373,7 @@ export const projectsOperations: INodeProperties[] = [
 						url: '=/api/content/v1/tasks/{{$parameter.taskId}}',
 						body: '={{JSON.parse($parameter.taskData)}}',
 					},
+					send: { preSend: [preSendLogger] },
 				},
 			},
 		],
