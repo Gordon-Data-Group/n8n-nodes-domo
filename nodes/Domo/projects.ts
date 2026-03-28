@@ -328,7 +328,7 @@ export const projectsOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/api/content/v1/projects/tags',
+						url: '/api/content/v1/tags',
 						qs: {
 							q: '={{$parameter.q || undefined}}',
 						},
