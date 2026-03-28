@@ -36,7 +36,8 @@ async function preSendCreateTask(
 	const disabled = this.getNodeParameter('disabled') as boolean;
 	const priority = this.getNodeParameter('priority') as number;
 	const primaryTaskOwner = this.getNodeParameter('primaryTaskOwner') as number;
-	const dueDate = this.getNodeParameter('dueDate', 0) as number;
+	const dueDateRaw = this.getNodeParameter('dueDate', '') as string;
+	const dueDate = dueDateRaw ? new Date(dueDateRaw).getTime() : 0;
 	const description = this.getNodeParameter('description', '') as string;
 	const contributorsData = this.getNodeParameter('contributors') as {
 		contributor: Array<{ assignedTo: number }>;
@@ -684,9 +685,8 @@ export const projectsFields: INodeProperties[] = [
 	{
 		displayName: 'Due Date',
 		name: 'dueDate',
-		type: 'number',
-		default: 0,
-		description: 'Due date as a Unix timestamp in milliseconds (e.g. 1773295200000)',
+		type: 'dateTime',
+		default: '',
 		displayOptions: {
 			show: {
 				resource: ['projects'],
