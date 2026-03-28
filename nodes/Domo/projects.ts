@@ -165,7 +165,7 @@ export const projectsOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'POST',
-						url: '=/api/content/v1/tasks/user/{{$parameter.userId}}',
+						url: '=/api/content/v2/users/{{$parameter.userId}}/tasks',
 					},
 					send: {
 						preSend: [preSendCreateUserTask, preSendLogger],
@@ -218,7 +218,7 @@ export const projectsOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/api/content/v1/projects/user/{{$parameter.userId}}',
+						url: '=/api/content/v2/users/{{$parameter.userId}}/projects',
 						qs: {
 							limit: '={{$parameter.limit}}',
 							offset: '={{$parameter.offset}}',
@@ -262,7 +262,7 @@ export const projectsOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/api/content/v1/projects/user/{{$parameter.userId}}/tasks',
+						url: '=/api/content/v2/users/{{$parameter.userId}}/tasks/assignments',
 						qs: {
 							limit: '={{$parameter.limit}}',
 							offset: '={{$parameter.offset}}',
@@ -294,7 +294,7 @@ export const projectsOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/api/content/v2/projects/{{$parameter.projectId}}/tasks',
+						url: '=/api/content/v1/projects/{{$parameter.projectId}}/tasks',
 						qs: {
 							search: '={{$parameter.search || undefined}}',
 							archived: '={{$parameter.archivedFilter}}',
