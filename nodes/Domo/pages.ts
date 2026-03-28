@@ -644,11 +644,12 @@ export const pagesFields: INodeProperties[] = [
 		displayName: 'Order By',
 		name: 'orderBy',
 		type: 'options',
-		default: 'createdTime',
+		default: 'pageTitle',
 		options: [
-			{ name: 'Created Time', value: 'createdTime' },
-			{ name: 'Last Modified', value: 'lastModifiedDate' },
-			{ name: 'Title', value: 'title' },
+			{ name: 'Dashboard', value: 'pageTitle' },
+			{ name: 'Parent Dashboard', value: 'parentPageTitle' },
+			{ name: 'Cards', value: 'cardCount' },
+			{ name: 'Last Updated', value: 'lastModified' },
 		],
 		displayOptions: {
 			show: {
