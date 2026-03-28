@@ -11,6 +11,7 @@ import { alertFields, alertOperations } from './alerts';
 import { appdbFields, appdbOperations } from './appdb';
 import { brandKitFields, brandKitOperations } from './brandKit';
 import { bricksFields, bricksOperations } from './bricks';
+import { functionsFields, functionsOperations } from './functions';
 import { groupFields, groupOperations } from './groups';
 import { leftNavigationFields, leftNavigationOperations } from './leftNavigation';
 import { pagesFields, pagesOperations } from './pages';
@@ -34,6 +35,7 @@ export const domoFields: INodeProperties[] = [
 	...bricksFields,
 	...creditsFields,
 	...elevationFields,
+	...functionsFields,
 	...groupFields,
 	...leftNavigationFields,
 	...pagesFields,
@@ -57,6 +59,7 @@ export const domoOperations: INodeProperties[] = [
 	...bricksOperations,
 	...creditsOperations,
 	...elevationOperations,
+	...functionsOperations,
 	...groupOperations,
 	...leftNavigationOperations,
 	...pagesOperations,
