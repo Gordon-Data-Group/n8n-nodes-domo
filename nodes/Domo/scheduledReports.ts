@@ -58,7 +58,13 @@ async function preSendEnableDisable(
 	requestOptions: IHttpRequestOptions,
 ): Promise<IHttpRequestOptions> {
 	const enabled = this.getNodeParameter('enabled') as boolean;
-	requestOptions.body = enabled;
+	// Send the raw JSON primitive (true/false) as a pre-serialized string.
+	// Assigning a JS boolean directly can be dropped by n8n when false;
+	// JSON.stringify produces the string 'true' or 'false', which axios
+	// forwards as-is so the server receives valid JSON boolean.
+	requestOptions.body = JSON.stringify(enabled);
+	if (!requestOptions.headers) requestOptions.headers = {};
+	(requestOptions.headers as Record<string, string>)['Content-Type'] = 'application/json';
 	return requestOptions;
 }
 
