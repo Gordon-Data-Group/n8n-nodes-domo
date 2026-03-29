@@ -107,7 +107,7 @@ export const categoriesOperations: INodeProperties[] = [
 				},
 			},
 			{
-				name: 'Upsert Entity Categories',
+				name: 'Create or Update',
 				value: 'upsert',
 				action: 'Assign or update categories on an entity',
 				routing: {
