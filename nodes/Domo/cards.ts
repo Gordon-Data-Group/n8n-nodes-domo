@@ -719,6 +719,7 @@ export const cardFields: INodeProperties[] = [
 					'renderCard',
 					'resolveProblem',
 					'updateCard',
+					'validateMoveToNewDataSet'
 				],
 			},
 		},

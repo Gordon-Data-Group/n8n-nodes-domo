@@ -50,7 +50,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/subscriptions/invites/counts',
+						url: '/api/publish/v2/subscriptions/invites/counts',
 						qs: {
 							searchTerm: '={{ $parameter.searchTerm || undefined }}',
 						},
@@ -65,7 +65,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/subscriptions/summaries/counts',
+						url: '/api/publish/v2/subscriptions/summaries/counts',
 						qs: {
 							searchTerm: '={{ $parameter.searchTerm || undefined }}',
 						},
@@ -80,7 +80,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/publish/v2/publications/{{$parameter.publicationId}}',
+						url: '=/api/publish/v2/publications/{{$parameter.publicationId}}',
 					},
 					send: { preSend: [preSendLogger] },
 				},
@@ -92,7 +92,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/publications/status',
+						url: '/api/publish/v2/publications/status',
 					},
 					send: { preSend: [preSendLogger] },
 				},
@@ -104,7 +104,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/publish/v2/publications/summaries/{{$parameter.publicationId}}',
+						url: '=/api/publish/v2/publications/summaries/{{$parameter.publicationId}}',
 					},
 					send: { preSend: [preSendLogger] },
 				},
@@ -116,7 +116,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '=/publish/v2/subscriptions/{{$parameter.subscriptionId}}/share',
+						url: '=/api/publish/v2/subscriptions/{{$parameter.subscriptionId}}/share',
 					},
 					send: { preSend: [preSendLogger] },
 				},
@@ -128,7 +128,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/automatic-subscriptions/shares/v1',
+						url: '/api/publish/v2/automatic-subscriptions/shares/v1',
 					},
 					send: { preSend: [preSendLogger] },
 				},
@@ -140,7 +140,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/automatic-subscriptions',
+						url: '/api/publish/v2/automatic-subscriptions',
 					},
 					send: { preSend: [preSendLogger] },
 				},
@@ -152,7 +152,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/subscriptions/invites',
+						url: '/api/publish/v2/subscriptions/invites',
 						qs: {
 							limit: '={{ $parameter.limit }}',
 							offset: '={{ $parameter.offset }}',
@@ -168,7 +168,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/publications',
+						url: '/api/publish/v2/publications',
 					},
 					send: { preSend: [preSendLogger] },
 				},
@@ -180,7 +180,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/publications/summaries',
+						url: '/api/publish/v2/publications/summaries',
 						qs: {
 							public: '={{ $parameter.isPublic }}',
 							limit: '={{ $parameter.limit }}',
@@ -199,7 +199,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'GET',
-						url: '/publish/v2/subscriptions/summaries',
+						url: '/api/publish/v2/subscriptions/summaries',
 						qs: {
 							limit: '={{ $parameter.limit }}',
 							offset: '={{ $parameter.offset }}',
@@ -216,7 +216,7 @@ export const domoEverywhereOperations: INodeProperties[] = [
 				routing: {
 					request: {
 						method: 'PUT',
-						url: '=/publish/v2/subscriptions/{{$parameter.subscriptionId}}',
+						url: '=/api/publish/v2/subscriptions/{{$parameter.subscriptionId}}',
 					},
 					send: { preSend: [preSendUpdateSubscription, preSendLogger] },
 				},
