@@ -1,9 +1,12 @@
 import { INodeProperties } from 'n8n-workflow';
 import { accountFields, accountOperations } from './accounts';
 import { approvalsFields, approvalsOperations } from './approvals';
+import { cardFields, cardOperations } from './cards';
 import { categoriesFields, categoriesOperations } from './categories';
 import { filesFields, filesOperations } from './files';
 import { creditsFields, creditsOperations } from './credits';
+import { dataflowsFields, dataflowsOperations } from './dataflows';
+import { domoEverywhereFields, domoEverywhereOperations } from './domoEverywhere';
 import { elevationFields, elevationOperations } from './elevation';
 import { achievementFields, achievementOperations } from './achievements';
 import { adminFields, adminOperations } from './admin';
@@ -26,6 +29,7 @@ export const domoFields: INodeProperties[] = [
 	...accountFields,
 	...achievementFields,
 	...approvalsFields,
+	...cardFields,
 	...categoriesFields,
 	...filesFields,
 	...adminFields,
@@ -34,6 +38,8 @@ export const domoFields: INodeProperties[] = [
 	...brandKitFields,
 	...bricksFields,
 	...creditsFields,
+	...dataflowsFields,
+	...domoEverywhereFields,
 	...elevationFields,
 	...functionsFields,
 	...groupFields,
@@ -50,6 +56,7 @@ export const domoOperations: INodeProperties[] = [
 	...accountOperations,
 	...achievementOperations,
 	...approvalsOperations,
+	...cardOperations,
 	...categoriesOperations,
 	...filesOperations,
 	...adminOperations,
@@ -58,6 +65,8 @@ export const domoOperations: INodeProperties[] = [
 	...brandKitOperations,
 	...bricksOperations,
 	...creditsOperations,
+	...dataflowsOperations,
+	...domoEverywhereOperations,
 	...elevationOperations,
 	...functionsOperations,
 	...groupOperations,

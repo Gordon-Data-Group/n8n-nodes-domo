@@ -646,8 +646,7 @@ export const approvalsFields: INodeProperties[] = [
 		},
 		default: '',
 		required: true,
-		description:
-			'JSON object representing the full template input (id, title, description, fields, approvers, observers, etc.)',
+		description: 'JSON object representing the full template input (ID, title, description, fields, approvers, observers, etc.)',
 	},
 
 	// ── Replace Approver ──────────────────────────────────────────────────────

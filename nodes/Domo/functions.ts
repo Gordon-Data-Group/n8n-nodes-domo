@@ -437,14 +437,17 @@ export const functionsFields: INodeProperties[] = [
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
+		typeOptions: {
+			minValue: 1,
+		},
 		displayOptions: {
 			show: {
 				resource: ['functions'],
 				operation: ['listFunctions'],
 			},
 		},
-		default: 5000,
-		description: 'Maximum number of functions to return',
+		default: 50,
+		description: 'Max number of results to return',
 	},
 	{
 		displayName: 'Offset',
@@ -668,8 +671,7 @@ export const functionsFields: INodeProperties[] = [
 			},
 		},
 		default: '[]',
-		description:
-			'JSON array of resource links (dataset or card associations). Each entry: { "resource": { "type": "DATA_SOURCE"|"CARD", "id": "..." }, "visible": true, "active": false, "valid": "INCOMPATIBLE_LINK"|"VALID" }',
+		description: 'JSON array of resource links (dataset or card associations). Each entry: { "resource": { "type": "DATA_SOURCE"|"CARD", "ID": "..." }, "visible": true, "active": false, "valid": "INCOMPATIBLE_LINK"|"VALID" }.',
 	},
 
 	// ── Update Function only ──────────────────────────────────────────────────

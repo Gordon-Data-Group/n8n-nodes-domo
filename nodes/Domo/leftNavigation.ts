@@ -146,7 +146,7 @@ export const leftNavigationFields: INodeProperties[] = [
 	{
 		displayName: 'Icon Color',
 		name: 'iconColor',
-		type: 'string',
+		type: 'color',
 		displayOptions: {
 			show: {
 				resource: ['leftNavigation'],
@@ -159,7 +159,7 @@ export const leftNavigationFields: INodeProperties[] = [
 	{
 		displayName: 'Icon Background Color',
 		name: 'iconBackgroundColor',
-		type: 'string',
+		type: 'color',
 		displayOptions: {
 			show: {
 				resource: ['leftNavigation'],
