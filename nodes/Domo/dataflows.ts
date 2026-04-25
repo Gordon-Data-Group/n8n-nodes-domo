@@ -593,6 +593,19 @@ export const dataflowsFields: INodeProperties[] = [
 
 	// ── List DataFlows ────────────────────────────────────────────────────────
 	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['dataflow'],
+				operation: ['listDataFlows', 'getDataFlowExecutions'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
+	{
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
@@ -603,6 +616,7 @@ export const dataflowsFields: INodeProperties[] = [
 			show: {
 				resource: ['dataflow'],
 				operation: ['listDataFlows', 'getDataFlowExecutions'],
+				returnAll: [false],
 			},
 		},
 	},
@@ -615,6 +629,7 @@ export const dataflowsFields: INodeProperties[] = [
 			show: {
 				resource: ['dataflow'],
 				operation: ['listDataFlows', 'getDataFlowExecutions'],
+				returnAll: [false],
 			},
 		},
 	},

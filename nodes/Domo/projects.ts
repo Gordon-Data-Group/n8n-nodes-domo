@@ -474,6 +474,19 @@ export const projectsFields: INodeProperties[] = [
 
 	// ── List Projects / Get Projects for User / Get Task Assignments ──────────
 	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['projects'],
+				operation: ['listProjects', 'getProjectsForUser', 'getTaskAssignmentsForUser'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
+	{
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
@@ -484,6 +497,7 @@ export const projectsFields: INodeProperties[] = [
 			show: {
 				resource: ['projects'],
 				operation: ['listProjects', 'getProjectsForUser', 'getTaskAssignmentsForUser'],
+				returnAll: [false],
 			},
 		},
 	},
@@ -497,6 +511,7 @@ export const projectsFields: INodeProperties[] = [
 			show: {
 				resource: ['projects'],
 				operation: ['listProjects', 'getProjectsForUser', 'getTaskAssignmentsForUser'],
+				returnAll: [false],
 			},
 		},
 	},

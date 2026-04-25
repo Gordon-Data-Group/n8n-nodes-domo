@@ -13,8 +13,9 @@ async function preSendListFunctions(
 	const excludeVariables = this.getNodeParameter('excludeVariables') as boolean;
 	const sortField = this.getNodeParameter('sortField') as string;
 	const sortAscending = this.getNodeParameter('sortAscending') as boolean;
-	const limit = this.getNodeParameter('limit') as number;
-	const offset = this.getNodeParameter('offset') as number;
+	const returnAll = this.getNodeParameter('returnAll') as boolean;
+	const limit = returnAll ? 50000 : (this.getNodeParameter('limit') as number);
+	const offset = returnAll ? 0 : (this.getNodeParameter('offset') as number);
 
 	const filters: Array<Record<string, unknown>> = [];
 	if (datasetId) {
@@ -434,6 +435,19 @@ export const functionsFields: INodeProperties[] = [
 		description: 'Whether to sort results in ascending order',
 	},
 	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['functions'],
+				operation: ['listFunctions'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
+	{
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
@@ -444,6 +458,7 @@ export const functionsFields: INodeProperties[] = [
 			show: {
 				resource: ['functions'],
 				operation: ['listFunctions'],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -457,6 +472,7 @@ export const functionsFields: INodeProperties[] = [
 			show: {
 				resource: ['functions'],
 				operation: ['listFunctions'],
+				returnAll: [false],
 			},
 		},
 		default: 0,
@@ -567,11 +583,11 @@ export const functionsFields: INodeProperties[] = [
 		name: 'dataType',
 		type: 'options',
 		options: [
-			{ name: 'String', value: 'STRING' },
-			{ name: 'Double', value: 'DOUBLE' },
-			{ name: 'Long', value: 'LONG' },
 			{ name: 'Date', value: 'DATE' },
 			{ name: 'Datetime', value: 'DATETIME' },
+			{ name: 'Double', value: 'DOUBLE' },
+			{ name: 'Long', value: 'LONG' },
+			{ name: 'String', value: 'STRING' },
 		],
 		displayOptions: {
 			show: {
