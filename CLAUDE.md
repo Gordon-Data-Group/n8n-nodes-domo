@@ -51,12 +51,11 @@ routing: {
 ### Authentication
 
 - **Primary (deployed):** `DomoTokenApi` — Developer Token sent as `X-DOMO-DEVELOPER-TOKEN` header. Credential stores the user's Domo instance domain.
-- **Secondary (not deployed):** `DomoOAuth2Api` — Client ID + Secret OAuth2, in `credentials/DomoOAuth2Api.credentials.ts`. The corresponding node files are in `nodes/not_implemented/DomoOAuth2/` and are excluded from the built package.
 
 ### Key Files
 
 | File | Purpose |
-|---|---|
+| --- | --- |
 | `nodes/Domo/Domo.node.ts` | Main node: metadata, base URL from credentials, resource list |
 | `nodes/Domo/DomoDescription.ts` | Aggregates all resource operations/fields |
 | `nodes/Domo/utils.ts` | API request helpers, domain normalization, pagination |
@@ -71,6 +70,7 @@ routing: {
 ### Build Output
 
 TypeScript compiles to `dist/`. The `n8n` section of `package.json` points to compiled files:
+
 - `dist/credentials/DomoTokenApi.credentials.js`
 - `dist/nodes/Domo/Domo.node.js`
 
