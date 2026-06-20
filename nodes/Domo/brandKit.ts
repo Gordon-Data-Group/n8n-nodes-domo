@@ -13,6 +13,17 @@ export const brandKitOperations: INodeProperties[] = [
 		},
 		options: [
 			{
+				name: 'Get Email Template',
+				value: 'getEmailTemplate',
+				action: 'Get email template',
+				routing: {
+					request: {
+						method: 'GET',
+						url: '/api/messaging/v1/email/configurations/template',
+					},
+				},
+			},
+			{
 				name: 'Get Hot URL',
 				value: 'getHotUrl',
 				action: 'Get hot url',
@@ -62,4 +73,3 @@ export const brandKitOperations: INodeProperties[] = [
 ];
 
 export const brandKitFields: INodeProperties[] = [];
-

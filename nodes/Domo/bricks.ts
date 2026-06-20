@@ -411,6 +411,19 @@ export const bricksFields: INodeProperties[] = [
 		description: 'Sort direction (asc or desc)',
 	},
 	{
+		displayName: 'Return All',
+		name: 'returnAll',
+		type: 'boolean',
+		displayOptions: {
+			show: {
+				resource: ['bricks'],
+				operation: ['listAppDesigns'],
+			},
+		},
+		default: false,
+		description: 'Whether to return all results or only up to a given limit',
+	},
+	{
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
@@ -421,6 +434,7 @@ export const bricksFields: INodeProperties[] = [
 			show: {
 				resource: ['bricks'],
 				operation: ['listAppDesigns'],
+				returnAll: [false],
 			},
 		},
 		default: 50,
@@ -437,6 +451,7 @@ export const bricksFields: INodeProperties[] = [
 			show: {
 				resource: ['bricks'],
 				operation: ['listAppDesigns'],
+				returnAll: [false],
 			},
 		},
 		default: 0,
