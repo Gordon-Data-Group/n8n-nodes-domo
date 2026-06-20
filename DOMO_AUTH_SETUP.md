@@ -8,7 +8,7 @@ This node uses Domo **Product APIs** (instance-specific):
 
 - **Domain**: Your instance URL, e.g. `https://yourinstance.domo.com`
 - **Auth**: **Domo Token API** credentials (developer token in `X-DOMO-DEVELOPER-TOKEN` header)
-- **Scope**: 10 resources, 123 operations (Account, Achievement, Admin, Alert, AppDB, Brand Kit, Brick, Group, Left Navigation, User)
+- **Scope**: 24 implemented resources — see [README.md](./README.md) for the full list
 
 ---
 
@@ -26,20 +26,7 @@ This node uses Domo **Product APIs** (instance-specific):
 
 ### Resources available (after auth)
 
-The Domo node exposes these 10 resources; pick one in the node, then choose an operation.
-
-| Resource | Examples |
-|----------|----------|
-| Account | Create, List, Get, Share, Update credentials |
-| Achievement | Create, Assign to user, Add admin, List |
-| Admin | Access Tokens, Activity Log, Company, OAuth API Clients |
-| Alert | Create, Get, Delete, List, Subscriptions, Rules |
-| AppDB | Datastores, Collections, Documents, Permissions |
-| Brand Kit | Get hot URL, Login settings, Color palettes, Email configs |
-| Brick | App designs/instances, Parts, Permissions |
-| Group | Create, List, Get, Update avatar, Members |
-| Left Navigation | Get pins, Create/update pins |
-| User | Create, Get, List, Update, Delete, Get authenticated (me) |
+The Domo node exposes 24 implemented resources. Pick one in the node, then choose an operation. See [README.md](./README.md) for the full list with status.
 
 ### "Invalid domain"
 
