@@ -424,6 +424,9 @@ export const scheduledReportsFields: INodeProperties[] = [
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
+		typeOptions: {
+			minValue: 1,
+		},
 		displayOptions: {
 			show: {
 				resource: ['scheduledReports'],
@@ -435,8 +438,8 @@ export const scheduledReportsFields: INodeProperties[] = [
 				],
 			},
 		},
-		default: 100,
-		description: 'Maximum number of results to return',
+		default: 50,
+		description: 'Max number of results to return',
 	},
 	{
 		displayName: 'Skip',
@@ -795,7 +798,7 @@ export const scheduledReportsFields: INodeProperties[] = [
 		description: 'Minute of the hour to send (0–59)',
 	},
 	{
-		displayName: 'Start Date (Unix ms)',
+		displayName: 'Start Date (Unix Ms)',
 		name: 'startDate',
 		type: 'number',
 		displayOptions: {
@@ -808,7 +811,7 @@ export const scheduledReportsFields: INodeProperties[] = [
 		description: 'Unix timestamp in milliseconds for when the schedule starts (0 to omit)',
 	},
 	{
-		displayName: 'Expiration Date (Unix ms)',
+		displayName: 'Expiration Date (Unix Ms)',
 		name: 'expirationDate',
 		type: 'number',
 		displayOptions: {
@@ -831,8 +834,7 @@ export const scheduledReportsFields: INodeProperties[] = [
 			},
 		},
 		default: '[]',
-		description:
-			'JSON array of recipients. Each entry: { "type": "USER"|"EMAIL", "value": "userId or email", "email": "email@domain.tld" }',
+		description: 'JSON array of recipients. Each entry: { "type": "USER"|"EMAIL", "value": "userId or email", "email": "email@domain.tld" }.',
 	},
 
 	// ── Update Scheduled Report ───────────────────────────────────────────────
@@ -848,8 +850,7 @@ export const scheduledReportsFields: INodeProperties[] = [
 		},
 		default: '',
 		required: true,
-		description:
-			'Full scheduled report object as JSON (id, title, ownerId, subject, viewId, active, attachmentInclude, schedule)',
+		description: 'Full scheduled report object as JSON (ID, title, ownerId, subject, viewId, active, attachmentInclude, schedule)',
 	},
 
 	// ── Create View / Update View ─────────────────────────────────────────────
