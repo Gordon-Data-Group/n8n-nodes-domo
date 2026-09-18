@@ -13,6 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.0.2] - 2026-09-17
+
+### Added
+
+- **Dataset** resource — Create, Get, List, Search, Query (SQL), Share, Get Schema, Get/Run Stream, Create/Commit Upload, Upload Data, Update Name & Description, Update Owner, Update Tags, Get Impact Counts, Delete (17 operations)
+
+### Changed
+
+- User → Create: renamed `sendEmail` parameter to `sendNotification` for clarity
+- Fixed `n8n-nodes-base` lint violations on the Page and Scheduled Report `Limit` parameters (missing `minValue` typeOptions/description) and ID casing in Scheduled Report field labels
+- README: added Gordon Data Group attribution and support links
+
+### Security
+
+- Removed a debug `preSend` block that logged full request URLs, bodies, and query strings (including the Domo developer token) to the console
+
+---
+
 ## [0.0.1] - 2026-06-19
 
 ### Added
