@@ -4,6 +4,7 @@ import { approvalsFields, approvalsOperations } from './approvals';
 import { cardFields, cardOperations } from './cards';
 import { categoriesFields, categoriesOperations } from './categories';
 import { filesFields, filesOperations } from './files';
+import { formsFields, formsOperations } from './forms';
 import { creditsFields, creditsOperations } from './credits';
 import { dataflowsFields, dataflowsOperations } from './dataflows';
 import { domoEverywhereFields, domoEverywhereOperations } from './domoEverywhere';
@@ -32,6 +33,7 @@ export const domoFields: INodeProperties[] = [
 	...cardFields,
 	...categoriesFields,
 	...filesFields,
+	...formsFields,
 	...adminFields,
 	...alertFields,
 	...appdbFields,
@@ -59,6 +61,7 @@ export const domoOperations: INodeProperties[] = [
 	...cardOperations,
 	...categoriesOperations,
 	...filesOperations,
+	...formsOperations,
 	...adminOperations,
 	...alertOperations,
 	...appdbOperations,
