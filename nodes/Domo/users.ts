@@ -30,7 +30,7 @@ export const userOperations: INodeProperties[] = [
 						method: 'POST',
 						url: '/api/content/v3/users',
 						qs: {
-							sendEmail: '={{$parameter.sendEmail}}',
+							sendNotification: '={{$parameter.sendNotification}}',
 						},
 					},
 				},
@@ -316,8 +316,8 @@ export const userFields: INodeProperties[] = [
 		],
 	},
 	{
-		displayName: 'Send Email',
-		name: 'sendEmail',
+		displayName: 'Send Notification',
+		name: 'sendNotification',
 		type: 'boolean',
 		displayOptions: {
 			show: {

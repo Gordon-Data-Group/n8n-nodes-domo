@@ -566,6 +566,7 @@ export const pagesFields: INodeProperties[] = [
 		displayName: 'Limit',
 		name: 'limit',
 		type: 'number',
+		description: 'Max number of results to return',
 		default: 50,
 		typeOptions: { minValue: 1 },
 		displayOptions: {

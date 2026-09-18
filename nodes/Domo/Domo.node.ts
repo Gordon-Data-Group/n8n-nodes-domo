@@ -1,8 +1,6 @@
 import {
 	INodeType,
 	INodeTypeDescription,
-	IExecuteFunctions,
-	IHttpRequestOptions,
 	ILoadOptionsFunctions,
 } from 'n8n-workflow';
 import { domoFields, domoOperations } from './DomoDescription';
@@ -50,10 +48,6 @@ export class Domo implements INodeType {
 						value: 'achievement',
 					},
 					{
-						name: 'Approval',
-						value: 'approval',
-					},
-					{
 						name: 'Admin',
 						value: 'admin',
 					},
@@ -68,6 +62,10 @@ export class Domo implements INodeType {
 					{
 						name: 'AppDB',
 						value: 'appdb',
+					},
+					{
+						name: 'Approval',
+						value: 'approval',
 					},
 					{
 						name: 'Brand Kit',
@@ -190,44 +188,6 @@ export class Domo implements INodeType {
 			},
 			...domoOperations,
 			...domoFields,
-		],
-	};
-	routing = {
-		request: {
-			// This ensures all operations without explicit routing still go through preSend
-		},
-		preSend: [
-			async function (
-				this: IExecuteFunctions,
-				requestOptions: IHttpRequestOptions,
-			) {
-				try {
-					const logData = {
-						url: requestOptions.url,
-						method: requestOptions.method,
-						body: requestOptions.body,
-						qs: requestOptions.qs,
-					};
-
-					// Multiple logging strategies - all error level to ensure visibility
-					console.error('╔════════════════════════════════════════════════════════════════╗');
-					console.error('║                     DOMO API REQUEST                          ║');
-					console.error('╚════════════════════════════════════════════════════════════════╝');
-					console.error('URL:', logData.url);
-					console.error('METHOD:', logData.method);
-					console.error('BODY:', JSON.stringify(logData.body, null, 2));
-					console.error('QS:', JSON.stringify(logData.qs, null, 2));
-					console.error('════════════════════════════════════════════════════════════════');
-
-					this.logger.error('DOMO REQUEST URL: ' + logData.url);
-					this.logger.error('DOMO REQUEST BODY: ' + JSON.stringify(logData.body, null, 2));
-				} catch (error) {
-					console.error('ERROR IN PRESEND HOOK:', error);
-					this.logger.error('ERROR IN PRESEND HOOK: ' + String(error));
-				}
-
-				return requestOptions;
-			},
 		],
 	};
 	methods = {
