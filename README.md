@@ -6,6 +6,8 @@ An unofficial, community-maintained n8n community node package for [Domo](https:
 
 Domo is a cloud-based business intelligence and data platform. This node lets you automate Domo workflows from [n8n](https://n8n.io/) using Domo's Product APIs.
 
+Built and maintained by [Gordon Data Group](https://gordondatagroup.com), a data and analytics consulting firm. Need help with a Domo implementation, custom tooling, or AI integration? [Get in touch](https://gordondatagroup.com).
+
 ---
 
 ## Disclaimers
@@ -27,6 +29,7 @@ Domo is a cloud-based business intelligence and data platform. This node lets yo
 - [Reporting Bugs](#reporting-bugs)
 - [Resources](#resources)
 - [Version History](#version-history)
+- [About Gordon Data Group](#about-gordon-data-group)
 
 ---
 
@@ -132,3 +135,9 @@ Please include:
 ## Version History
 
 See [CHANGELOG.md](./CHANGELOG.md).
+
+---
+
+## About Gordon Data Group
+
+This project is maintained by [Gordon Data Group](https://gordondatagroup.com), a consulting firm specializing in Domo implementations, data engineering, and AI-driven tooling. If your team needs help getting more out of Domo — custom integrations, dataflow architecture, governance, or projects like this one — [reach out](https://gordondatagroup.com).
